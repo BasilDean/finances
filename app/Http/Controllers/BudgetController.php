@@ -63,7 +63,7 @@ class BudgetController extends Controller
 
         session(['default_budget' => $budget->slug]);
 
-        $accounts = $budget->accounts()->orderBy('updated_at', 'desc')->take(5)->get();
+        $accounts = $budget->accounts()->orderBy('created_at', 'desc')->take(5)->get();
         $total = $budget->getBudgetTotal();
 
 

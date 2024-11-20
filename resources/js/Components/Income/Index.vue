@@ -45,23 +45,23 @@ const props = defineProps({
         </tbody>
     </table>
 
-        <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+        <div v-if="items.next_page_url || items.prev_page_url" class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
             <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm text-gray-700">
-                        Showing
+                        Показывает с
                         {{ ' ' }}
-                        <span class="font-medium">{{ 1 + (items.current_page - 1) * items.per_page  }} </span>
+                        <span class="font-medium">{{ items.from }} </span>
                         {{ ' ' }}
-                        to
+                        по
                         {{ ' ' }}
-                        <span class="font-medium">{{ (items.current_page - 1) * items.per_page  + items.per_page }} </span>
+                        <span class="font-medium">{{ items.to }} </span>
                         {{ ' ' }}
-                        of
+                        из
                         {{ ' ' }}
                         <span class="font-medium">{{ items.total }}</span>
                         {{ ' ' }}
-                        results
+                        записей
                     </p>
                 </div>
                 <div>

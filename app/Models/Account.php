@@ -29,7 +29,6 @@ class Account extends Model
             $slug = Str::slug($account->title);
             $originalSlug = $slug;
             $counter = 1;
-
             // Ensure the slug is unique by including soft deleted items
             while (self::withTrashed()->where('slug', $slug)->exists()) {
                 $slug = $originalSlug . '-' . $counter;

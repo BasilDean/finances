@@ -168,17 +168,14 @@ const createIncome = () => {
                                     <div class="sm:col-span-2">
                                         <label for="country" class="block text-sm/6 font-medium text-white">Счет</label>
                                         <div class="mt-2 relative">
-                                            <input type="text" v-model="accountQuery"
-                                                   @input="filterAccounts" placeholder="Начните вводить..."
-                                                   class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-                                            />
+<!--                                            <input type="text" v-model="accountQuery" @input="filterAccounts" placeholder="Начните вводить..." class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"/>-->
                                             <div
                                                 class="absolute top-0 mt-0 w-full rounded-md bg-white shadow-lg z-10">
                                                 <select id="account" name="account" v-model="form.account_id"
                                                         class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
 
                                                     <option v-for="account in filteredAccounts"
-                                                            :key="account.id" :value="account.id">{{ account.title }}
+                                                            :key="account.id" :value="account.id">{{ account.title }} ({{ account.currency }})
                                                     </option>
                                                 </select>
                                             </div>
