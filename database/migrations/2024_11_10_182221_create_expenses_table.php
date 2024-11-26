@@ -9,12 +9,17 @@ return new class extends Migration {
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('account_id');
+            $table->unsignedBigInteger('user_id');
+            $table->string('normalized_title')->default('')->index();
             $table->string('title');
             $table->float('amount');
-            $table->unsignedBigInteger('source');
             $table->string('currency');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ValidCurrencyRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpenseRequest extends FormRequest
@@ -12,8 +11,6 @@ class ExpenseRequest extends FormRequest
         return [
             'title' => ['required'],
             'amount' => ['required', 'numeric'],
-            'source' => ['required', 'integer', 'exists:accounts,id'],
-            'currency' => ['required', new ValidCurrencyRule()],
         ];
     }
 

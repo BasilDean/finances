@@ -1,8 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import BudgetIndex from '@/Components/Budgets/List.vue';
-import NavLink from '@/Components/NavLink.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import FlatLink from '@/Components/FlatLink.vue';
 
 const props = defineProps({
@@ -21,20 +19,23 @@ const props = defineProps({
     incomes: {
         Type: Object
     },
+    expenses: {
+        Type: Object
+    }
 });
 
 const form = useForm({
     id: props.budget.id
-})
+});
 
 const deleteItem = () => {
     const confirmation = prompt('Чтобы удалить бюджет введите его название');
     if (confirmation === props.budget.title) {
         form.delete(route('budgets.destroy', props.budget.slug));
     } else {
-        alert('Название введено не верно!')
+        alert('Название введено не верно!');
     }
-}
+};
 </script>
 
 <template>
@@ -49,14 +50,14 @@ const deleteItem = () => {
                         <div class="flex justify-between">
                             <h2 class="text-center text-base/7 font-semibold text-indigo-600 flex justify-start items-center space-x-2 w-full">
                                 <span>{{ budget.title }} - {{ budget.balance }} {{ budget.main_currency }}</span>
-                                <FlatLink
-                                    :href="route('budgets.edit', budget.slug)"
+                                <Link
                                     :active="route().current('budgets.index')"
-                                    classes="ml-3 inline-flex items-center rounded-lg bg-indigo-500 text-white px-2 py-1 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                                    <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                         xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         width="10px" height="10px" viewBox="0 0 45.973 45.973"
-                                         xml:space="preserve">
+                                    :href="route('budgets.edit', budget.slug)"
+                                    class="ml-3 inline-flex items-center rounded-lg bg-indigo-500 text-white px-2 py-1 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                    <svg id="Capa_1" fill="#fff" height="10px" version="1.1"
+                                         viewBox="0 0 45.973 45.973"
+                                         width="10px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                                         xmlns:xlink="http://www.w3.org/1999/xlink">
                                         <g>
                                             <g>
                                                 <path d="M43.454,18.443h-2.437c-0.453-1.766-1.16-3.42-2.082-4.933l1.752-1.756c0.473-0.473,0.733-1.104,0.733-1.774
@@ -75,12 +76,12 @@ const deleteItem = () => {
                                             </g>
                                         </g>
                                         </svg>
-                                </FlatLink>
+                                </Link>
                             </h2>
 
                             <button
-                                @click.prevent="deleteItem"
-                                class="ml-3 inline-flex items-center rounded-lg bg-red-500 text-white px-2 py-1 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                                class="ml-3 inline-flex items-center rounded-lg bg-red-500 text-white px-2 py-1 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                @click.prevent="deleteItem">
                                 Удалить
                             </button>
 
@@ -91,23 +92,26 @@ const deleteItem = () => {
                                 <div
                                     class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">
                                     <div class="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
-                                        <FlatLink :href="route('income.index')" classes="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center block">
-                                            Доходы</FlatLink>
+                                        <Link :href="route('income.index')"
+                                              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center block">
+                                            Доходы
+                                        </Link>
                                         <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Последние
                                             доходы.</p>
                                     </div>
                                     <div
                                         class="flex flex-1 items-start justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
                                         <dl class="divide-y divide-gray-100 w-full">
-                                            <FlatLink :href="route('income.show', income.id)" v-for="income in incomes"
-                                                      :classes="'px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'">
+                                            <Link v-for="income in incomes"
+                                                  :class="'px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'"
+                                                  href="#">
                                                 <dt class="text-sm/6 font-medium text-gray-900 sm:col-span-1">
                                                     {{ income.title }}
                                                 </dt>
                                                 <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-0">{{ income.amount }}
                                                     {{ income.currency }}
                                                 </dd>
-                                            </FlatLink>
+                                            </Link>
                                         </dl>
                                     </div>
                                 </div>
@@ -119,18 +123,20 @@ const deleteItem = () => {
                                 <div
                                     class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
                                     <div class="px-8 pt-8 sm:px-10 sm:pt-10">
-                                        <FlatLink
-                                            classes="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center block" :href="route('accounts.index')">
-                                                Счета
-                                        </FlatLink>
+                                        <Link
+                                            :href="route('accounts.index')"
+                                            class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center block">
+                                            Счета
+                                        </Link>
                                         <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Все счета
                                             (включая наличку).</p>
                                     </div>
                                     <div
                                         class="flex flex-1 items-center justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
                                         <dl class="divide-y divide-gray-100 w-full">
-                                            <FlatLink :href="route('accounts.show', account.slug)" v-for="account in accounts"
-                                                 class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                                            <FlatLink v-for="account in accounts"
+                                                      :href="route('accounts.show', account.slug)"
+                                                      class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
                                                 <dt class="text-sm/6 font-medium text-gray-900 sm:col-span-1">
                                                     {{ account.title }}
                                                 </dt>
@@ -156,9 +162,9 @@ const deleteItem = () => {
                                     </div>
                                     <div
                                         class="flex flex-1 items-center [container-type:inline-size] max-lg:py-6 lg:pb-2">
-                                        <img class="h-[min(152px,40cqw)] object-cover object-center"
-                                             src="https://tailwindui.com/plus/img/component-images/bento-03-security.png"
-                                             alt="" />
+                                        <img alt=""
+                                             class="h-[min(152px,40cqw)] object-cover object-center"
+                                             src="https://tailwindui.com/plus/img/component-images/bento-03-security.png" />
                                     </div>
                                 </div>
                                 <div
@@ -170,27 +176,28 @@ const deleteItem = () => {
                                 <div
                                     class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]">
                                     <div class="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
-                                        <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                                            Расходы</p>
+                                        <Link :href="route('expense.index')"
+                                              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
+                                            Расходы
+                                        </Link>
                                         <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Список
                                             последних расходов.</p>
                                     </div>
-                                    <div class="relative min-h-[30rem] w-full grow">
-                                        <div
-                                            class="absolute bottom-0 left-10 right-0 top-10 overflow-hidden rounded-tl-xl bg-gray-900 shadow-2xl">
-                                            <div class="flex bg-gray-800/40 ring-1 ring-white/5">
-                                                <div class="-mb-px flex text-sm/6 font-medium text-gray-400">
-                                                    <div
-                                                        class="border-b border-r border-b-white/20 border-r-white/10 bg-white/5 px-4 py-2 text-white">
-                                                        NotificationSetting.jsx
-                                                    </div>
-                                                    <div class="border-r border-gray-600/10 px-4 py-2">App.jsx</div>
-                                                </div>
-                                            </div>
-                                            <div class="px-6 pb-14 pt-6">
-                                                <!-- Your code example -->
-                                            </div>
-                                        </div>
+
+                                    <div
+                                        class="flex flex-1 items-start justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
+                                        <dl class="divide-y divide-gray-100 w-full">
+                                            <Link v-for="expense in expenses"
+                                                  :class="'px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'"
+                                                  href="#">
+                                                <dt class="text-sm/6 font-medium text-gray-900 sm:col-span-1">
+                                                    {{ expense.title }}
+                                                </dt>
+                                                <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-0">{{ expense.amount }}
+                                                    {{ expense.currency }}
+                                                </dd>
+                                            </Link>
+                                        </dl>
                                     </div>
                                 </div>
                                 <div

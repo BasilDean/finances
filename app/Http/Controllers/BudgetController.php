@@ -4,19 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BudgetRequest;
 use App\Models\Budget;
-use App\Models\CurrencyRate;
-use App\Models\User;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use function Symfony\Component\String\s;
+use Inertia\Response;
 
 class BudgetController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Budget::class);
         $budgets = Auth::user()->budgets()->get();
@@ -27,7 +25,7 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', Budget::class);
 
@@ -36,7 +34,7 @@ class BudgetController extends Controller
         return Inertia::render('Budgets/Create')->with(['username' => $username]);
     }
 
-    public function edit(Budget $budget): \Inertia\Response
+    public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
         return Inertia::render('Budgets/Edit', [
@@ -44,7 +42,7 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function store(BudgetRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(BudgetRequest $request): RedirectResponse
     {
         $this->authorize('create', Budget::class);
 
@@ -57,7 +55,7 @@ class BudgetController extends Controller
         return redirect()->route('budgets.show', $budget->slug)->with('status', 'Budget updated.');
     }
 
-    public function show(Budget $budget): \Inertia\Response
+    public function show(Budget $budget): Response
     {
         $this->authorize('view', $budget);
 
@@ -66,11 +64,18 @@ class BudgetController extends Controller
         $accounts = $budget->accounts()->orderBy('created_at', 'desc')->take(5)->get();
         $total = $budget->getBudgetTotal();
 
-
         $incomes = $budget->accounts()
             ->with('incomes') // Assuming accounts have a relationship called 'incomes'
             ->get()
             ->pluck('incomes')
+            ->flatten()
+            ->sortByDesc('created_at')
+            ->take(10);
+
+        $expenses = $budget->accounts()
+            ->with('expenses') // Assuming accounts have a relationship called 'incomes'
+            ->get()
+            ->pluck('expenses')
             ->flatten()
             ->sortByDesc('created_at')
             ->take(10);
@@ -81,10 +86,11 @@ class BudgetController extends Controller
             'accounts' => $accounts,
             'total' => $total,
             'incomes' => $incomes,
+            'expenses' => $expenses,
         ]);
     }
 
-    public function update(BudgetRequest $request, Budget $budget): \Illuminate\Http\RedirectResponse
+    public function update(BudgetRequest $request, Budget $budget): RedirectResponse
     {
         $this->authorize('update', $budget);
 

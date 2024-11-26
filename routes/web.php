@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
 
@@ -20,7 +19,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    if (session()->has('default_budget')) {
+        return redirect()->route('budgets.show', ['budget' => session('default_budget')]);
+    }
+    return redirect()->route('budgets.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -58,7 +60,19 @@ Route::middleware('auth')->prefix('income')->group(function () {
     Route::get('/{income:slug}/edit', [IncomeController::class, 'edit'])->name('income.edit');
     Route::patch('/{income:slug}', [IncomeController::class, 'update'])->name('income.update');
     Route::delete('/{income:slug}', [IncomeController::class, 'destroy'])->name('income.destroy');
+    Route::get('autocomplete/title', [IncomeController::class, 'autocomplete'])->name('income.autocomplete.title');
 });
-Route::get('autocomplete', [IncomeController::class, 'autocomplete'])->name('income.autocomplete');
 
-require __DIR__.'/auth.php';
+Route::middleware('auth')->prefix('expense')->group(function () {
+    Route::get('/', [ExpenseController::class, 'index'])->name('expense.index');
+    Route::get('/create', [ExpenseController::class, 'create'])->name('expense.create');
+    Route::post('/', [ExpenseController::class, 'store'])->name('expense.store');
+    Route::get('/{expense:id}', [ExpenseController::class, 'show'])->name('expense.show');
+    Route::get('/{expense:slug}/edit', [ExpenseController::class, 'edit'])->name('expense.edit');
+    Route::patch('/{expense:slug}', [ExpenseController::class, 'update'])->name('expense.update');
+    Route::delete('/{expense:slug}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
+    Route::get('autocomplete/title', [ExpenseController::class, 'autocompleteTitle'])->name('expense.autocomplete.title');
+    Route::get('autocomplete/category', [ExpenseController::class, 'autocompleteCategory'])->name('expense.autocomplete.category');
+});
+
+require __DIR__ . '/auth.php';

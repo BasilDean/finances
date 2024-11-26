@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('normalized_title')->default('')->index();
             $table->integer('parent_id')->default(0);
             $table->integer('usage_count')->default(0);
             $table->timestamps();
