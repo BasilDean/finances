@@ -6,6 +6,7 @@ use App\Http\Requests\BudgetRequest;
 use App\Models\Budget;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,14 +15,25 @@ class BudgetController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $this->authorize('viewAny', Budget::class);
-        $budgets = Auth::user()->budgets()->get();
+
+        $fillableFields = (new Budget())->getFillable();
+        $search = $request->input('search');
+        $query = Auth::user()->budgets()->orderBy('updated_at', 'desc');
+
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%'); // Adjust fields as necessary
+        }
+
+        $budgets = $query->paginate(10); // Adjust pagination as needed
 
         return Inertia::render('Budgets/Index', [
             'status' => session('status'),
             'budgets' => $budgets,
+            'filters' => request()->all('search'),
+            'fillableFields' => $fillableFields
         ]);
     }
 

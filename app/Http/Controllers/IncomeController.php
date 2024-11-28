@@ -7,18 +7,21 @@ use App\Models\Account;
 use App\Models\Budget;
 use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
+use Inertia\Response;
 
 class IncomeController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Income::class);
-        $incomes = Income::with('account')->orderBy('created_at', 'desc')->paginate(20);
+        $incomes = Income::with('account')->orderBy('updated_at', 'desc')->paginate(20);
         $budget = Budget::where('slug', session()->get('default_budget'))->first();
         $accounts = $budget->accounts()->get();
 //        dd($incomes);
@@ -28,7 +31,7 @@ class IncomeController extends Controller
         ]);
     }
 
-    public function store(IncomeRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(IncomeRequest $request): RedirectResponse
     {
         $this->authorize('create', Income::class);
 
@@ -74,7 +77,7 @@ class IncomeController extends Controller
         return response()->json();
     }
 
-    public function autocomplete(Request $request): \Illuminate\Http\JsonResponse
+    public function autocomplete(Request $request): JsonResponse
     {
         $query = $request->get('query');
 

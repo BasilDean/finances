@@ -1,20 +1,45 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import BudgetIndex from '@/Components/Budgets/List.vue';
+import { Head } from '@inertiajs/vue3';
+import List from '@/Components/Finanses/List.vue';
+import CreateButton from '@/Components/Finanses/CreateButton.vue';
 
 defineProps({
     budgets: {
-        type: Object
+        type: Object,
+        required: true
     },
     status: {
         type: String
+    },
+    fillableFields: {
+        required: true,
+        type: Object
+    },
+    filters: {
+        type: Object,
+        default: {}
     }
 });
+const displayFields = [
+    {
+        name: 'title',
+        hideMobile: false
+    },
+    {
+        name: 'balance',
+        hideMobile: false
+    },
+    {
+        name: 'main_currency',
+        hideMobile: false
+    }
+];
+const type = 'budgets';
 </script>
 
 <template>
-    <Head title="Бюджеты" />
+    <Head :title="$t('budgets')" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -22,20 +47,17 @@ defineProps({
                 <h2
                     class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
                 >
-                    Бюджеты
+                    {{ $t('budgets') }}
                 </h2>
 
-                <Link
-                    :href="route('budgets.create')"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Создать
-                </Link>
+                <CreateButton :route="route('budgets.create')" />
             </div>
         </template>
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <BudgetIndex :items="budgets" />
+                <List :displayFields="fillableFields" :filters="filters"
+                      :items="budgets" :show-detail-page="true" :type="type" />
             </div>
         </div>
     </AuthenticatedLayout>

@@ -37,7 +37,7 @@ class RefreshCurrencyRatesCommand extends Command
             foreach ($rates['quotes'] as $currency => $rate) {
                 $currency = substr($currency, 3);
                 CurrencyRate::updateOrCreate(
-                    ['code_from' => $sourceCurrency, 'code_to' => $currency, 'rate' => $rate],
+                    ['code_from' => $sourceCurrency, 'code_to' => $currency], ['rate' => $rate],
                 );
             }
 

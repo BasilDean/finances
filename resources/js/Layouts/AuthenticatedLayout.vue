@@ -19,7 +19,7 @@ const logo = {
     icon: BanknotesIcon
 };
 
-const solutions = [
+const links = [
     {
         name: 'Расход',
         description: 'добавить новую покупку или платёж',
@@ -51,7 +51,7 @@ const showingNavigationDropdown = ref(false);
 
 <template>
 
-    <div>
+    <div class="w-full">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav
                 class="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -76,7 +76,7 @@ const showingNavigationDropdown = ref(false);
                                 <Popover class="relative flex">
                                     <PopoverButton
                                         class="inline-flex items-center gap-x-1 text-sm/6 font-semibold text-white">
-                                        <span>Добавить</span>
+                                        <span>{{ $t('add') }}</span>
                                         <ChevronDownIcon aria-hidden="true" class="size-5" />
                                     </PopoverButton>
 
@@ -91,7 +91,7 @@ const showingNavigationDropdown = ref(false);
                                             <div
                                                 class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm/6 shadow-lg ring-1 ring-gray-900/5">
                                                 <div class="p-4">
-                                                    <div v-for="item in solutions" :key="item.name"
+                                                    <div v-for="item in links" :key="item.name"
                                                          class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
                                                         <div
                                                             class="mt-1 flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
@@ -156,14 +156,14 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink
                                             :href="route('profile.edit')"
                                         >
-                                            Profile
+                                            {{ $t('profile') }}
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             as="button"
                                             method="post"
                                         >
-                                            Log Out
+                                            {{ $t('Log Out') }}
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>

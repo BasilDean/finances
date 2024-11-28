@@ -16,6 +16,9 @@ class AccountController extends Controller
     {
         $this->authorize('viewAny', Account::class);
 
+
+        $fillableFields = (new Budget())->getFillable();
+
         $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
         $accounts = $budget->accounts()->paginate(10);
 
@@ -25,6 +28,14 @@ class AccountController extends Controller
         ]);
     }
 
+    public function store(AccountRequest $request)
+    {
+        $this->authorize('create', Account::class);
+        $validatedData = $request->validated();
+        $account = Account::create($validatedData);
+        return redirect()->route('accounts.index')->with('status', 'Account created.');
+    }
+
     public function create()
     {
         $this->authorize('create', Account::class);
@@ -32,14 +43,6 @@ class AccountController extends Controller
         return Inertia::render('Accounts/Create', [
             'status' => session('status'),
         ]);
-    }
-
-    public function store(AccountRequest $request)
-    {
-        $this->authorize('create', Account::class);
-        $validatedData = $request->validated();
-        $account = Account::create($validatedData);
-        return redirect()->route('accounts.index')->with('status', 'Account created.');
     }
 
     public function show(Account $account)
@@ -54,6 +57,7 @@ class AccountController extends Controller
             'account' => $account,
         ]);
     }
+
     public function destroy(Account $account)
     {
         $this->authorize('delete', $account);

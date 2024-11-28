@@ -1,9 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import BudgetIndex from '@/Components/Budgets/List.vue';
-import NavLink from '@/Components/NavLink.vue';
-import FlatLink from '@/Components/FlatLink.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     budget: {
@@ -24,8 +21,8 @@ const form = useForm({
 });
 
 const updateBudget = () => {
-    form.patch(route('budgets.update', props.budget.slug))
-}
+    form.patch(route('budgets.update', props.budget.slug));
+};
 </script>
 
 <template>
@@ -49,25 +46,34 @@ const updateBudget = () => {
 
                                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                         <div class="sm:col-span-2">
-                                            <label for="region" class="block text-sm/6 font-medium text-gray-900">Название</label>
+                                            <label class="block text-sm/6 font-medium text-gray-900" for="region">Название</label>
                                             <div class="mt-2">
-                                                <input type="text" name="title" id="title"
-                                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" v-model="form.title" />
+                                                <input id="title" v-model="form.title"
+                                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                                                       name="title"
+                                                       type="text" />
                                             </div>
                                         </div>
                                         <div class="sm:col-span-2">
-                                            <label for="region" class="block text-sm/6 font-medium text-gray-900">Ярлык</label>
+                                            <label class="block text-sm/6 font-medium text-gray-900"
+                                                   for="region">Ярлык</label>
                                             <div class="mt-2">
-                                                <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                                                    <input type="text" name="slug" id="slug" autocomplete="slug" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" v-model="form.slug">
+                                                <div
+                                                    class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                                    <input id="slug" v-model="form.slug" autocomplete="slug"
+                                                           class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
+                                                           name="slug"
+                                                           type="text">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="sm:col-span-2">
-                                            <label for="country" class="block text-sm/6 font-medium text-gray-900">Основная валюта</label>
+                                            <label class="block text-sm/6 font-medium text-gray-900" for="country">Основная
+                                                валюта</label>
                                             <div class="mt-2">
-                                                <select id="mainCurrency" name="mainCurrency"
-                                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6 w-full" v-model="form.main_currency">
+                                                <select id="mainCurrency" v-model="form.main_currency"
+                                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6 w-full"
+                                                        name="mainCurrency">
                                                     <option value="USD">USD</option>
                                                     <option value="RUB">RUB</option>
                                                     <option value="EUR">EUR</option>
@@ -83,9 +89,13 @@ const updateBudget = () => {
                             </div>
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <flat-link :href="route('budgets.show', budget.slug)" type="button" class="text-sm/6 font-semibold text-gray-900" href="">Cancel</flat-link>
-                                <button type="submit"
-                                        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <Link :href="route('budgets.show', budget.slug)"
+                                      class="text-sm/6 font-semibold text-gray-900"
+                                      href="" type="button">Cancel
+                                </Link>
+                                <button
+                                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    type="submit">
                                     Save
                                 </button>
                             </div>

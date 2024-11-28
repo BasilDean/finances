@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -14,8 +15,8 @@ class Budget extends Model
 // Adding the slug field to the fillable property
     protected $fillable = [
         'title',
+        'balance',
         'main_currency',
-        'slug'
     ];
 
     protected static function boot()
@@ -43,17 +44,7 @@ class Budget extends Model
         });
     }
 
-    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(related: User::class);
-    }
-
-    public function accounts(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(related: Account::class);
-    }
-
-    public function getBudgetTotal(): String
+    public function getBudgetTotal(): string
     {
         $accountsArray = $this->accounts->toArray();
         $total = array_reduce($accountsArray, function ($sum, $item) {
@@ -62,7 +53,7 @@ class Budget extends Model
             if ($item['currency'] === $this->main_currency) {
                 $sum += $item['amount'];
             } else {
-                $amountIRubbles= $currencyRate->convertToRubbles($item['currency'], $item['amount']);
+                $amountIRubbles = $currencyRate->convertToRubbles($item['currency'], $item['amount']);
 //                dd($amountIRubbles, $item);
                 if ($this->main_currency === 'RUB') {
                     $sum += $amountIRubbles;
@@ -79,5 +70,15 @@ class Budget extends Model
     {
         $this->balance = $total;
         $this->save();
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(related: User::class);
+    }
+
+    public function accounts(): BelongsToMany
+    {
+        return $this->belongsToMany(related: Account::class);
     }
 }

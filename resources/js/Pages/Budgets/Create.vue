@@ -1,9 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import BudgetIndex from '@/Components/Budgets/List.vue';
 import NavLink from '@/Components/NavLink.vue';
-import { computed, watch } from 'vue';
+
 
 const props = defineProps({
     status: {
@@ -16,13 +15,13 @@ const props = defineProps({
 
 const form = useForm({
     title: '',
-    main_currency: '',
+    main_currency: ''
 });
 
 
 const createBudget = () => {
-    form.post(route('budgets.store'))
-}
+    form.post(route('budgets.store'));
+};
 </script>
 
 <template>
@@ -39,23 +38,26 @@ const createBudget = () => {
 
                         <form @submit.prevent="createBudget()">
                             <div class="space-y-12">
-                                {{ form.errors}}
+                                {{ form.errors }}
 
                                 <div class="border-b border-gray-900/10 pb-12">
 
                                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                         <div class="sm:col-span-4">
-                                            <label for="region" class="block text-sm/6 font-medium text-gray-900">Название</label>
+                                            <label class="block text-sm/6 font-medium text-gray-900" for="region">Название</label>
                                             <div class="mt-2">
-                                                <input type="text" name="title" id="title"
-                                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" v-model="form.title" />
+                                                <input id="title" v-model="form.title" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                                                       name="title"
+                                                       type="text" />
                                             </div>
                                         </div>
                                         <div class="sm:col-span-2">
-                                            <label for="country" class="block text-sm/6 font-medium text-gray-900">Основная валюта</label>
+                                            <label class="block text-sm/6 font-medium text-gray-900" for="country">Основная
+                                                валюта</label>
                                             <div class="mt-2">
-                                                <select id="mainCurrency" name="mainCurrency"
-                                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6 w-full" v-model="form.main_currency">
+                                                <select id="mainCurrency" v-model="form.main_currency"
+                                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6 w-full"
+                                                        name="mainCurrency">
                                                     <option value="USD">USD</option>
                                                     <option value="RUB">RUB</option>
                                                     <option value="EUR">EUR</option>
@@ -71,9 +73,11 @@ const createBudget = () => {
                             </div>
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <NavLink :href="route('budgets.index')" type="button" class="text-sm/6 font-semibold text-gray-900">Отмена</NavLink>
-                                <button type="submit"
-                                        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <NavLink :href="route('budgets.index')" class="text-sm/6 font-semibold text-gray-900"
+                                         type="button">Отмена
+                                </NavLink>
+                                <button class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        type="submit">
                                     Сохранить
                                 </button>
                             </div>

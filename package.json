@@ -29,6 +29,10 @@
     },
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
-        "@heroicons/vue": "^2.2.0"
+        "@heroicons/vue": "^2.2.0",
+        "@inertiajs/inertia": "^0.11.1",
+        "lodash": "^4.17.21",
+        "lodash.debounce": "^4.0.8",
+        "vue-i18n": "^10.0.5"
     }
 }
