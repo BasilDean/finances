@@ -13,7 +13,7 @@ class BudgetSeeder extends Seeder
         $budgets = array(
             ['title' => 'Dandelions'],
             ['title' => 'Tests'],
-            ['title' => 'Budget', 'main_currency' => "USD"],
+            ['title' => 'Budget', 'currency' => "USD"],
         );
 
         $user1 = User::find(1);

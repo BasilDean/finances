@@ -15,8 +15,7 @@ class Budget extends Model
 // Adding the slug field to the fillable property
     protected $fillable = [
         'title',
-        'balance',
-        'main_currency',
+        'currency',
     ];
 
     protected static function boot()
@@ -49,16 +48,16 @@ class Budget extends Model
         $accountsArray = $this->accounts->toArray();
         $total = array_reduce($accountsArray, function ($sum, $item) {
             $currencyRate = new CurrencyRate();
-//            dd($item['currency'], $this->main_currency);
-            if ($item['currency'] === $this->main_currency) {
+//            dd($item['currency'], $this->currency);
+            if ($item['currency'] === $this->currency) {
                 $sum += $item['amount'];
             } else {
                 $amountIRubbles = $currencyRate->convertToRubbles($item['currency'], $item['amount']);
 //                dd($amountIRubbles, $item);
-                if ($this->main_currency === 'RUB') {
+                if ($this->currency === 'RUB') {
                     $sum += $amountIRubbles;
                 } else {
-                    $sum += $currencyRate->convertToCurrency($this->main_currency, $amountIRubbles);
+                    $sum += $currencyRate->convertToCurrency($this->currency, $amountIRubbles);
                 }
             }
             return $sum;

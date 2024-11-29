@@ -11,7 +11,8 @@ class BudgetRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'main_currency' => ['required', new ValidCurrencyRule()],
+            'balance' => ['nullable', 'numeric'],
+            'currency' => ['required', new ValidCurrencyRule()],
         ];
     }
 

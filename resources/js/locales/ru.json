@@ -1,12 +1,15 @@
 {
     "title": "Название",
     "balance": "Баланс",
-    "main_currency": "Основная валюта",
+    "currency": "Валюта",
     "search": "Поиск",
     "add": "Добавить",
     "budgets": "Бюджеты",
+    "create new budget": "Создать новый бюджет",
     "edit": "Редактировать",
     "delete": "Удалить",
     "profile": "Профиль",
-    "Log Out": "Выйти"
+    "Log Out": "Выйти",
+    "save": "Сохранить",
+    "cancel": "Отмена"
 }

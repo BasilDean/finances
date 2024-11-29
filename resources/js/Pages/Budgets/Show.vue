@@ -50,7 +50,7 @@ const deleteItem = () => {
                     <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
                         <div class="flex justify-between">
                             <h2 class="text-center text-base/7 font-semibold text-white flex justify-start items-center space-x-2 w-full">
-                                <span>{{ budget.title }} - {{ budget.balance }} {{ budget.main_currency }}</span>
+                                <span>{{ budget.title }} - {{ budget.balance }} {{ budget.currency }}</span>
                             </h2>
 
                             <div class="flex gap-4">

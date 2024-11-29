@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('title');
             $table->string('slug')->unique();
             $table->float('balance')->default(0);
-            $table->string('main_currency')->default('RUB');
+            $table->string('currency')->default('RUB');
             $table->timestamps();
             $table->softDeletes();
         });

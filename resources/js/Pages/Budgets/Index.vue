@@ -21,20 +21,6 @@ defineProps({
         default: {}
     }
 });
-const displayFields = [
-    {
-        name: 'title',
-        hideMobile: false
-    },
-    {
-        name: 'balance',
-        hideMobile: false
-    },
-    {
-        name: 'main_currency',
-        hideMobile: false
-    }
-];
 const type = 'budgets';
 </script>
 

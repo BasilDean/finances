@@ -40,17 +40,27 @@ class BudgetController extends Controller
     public function create(): Response
     {
         $this->authorize('create', Budget::class);
+        $fillableFields = (new Budget())->getFillable();
+        $fields = config('fields');
 
         $username = strtolower(Auth::user()->name);
 
-        return Inertia::render('Budgets/Create')->with(['username' => $username]);
+        return Inertia::render('Budgets/Create', [
+            'username' => $username,
+            'fillableFields' => $fillableFields,
+            'fields' => $fields
+        ]);
     }
 
     public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
+        $fillableFields = (new Budget())->getFillable();
+        $fields = config('fields');
         return Inertia::render('Budgets/Edit', [
             'budget' => $budget,
+            'fillableFields' => $fillableFields,
+            'fields' => $fields
         ]);
     }
 
@@ -62,7 +72,6 @@ class BudgetController extends Controller
         $budget->fill($request->validated());
         $budget->save();
         $budget->users()->attach(Auth::id());
-        // TODO validation error placement
 
         return redirect()->route('budgets.show', $budget->slug)->with('status', 'Budget updated.');
     }
@@ -107,7 +116,6 @@ class BudgetController extends Controller
         $this->authorize('update', $budget);
 
         $budget->update($request->validated());
-        // TODO validation error placement
 
         return redirect()->route('budgets.show', $budget->slug)->with('status', 'Budget updated.');
     }

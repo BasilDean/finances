@@ -186,8 +186,8 @@ onMounted(() => {
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">
-                        <EditButton :slug="item.slug" type="budgets" />
-                        <DeleteButton :slug="item.slug" :title="item.title" :type="'budgets'" />
+                        <EditButton :slug="item.slug" :type="type" />
+                        <DeleteButton :slug="item.slug" :title="item.title" :type="type" />
                     </div>
                 </td>
             </tr>
