@@ -1,18 +1,17 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import BudgetIndex from '@/Components/Budgets/List.vue'
 
 defineProps({
     budgets: {
-        type: Object,
+        type: Object
     },
     account: {
-        type: Object,
+        type: Object
     },
     status: {
-        type: String,
-    },
+        type: String
+    }
 });
 </script>
 
