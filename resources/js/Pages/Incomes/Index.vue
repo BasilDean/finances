@@ -2,15 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import IncomeIndex from '@/Components/Income/Index.vue';
-import NavLink from '@/Components/NavLink.vue';
-import FlatLink from '@/Components/FlatLink.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     incomes: {
@@ -37,7 +33,7 @@ const form = useForm({
     title: '',
     source: '',
     amount: '',
-    account_id: '',
+    account_id: ''
 });
 
 
@@ -56,7 +52,7 @@ const getAutocompleteResults = async () => {
             const response = await axios.get(route('income.autocomplete'), { params: { query: IncomesQuery.value } });
             suggestions.value = response.data;
         } catch (error) {
-            console.error("There was an error fetching the autocomplete results:", error);
+            console.error('There was an error fetching the autocomplete results:', error);
         }
     } else {
         suggestions.value = [];
@@ -78,7 +74,7 @@ const setTitle = (value) => {
     setTimeout(() => {
         document.getElementsByName('amount')[0].focus();
     }, 0);
-}
+};
 
 const createIncome = () => {
     form.post(route('income.store'), {
@@ -88,8 +84,8 @@ const createIncome = () => {
             form.reset('title', 'amount', 'source');
             IncomesQuery.value = '';
         }
-    })
-}
+    });
+};
 </script>
 
 <template>
@@ -105,8 +101,8 @@ const createIncome = () => {
                 </h2>
 
                 <button
-                    @click="openCreateModal = true"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    @click="openCreateModal = true">
                     Создать
                 </button>
             </div>
@@ -131,51 +127,57 @@ const createIncome = () => {
 
                                 <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
                                     <div class="sm:col-span-2">
-                                        <InputLabel for="title" class="block text-sm/6 font-medium text-white">Имя
+                                        <InputLabel class="block text-sm/6 font-medium text-white" for="title">Имя
                                         </InputLabel>
                                         <div class="mt-2">
-                                            <input type="text" name="title" id="title" v-model="IncomesQuery" @input="getAutocompleteResults" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm/6 z-2" />
+                                            <input id="title" v-model="IncomesQuery" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm/6 z-2" name="title"
+                                                   type="text"
+                                                   @input="getAutocompleteResults" />
                                             <ul class="bg-white text-black p-1 rounded-b-md top-[-5px] relative z-1">
-                                                <li v-for="suggestion in suggestions" :key="suggestion" @click="setTitle(suggestion)" class="cursor-pointer">
+                                                <li v-for="suggestion in suggestions" :key="suggestion"
+                                                    class="cursor-pointer" @click="setTitle(suggestion)">
                                                     <a href="#" @click="setTitle(suggestion)">{{ suggestion }}</a>
                                                 </li>
                                             </ul>
-                                            <input type="hidden" name="title" id="title" v-model="form.title" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" />
+                                            <input id="title" v-model="form.title" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" name="title"
+                                                   type="hidden" />
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-2">
-                                        <InputLabel for="source" class="block text-sm/6 font-medium text-white">
+                                        <InputLabel class="block text-sm/6 font-medium text-white" for="source">
                                             Сумма
                                         </InputLabel>
                                         <div class="mt-2">
-                                            <input type="text" name="amount" id="amount" v-model="form.amount"
-                                                   class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" />
+                                            <input id="amount" v-model="form.amount" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" name="amount"
+                                                   step="any"
+                                                   type="text" />
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-2">
-                                        <InputLabel for="source" class="block text-sm/6 font-medium text-white">
+                                        <InputLabel class="block text-sm/6 font-medium text-white" for="source">
                                             Источник
                                         </InputLabel>
                                         <div class="mt-2">
-                                            <input type="text" name="source" id="source" v-model="form.source"
-                                                   class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" />
+                                            <input id="source" v-model="form.source" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" name="source"
+                                                   type="text" />
                                         </div>
                                     </div>
 
 
                                     <div class="sm:col-span-2">
-                                        <label for="country" class="block text-sm/6 font-medium text-white">Счет</label>
+                                        <label class="block text-sm/6 font-medium text-white" for="country">Счет</label>
                                         <div class="mt-2 relative">
-<!--                                            <input type="text" v-model="accountQuery" @input="filterAccounts" placeholder="Начните вводить..." class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"/>-->
+                                            <!--                                            <input type="text" v-model="accountQuery" @input="filterAccounts" placeholder="Начните вводить..." class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"/>-->
                                             <div
                                                 class="absolute top-0 mt-0 w-full rounded-md bg-white shadow-lg z-10">
-                                                <select id="account" name="account" v-model="form.account_id"
-                                                        class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
+                                                <select id="account" v-model="form.account_id" class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6"
+                                                        name="account">
 
                                                     <option v-for="account in filteredAccounts"
-                                                            :key="account.id" :value="account.id">{{ account.title }} ({{ account.currency }})
+                                                            :key="account.id" :value="account.id">{{ account.title }}
+                                                        ({{ account.currency }})
                                                     </option>
                                                 </select>
                                             </div>
