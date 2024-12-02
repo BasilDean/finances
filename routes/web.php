@@ -16,7 +16,7 @@ Route::get('/', function () {
         return redirect()->route('budgets.show', ['budget' => session('default_budget')]);
     }
     return redirect()->route('budgets.index');
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     if (session()->has('default_budget')) {

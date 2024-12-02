@@ -11,21 +11,17 @@ import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 const props = defineProps(
     {
         type: {
-            required: true,
-            type: String
+            required: false,
+            type: String,
+            default: false
         },
         items: {
             required: true,
             type: Object
         },
-        displayFields: {
+        fields: {
             required: true,
             type: Object
-        },
-        hideFields: {
-            required: false,
-            type: Array,
-            default: []
         },
         showDetailPage: {
             required: true,
@@ -81,22 +77,22 @@ const filterDates = [
 
 const selected = ref(filterDates[0]);
 
-const search = ref(props.filters.search || '');
+if (props.type) {
+    const search = ref(props.filters.search || '');
 
-const updateSearch = debounce(() => {
+    const updateSearch = debounce(() => {
+        router.visit(getRoute(props.type, 'index'), {
+            method: 'get',
+            data: { search: search.value },
+            preserveState: true,
+            replace: true
+        });
+    }, 500);
 
-    router.visit(getRoute(props.type, 'index'), {
-        method: 'get',
-        data: { search: search.value },
-        preserveState: true,
-        replace: true
+    onMounted(() => {
+        search.value = props.filters.search || '';
     });
-    //Inertia.get(getRoute(props.type, 'index'), { search: search.value }, { preserveState: false, replace: true });
-}, 500);
-
-onMounted(() => {
-    search.value = props.filters.search || '';
-});
+}
 </script>
 
 <template>
@@ -166,10 +162,10 @@ onMounted(() => {
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-                <th v-for="field in displayFields"
-                    :class="hideFields.includes(field) ? 'px-1 sm:px-3 py-1 sm:py-3 hidden sm:table-cell' : 'px-1 sm:px-3 py-1 sm:py-3'"
+                <th v-for="(params, key) in fields" v-show="params.show"
+                    :class="params.hideOnMobile ? 'px-1 sm:px-3 py-1 sm:py-3 hidden sm:table-cell' : 'px-1 sm:px-3 py-1 sm:py-3'"
                     scope="col">
-                    {{ $t(field) }}
+                    {{ $t(key) }}
                 </th>
                 <th class="px-1 sm:px-3 py-1 sm:py-3 hidden sm:flex"></th>
             </tr>
@@ -177,12 +173,12 @@ onMounted(() => {
             <tbody>
             <tr v-for="item in items.data"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td v-for="field in displayFields"
-                    :class="hideFields.includes(field) ? 'hidden sm:table-cell' : ''">
+                <td v-for="(params, key) in fields"
+                    v-show="params.show" :class="params.hideOnMobile ? 'hidden sm:table-cell' : ''">
                     <Link v-if="showDetailPage" :href="getRoute(props.type, 'show', item.slug)"
-                          class="px-1 sm:px-3 py-1 sm:py-3 block"
-                          v-html="$t(item[field])" />
-                    <span v-else class="px-6 py-4" v-html="$t(item[field])" />
+                          class="px-3 sm:px-3 py-1 sm:py-3 block"
+                          v-html="$t(item[key])" />
+                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="$t(item[key])" />
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">

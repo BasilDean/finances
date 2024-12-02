@@ -7,13 +7,10 @@ import InputError from '@/Components/InputError.vue';
 import Select from '@/Components/Select.vue';
 
 import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
+import { mapValues } from 'lodash';
 
 
 const props = defineProps({
-    fillableFields: {
-        required: true,
-        type: Object
-    },
     fields: {
         required: true,
         type: Object
@@ -27,9 +24,9 @@ const props = defineProps({
         type: String
     }
 });
+const formData = mapValues(props.fields, () => '');
 
-const form = useForm(
-    Object.fromEntries(props.fillableFields.map(field => [field, ''])));
+const form = useForm(formData);
 
 
 const createItem = () => {
@@ -45,27 +42,29 @@ const createItem = () => {
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
                         <span>{{ title }}</span>
                     </h2>
+
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
 
                             <div class="border-b border-gray-900/10 pb-12">
 
                                 <div class="mt-10 flex flex-col gap-x-6 gap-y-8">
-                                    <div v-for="field in fillableFields">
-                                        <InputLabel :target="field" :value="$t(field)" />
+                                    <div v-for="(params, key) in fields" v-show="params.editable" :key="key">
+                                        <InputLabel :target="key" :value="$t(key)" />
                                         <div class="mt-2">
-                                            <NumberInput v-if="fields.numbers.includes(field)" :id="field"
-                                                         v-model="form[field]"
-                                                         :model-value="form[field]" :name="field" />
+                                            <NumberInput v-if="params.type === 'number'" :id="key"
+                                                         v-model="form[key]"
+                                                         :model-value="form[key]" :name="key" />
 
-                                            <Select v-else-if="fields.lists[field]" v-model="form[field]"
-                                                    :model-value="form[field]" :options="fields.lists[field]" />
-                                            <TextInput v-else :id="field"
-                                                       v-model="form[field]"
-                                                       :model-value="form[field]" :name="field" />
-                                            <InputError v-if="form.errors[field]"
-                                                        :message="$t(field) +  form.errors[field]" />
+                                            <Select v-else-if="params.type === 'list'" v-model="form[key]"
+                                                    :model-value="form[key]" :options="params.values" />
+                                            <TextInput v-else :id="key"
+                                                       v-model="form[key]"
+                                                       :model-value="form[key]" :name="key" />
+                                            <InputError v-if="form.errors[key]"
+                                                        :message="$t(key) +  form.errors[key]" />
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +72,7 @@ const createItem = () => {
                         </div>
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <Link :href="route('budgets.index')"
+                            <Link :href="route(type + '.index')"
                                   class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border"
                                   type="button">
                                 <ArrowLeftCircleIcon class="size-6" />

@@ -10,10 +10,6 @@ const props = defineProps({
     username: {
         type: String
     },
-    fillableFields: {
-        required: true,
-        type: Object
-    },
     fields: {
         required: true,
         type: Object
@@ -25,6 +21,6 @@ const props = defineProps({
     <Head :title="$t('create new budget')" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :fillable-fields="fillableFields" :title="$t('create new budget')" type="budgets" />
+        <Create :fields="fields" :title="$t('create new budget')" type="budgets" />
     </AuthenticatedLayout>
 </template>

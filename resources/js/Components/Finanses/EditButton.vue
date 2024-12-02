@@ -24,8 +24,8 @@ const getCreateRoute = (type, slug = '') => {
 <template>
 
     <Link :href="getCreateRoute(type, slug)" :title="$t('edit')"
-          class="font-medium text-white hover:text-gray-300 border flex rounded-2xl justify-center px-6 py-2 w-15 lg:w-20 items-center">
-        <PencilSquareIcon class="size-3 sm:size-6" />
+          class="font-medium text-white hover:text-gray-300 border flex rounded-2xl justify-center px-3 py-1 w-15 lg:w-10 items-center">
+        <PencilSquareIcon class="size-3 sm:size-4" />
     </Link>
 </template>
 

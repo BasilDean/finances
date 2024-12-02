@@ -12,7 +12,7 @@ defineProps({
     status: {
         type: String
     },
-    fillableFields: {
+    fields: {
         required: true,
         type: Object
     },
@@ -42,7 +42,7 @@ const type = 'budgets';
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <List :displayFields="fillableFields" :filters="filters"
+                <List :fields="fields" :filters="filters"
                       :items="budgets" :show-detail-page="true" :type="type" />
             </div>
         </div>

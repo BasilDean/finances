@@ -9,20 +9,22 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = array(
-            [
-                'name' => 'Basil',
-                'email' => 'vonavud@gmail.com',
-                'password' => bcrypt('vonavud@gmail.com'),
-            ],
-            [
-                'name' => 'Kate',
-                'email' => 'kjob2020@mail.ru',
-                'password' => bcrypt('123456'),
-            ]
-        );
-        foreach ($users as $user) {
-            User::create($user);
+        $csvFile = fopen(base_path('database/seeders/csv/users.csv'), 'r');
+        $header = fgetcsv($csvFile);
+
+        while ($row = fgetcsv($csvFile)) {
+            $data = array_combine($header, $row);
+
+            // Convert 'NULL' strings to actual null values
+            foreach ($data as $key => $value) {
+                if ($value === 'NULL') {
+                    $data[$key] = null;
+                }
+            }
+
+            User::create($data);
         }
+
+        fclose($csvFile);
     }
 }

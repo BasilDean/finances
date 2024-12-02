@@ -19,35 +19,30 @@ class BudgetController extends Controller
     {
         $this->authorize('viewAny', Budget::class);
 
-        $fillableFields = (new Budget())->getFillable();
+        $fields = Budget::getFields();
         $search = $request->input('search');
         $query = Auth::user()->budgets()->orderBy('updated_at', 'desc');
 
         if ($search) {
             $query->where('title', 'like', '%' . $search . '%'); // Adjust fields as necessary
         }
-
         $budgets = $query->paginate(10); // Adjust pagination as needed
-
         return Inertia::render('Budgets/Index', [
             'status' => session('status'),
             'budgets' => $budgets,
             'filters' => request()->all('search'),
-            'fillableFields' => $fillableFields
+            'fields' => $fields
         ]);
     }
 
     public function create(): Response
     {
         $this->authorize('create', Budget::class);
-        $fillableFields = (new Budget())->getFillable();
-        $fields = config('fields');
-
+        $fields = Budget::getFields();
         $username = strtolower(Auth::user()->name);
 
         return Inertia::render('Budgets/Create', [
             'username' => $username,
-            'fillableFields' => $fillableFields,
             'fields' => $fields
         ]);
     }
@@ -55,11 +50,9 @@ class BudgetController extends Controller
     public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
-        $fillableFields = (new Budget())->getFillable();
-        $fields = config('fields');
+        $fields = Budget::getFields();
         return Inertia::render('Budgets/Edit', [
             'budget' => $budget,
-            'fillableFields' => $fillableFields,
             'fields' => $fields
         ]);
     }
@@ -82,7 +75,7 @@ class BudgetController extends Controller
 
         session(['default_budget' => $budget->slug]);
 
-        $accounts = $budget->accounts()->orderBy('created_at', 'desc')->take(5)->get();
+        $accounts = $budget->accounts()->orderBy('updated_at', 'desc')->take(5)->get();
         $total = $budget->getBudgetTotal();
 
         $incomes = $budget->accounts()
@@ -90,7 +83,7 @@ class BudgetController extends Controller
             ->get()
             ->pluck('incomes')
             ->flatten()
-            ->sortByDesc('created_at')
+            ->sortByDesc('updated_at')
             ->take(10);
 
         $expenses = $budget->accounts()
@@ -98,7 +91,7 @@ class BudgetController extends Controller
             ->get()
             ->pluck('expenses')
             ->flatten()
-            ->sortByDesc('created_at')
+            ->sortByDesc('updated_at')
             ->take(10);
 
         return Inertia::render('Budgets/Show', [
@@ -123,6 +116,8 @@ class BudgetController extends Controller
     public function destroy(Budget $budget)
     {
         $this->authorize('delete', $budget);
+
+        session(['default_budget' => null]);
 
         $budget->delete();
 

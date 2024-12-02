@@ -1,0 +1,3 @@
+"id","name","email","email_verified_at","password","remember_token","created_at","updated_at"
+"1","Мистер папочка","vonavud@gmail.com",NULL,"$2y$12$mF5B6tOQP2GDAJs4DqL0k.AwU.KAAskVckv52bGC3sOljL1klKw1a",NULL,"2024-11-27 10:41:33","2024-11-27 10:41:33"
+"2","Cекси чика","test@test.test",NULL,"$2y$12$QW4ysAb0CnTVHfuANzobyuP3kw6OnQYrC3lSr1XddpyO99L1pUONa","wjYRhFWtgvNFO9BBxdTEFDKnIKxTVq82rEHfAS0nDOUQinjNMX0FcFK51KGI","2024-11-27 10:42:47","2024-11-27 10:42:47"

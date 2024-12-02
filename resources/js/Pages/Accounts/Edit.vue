@@ -13,10 +13,6 @@ const props = defineProps({
     total: {
         type: String
     },
-    fillableFields: {
-        required: true,
-        type: Object
-    },
     fields: {
         required: true,
         type: Object
@@ -28,6 +24,6 @@ const props = defineProps({
     <Head :title="'Редактировать ' + account.name " />
 
     <AuthenticatedLayout>
-        <Edit :fields="fields" :fillable-fields="fillableFields" :item="account" type="accounts" />
+        <Edit :fields="fields" :item="account" type="accounts" />
     </AuthenticatedLayout>
 </template>

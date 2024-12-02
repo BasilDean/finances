@@ -28,9 +28,6 @@ const getDeleteRoute = (type, slug) => {
 const deleteForm = useForm({});
 
 const deleteItem = (type, slug, title) => {
-    console.log(type);
-    console.log(slug);
-    console.log(title);
     const confirmation = prompt('Чтобы удалить запись введите её название');
     if (confirmation === title) {
         deleteForm.delete(getDeleteRoute(props.type, props.slug));
@@ -42,9 +39,9 @@ const deleteItem = (type, slug, title) => {
 
 <template>
     <button :title="$t('delete')"
-            class="font-medium text-white hover:text-gray-300 border flex rounded-2xl justify-center px-6 py-2 w-15 lg:w-20 items-center"
+            class="font-medium text-white hover:text-gray-300 border flex rounded-2xl justify-center px-3 py-1 w-15 lg:w-10 items-center"
             @click.prevent="deleteItem(props.type, props.slug, props.title)">
-        <TrashIcon class="size-3 sm:size-6" />
+        <TrashIcon class="size-3 sm:size-4" />
     </button>
 </template>
 

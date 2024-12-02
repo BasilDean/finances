@@ -20,6 +20,41 @@ class Account extends Model
         'type',
     ];
 
+    public static function getFields(): array
+    {
+        return [
+            'title' => [
+                'type' => 'string',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'amount' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'currency' => [
+                'type' => 'list',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => config('currencies')
+            ],
+            'type' => [
+                'type' => 'list',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => [
+                    'cash',
+                    'account'
+                ]
+            ]
+        ];
+    }
+
 
 // Adding an observer method to handle creating event
     protected static function boot(): void
@@ -39,11 +74,13 @@ class Account extends Model
             $account->slug = $slug;
         });
         static::created(function ($account) {
-            $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
-            $account->budgets()->attach($budget);
-            $total = $budget->getBudgetTotal();
-            if ($budget->balance !== $total) {
-                $budget->updateBudgetTotal($total);
+            $budget = Budget::where('slug', session()->get('default_budget'))->first();
+            if ($budget) {
+                $account->budgets()->attach($budget);
+                $total = $budget->getBudgetTotal();
+                if ($budget->balance !== $total) {
+                    $budget->updateBudgetTotal($total);
+                }
             }
         });
         static::updated(function ($account) {

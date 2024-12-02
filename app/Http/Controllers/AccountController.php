@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AccountRequest;
 use App\Models\Account;
 use App\Models\Budget;
+use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,8 +21,7 @@ class AccountController extends Controller
     {
         $this->authorize('viewAny', Account::class);
 
-
-        $fillableFields = (new Account())->getFillable();
+        $fields = Account::getFields();
 
         $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
         $search = $request->input('search');
@@ -37,7 +38,7 @@ class AccountController extends Controller
             'status' => session('status'),
             'accounts' => $accounts,
             'filters' => request()->all('search'),
-            'fillableFields' => $fillableFields
+            'fields' => $fields
         ]);
     }
 
@@ -53,12 +54,10 @@ class AccountController extends Controller
     {
         $this->authorize('create', Account::class);
 
-        $fillableFields = (new Account())->getFillable();
-        $fields = config('fields');
+        $fields = Account::getFields();
 
         return Inertia::render('Accounts/Create', [
             'status' => session('status'),
-            'fillableFields' => $fillableFields,
             'fields' => $fields
         ]);
     }
@@ -66,24 +65,63 @@ class AccountController extends Controller
     public function show(Account $account)
     {
         $this->authorize('view', $account);
+        $fields = Income::getFields();
 
-        $budgets = $account->budgets()->get();
+        $fetchCount = 50;
+
+        $expenses = $account->expenses()->take($fetchCount)->get()->map(function ($expense) {
+            return [
+                'title' => $expense->title,
+                'amount' => -1 * $expense->amount,
+                'currency' => $expense->currency,
+                'date' => $expense->created_at->format('Y-m-d H:i:s'),
+                'user' => $expense->user->name,
+                'category' => $expense->categories()->pluck('title')->implode(', '),
+                'account' => $expense->account->title,
+
+            ];
+        });
+        $incomes = $account->incomes()->take($fetchCount)->get()->map(function ($income) {
+            return [
+                'title' => $income->title,
+                'amount' => $income->amount,
+                'currency' => $income->currency,
+                'date' => $income->created_at->format('Y-m-d H:i:s'),
+                'user' => $income->user->name,
+                'category' => $income->source,
+                'account' => $income->account->title,
+            ];
+        });
+        $items = collect([...$expenses, ...$incomes])->sortByDesc('date');
+
+        $totalItems = $items->count();
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 20;
+        $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values(); // Reset keys
+
+        $paginator = new LengthAwarePaginator(
+            $currentItems,
+            $totalItems,
+            $perPage,
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
 
         return Inertia::render('Accounts/Show', [
             'status' => session('status'),
-            'budgets' => $budgets,
             'account' => $account,
+            'items' => $paginator,
+            'fields' => $fields,
         ]);
     }
 
     public function edit(Account $account): Response
     {
         $this->authorize('update', $account);
-        $fillableFields = (new Account())->getFillable();
-        $fields = config('fields');
+
+        $fields = Account::getFields();
         return Inertia::render('Accounts/Edit', [
             'account' => $account,
-            'fillableFields' => $fillableFields,
             'fields' => $fields
         ]);
     }

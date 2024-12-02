@@ -18,6 +18,31 @@ class Budget extends Model
         'currency',
     ];
 
+    public static function getFields(): array
+    {
+        return [
+            'title' => [
+                'type' => 'string',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'balance' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => false,
+            ],
+            'currency' => [
+                'type' => 'list',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => config('currencies')
+            ]
+        ];
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Budget;
-use App\Models\User;
+use App\Models\CurrencyRate;
 use Illuminate\Database\Seeder;
 
-class BudgetSeeder extends Seeder
+class CurrencyRatesSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = fopen(base_path('database/seeders/csv/budgets.csv'), 'r');
+        $csvFile = fopen(base_path('database/seeders/csv/currency_rates.csv'), 'r');
         $header = fgetcsv($csvFile);
 
         while ($row = fgetcsv($csvFile)) {
@@ -23,12 +22,7 @@ class BudgetSeeder extends Seeder
                 }
             }
 
-            $budget = Budget::create($data);
-
-
-// Get all users and attach them to the budget
-            $users = User::all();
-            $budget->users()->attach($users);
+            CurrencyRate::create($data);
         }
 
         fclose($csvFile);

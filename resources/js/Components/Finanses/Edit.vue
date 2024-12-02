@@ -5,16 +5,14 @@ import TextInput from '@/Components/TextInput.vue';
 import NumberInput from '@/Components/NumberInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Select from '@/Components/Select.vue';
+import { pick } from 'lodash';
+
 
 import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
 
 
 const props = defineProps({
     item: {
-        required: true,
-        type: Object
-    },
-    fillableFields: {
         required: true,
         type: Object
     },
@@ -27,10 +25,9 @@ const props = defineProps({
         type: String
     }
 });
+const formData = pick(props.item, Object.keys(props.fields));
 
-const form = useForm(
-    Object.fromEntries(props.fillableFields.map(field => [field, props.item[field]]))
-);
+const form = useForm(formData);
 
 
 const createBudget = () => {
@@ -52,20 +49,22 @@ const createBudget = () => {
                             <div class="border-b border-gray-900/10 pb-12">
 
                                 <div class="mt-10 flex flex-col gap-x-6 gap-y-8">
-                                    <div v-for="field in fillableFields">
-                                        <InputLabel :target="field" :value="$t(field)" />
-                                        <div class="mt-2">
-                                            <NumberInput v-if="fields.numbers.includes(field)" :id="field"
-                                                         v-model="form[field]"
-                                                         :model-value="form[field]" :name="field" />
+                                    <div v-for="(params, key) in fields" v-show="true" :key="key">
+                                        <div v-if="params.editable">
+                                            <InputLabel :target="key" :value="$t(key)" />
+                                            <div class="mt-2">
+                                                <NumberInput v-if="params.type === 'number'" :id="key"
+                                                             v-model="form[key]"
+                                                             :model-value="form[key]" :name="key" />
 
-                                            <Select v-else-if="fields.lists[field]" v-model="form[field]"
-                                                    :model-value="form[field]" :options="fields.lists[field]" />
-                                            <TextInput v-else :id="field"
-                                                       v-model="form[field]"
-                                                       :model-value="form[field]" :name="field" />
-                                            <InputError v-if="form.errors[field]"
-                                                        :message="$t(field) +  form.errors[field]" />
+                                                <Select v-else-if="params.type === 'list'" v-model="form[key]"
+                                                        :model-value="form[key]" :options="params.values" />
+                                                <TextInput v-else :id="key"
+                                                           v-model="form[key]"
+                                                           :model-value="form[key]" :name="key" />
+                                                <InputError v-if="form.errors[key]"
+                                                            :message="$t(key) +  form.errors[key]" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -76,7 +76,7 @@ const deleteItem = () => {
                                         class="flex flex-1 items-start justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
                                         <dl class="divide-y divide-gray-100 w-full">
                                             <Link v-for="income in incomes"
-                                                  :class="'px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'"
+                                                  :class="'px-2 py-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0'"
                                                   href="#">
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ income.title }}
@@ -109,7 +109,7 @@ const deleteItem = () => {
                                         <dl class="divide-y divide-gray-100 w-full">
                                             <Link v-for="account in accounts"
                                                   :href="route('accounts.show', account.slug)"
-                                                  class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                                                  class="px-2 py-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0">
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ account.title }}
                                                 </dt>
@@ -161,7 +161,7 @@ const deleteItem = () => {
                                         class="flex flex-1 items-start justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
                                         <dl class="divide-y divide-gray-100 w-full">
                                             <Link v-for="expense in expenses"
-                                                  :class="'px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0'"
+                                                  :class="'px-2 py-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0'"
                                                   href="#">
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ expense.title }}
