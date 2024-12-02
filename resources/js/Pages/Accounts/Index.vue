@@ -1,17 +1,26 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import AccountIndex from '@/Components/Accounts/Index.vue'
-import NavLink from '@/Components/NavLink.vue';
+import List from '@/Components/Finanses/List.vue';
+import CreateButton from '@/Components/Finanses/CreateButton.vue';
 
 defineProps({
-    accounts: {
+    fillableFields: {
+        required: true,
+        type: Object
+    },
+    filters: {
         type: Object,
+        default: {}
+    },
+    accounts: {
+        type: Object
     },
     status: {
-        type: String,
+        type: String
     }
 });
+const type = 'accounts';
 </script>
 
 <template>
@@ -20,23 +29,20 @@ defineProps({
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between align-center">
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
-            >
-                Личные счета
-            </h2>
-
-                <NavLink
-                    :href="route('accounts.create', budget)"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Создать
-                </NavLink>
+                <h2
+                    class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
+                >
+                    Личные счета
+                </h2>
+                <CreateButton :route="route(type+'.create')" />
             </div>
         </template>
 
+
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <AccountIndex :items="accounts"/>
+                <List :displayFields="fillableFields" :filters="filters"
+                      :items="accounts" :show-detail-page="true" :type="type" />
             </div>
         </div>
     </AuthenticatedLayout>

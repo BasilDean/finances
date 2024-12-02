@@ -81,7 +81,7 @@ const deleteItem = () => {
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ income.title }}
                                                 </dt>
-                                                <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-0">{{ income.amount }}
+                                                <dd class="mt-1 text-sm/6 text-white sm:mt-0">{{ income.amount }}
                                                     {{ income.currency }}
                                                 </dd>
                                             </Link>
@@ -113,7 +113,7 @@ const deleteItem = () => {
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ account.title }}
                                                 </dt>
-                                                <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-0">{{ account.amount }}
+                                                <dd class="mt-1 text-sm/6 text-white sm:mt-0">{{ account.amount }}
                                                     {{ account.currency }}
                                                 </dd>
                                             </Link>
@@ -166,7 +166,7 @@ const deleteItem = () => {
                                                 <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                                                     {{ expense.title }}
                                                 </dt>
-                                                <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-0">{{ expense.amount }}
+                                                <dd class="mt-1 text-sm/6 text-white sm:mt-0">{{ expense.amount }}
                                                     {{ expense.currency }}
                                                 </dd>
                                             </Link>

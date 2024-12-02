@@ -26,7 +26,7 @@ const form = useForm({
 
 
 const createAccount = () => {
-    form.post(route('accounts.store'));
+    form.post(route('expense.store'));
 };
 </script>
 

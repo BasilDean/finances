@@ -21,6 +21,10 @@ const props = defineProps({
     type: {
         required: true,
         type: String
+    },
+    title: {
+        required: false,
+        type: String
     }
 });
 
@@ -28,7 +32,7 @@ const form = useForm(
     Object.fromEntries(props.fillableFields.map(field => [field, ''])));
 
 
-const createBudget = () => {
+const createItem = () => {
     form.post(route(props.type + '.store'));
 };
 </script>
@@ -39,9 +43,9 @@ const createBudget = () => {
             <div class="bg-gray-800 py-6 sm:py-8">
                 <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
-                        <span>{{ $t('create new budget') }}</span>
+                        <span>{{ title }}</span>
                     </h2>
-                    <form @submit.prevent="createBudget()">
+                    <form @submit.prevent="createItem()">
                         <div class="space-y-12">
 
                             <div class="border-b border-gray-900/10 pb-12">

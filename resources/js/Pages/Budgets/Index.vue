@@ -36,7 +36,7 @@ const type = 'budgets';
                     {{ $t('budgets') }}
                 </h2>
 
-                <CreateButton :route="route('budgets.create')" />
+                <CreateButton :route="route(type+'.create')" />
             </div>
         </template>
 

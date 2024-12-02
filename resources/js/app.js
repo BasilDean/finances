@@ -20,7 +20,8 @@ const messages = {
 const i18n = createI18n({
     locale: 'ru', // set the default locale
     fallbackLocale: 'ru', // set fallback locale
-    messages // set locale messages
+    messages, // set locale messages
+    silentTranslationWarn: true
 });
 
 createInertiaApp({

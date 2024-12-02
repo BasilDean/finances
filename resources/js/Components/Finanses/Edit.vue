@@ -34,7 +34,6 @@ const form = useForm(
 
 
 const createBudget = () => {
-    console.log(route(props.type + '.update', props.item.slug));
     form.patch(route(props.type + '.update', props.item.slug));
 };
 </script>

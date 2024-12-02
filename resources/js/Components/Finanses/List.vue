@@ -181,8 +181,8 @@ onMounted(() => {
                     :class="hideFields.includes(field) ? 'hidden sm:table-cell' : ''">
                     <Link v-if="showDetailPage" :href="getRoute(props.type, 'show', item.slug)"
                           class="px-1 sm:px-3 py-1 sm:py-3 block"
-                          v-html="item[field]" />
-                    <span v-else class="px-6 py-4" v-html="item[field]" />
+                          v-html="$t(item[field])" />
+                    <span v-else class="px-6 py-4" v-html="$t(item[field])" />
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">

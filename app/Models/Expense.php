@@ -14,9 +14,6 @@ class Expense extends Model
 
     protected $fillable = [
         'title',
-        'account_id',
-        'normalized_title',
-        'source',
         'amount',
         'currency',
     ];

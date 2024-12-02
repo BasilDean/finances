@@ -1,13 +1,16 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import Create from '@/Components/Finanses/Create.vue';
+import Edit from '@/Components/Finanses/Edit.vue';
 
 const props = defineProps({
+    account: {
+        type: Object
+    },
     status: {
         type: String
     },
-    username: {
+    total: {
         type: String
     },
     fillableFields: {
@@ -22,9 +25,9 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head :title="$t('create new budget')" />
+    <Head :title="'Редактировать ' + account.name " />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :fillable-fields="fillableFields" :title="$t('create new budget')" type="budgets" />
+        <Edit :fields="fields" :fillable-fields="fillableFields" :item="account" type="accounts" />
     </AuthenticatedLayout>
 </template>

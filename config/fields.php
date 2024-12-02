@@ -2,12 +2,16 @@
 return [
     'lists' => [
         'currency' => [
-            'USD',
             'RUB',
+            'USD',
             'EUR',
             'GEL',
             'TRY',
             'UZS'
+        ],
+        'type' => [
+            'account',
+            'cash'
         ]
     ],
     'texts' => [
@@ -15,5 +19,10 @@ return [
     ],
     'numbers' => [
         'balance'
+    ],
+    'relations' => [
+        'category',
+        'user',
+        'account',
     ]
 ];

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -16,7 +18,6 @@ class Account extends Model
         'amount',
         'currency',
         'type',
-        'slug',
     ];
 
 
@@ -61,17 +62,17 @@ class Account extends Model
         });
     }
 
-    public function budgets(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function budgets(): BelongsToMany
     {
         return $this->belongsToMany(Budget::class);
     }
 
-    public function incomes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function incomes(): HasMany
     {
         return $this->hasMany(related: Income::class);
     }
 
-    public function expenses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function expenses(): HasMany
     {
         return $this->hasMany(related: Expense::class);
     }
