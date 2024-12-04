@@ -37,18 +37,6 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function create(): Response
-    {
-        $this->authorize('create', Budget::class);
-        $fields = Budget::getFields();
-        $username = strtolower(Auth::user()->name);
-
-        return Inertia::render('Budgets/Create', [
-            'username' => $username,
-            'fields' => $fields
-        ]);
-    }
-
     public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
@@ -74,7 +62,16 @@ class BudgetController extends Controller
     public function show(Budget $budget): Response
     {
         $this->authorize('view', $budget);
-        session(['default_budget' => $budget->slug]);
+        $user = Auth::user();
+        if ($user && $user->settings) {
+            // Update the active_budget field in settings
+            $user->settings->active_budget = $budget->slug;
+            $user->settings->save();
+        } else {
+            $user->settings()->create([
+                'active_budget' => $budget->slug,
+            ]);
+        }
 
         $accounts = $budget->accounts()
             ->select('accounts.title', 'accounts.slug', 'accounts.amount', 'accounts.currency')->orderBy('accounts.updated_at', 'desc')->take(3)->get();
@@ -96,6 +93,31 @@ class BudgetController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        $this->authorize('create', Budget::class);
+        $fields = Budget::getFields();
+        $username = strtolower(Auth::user()->name);
+
+        return Inertia::render('Budgets/Create', [
+            'username' => $username,
+            'fields' => $fields
+        ]);
+    }
+
+    public function destroy(Budget $budget)
+    {
+        $this->authorize('delete', $budget);
+
+        if ($budget->slug === auth()->user()->settings['active_budget']) {
+            auth()->user()->settings()->update(['active_budget' => null]);
+        }
+
+        $budget->delete();
+
+        return redirect()->route('budgets.index')->with('status', 'Budget deleted.');
+    }
+
     public function update(BudgetRequest $request, Budget $budget): RedirectResponse
     {
         $this->authorize('update', $budget);
@@ -103,16 +125,5 @@ class BudgetController extends Controller
         $budget->update($request->validated());
 
         return redirect()->route('budgets.show', $budget->slug)->with('status', 'Budget updated.');
-    }
-
-    public function destroy(Budget $budget)
-    {
-        $this->authorize('delete', $budget);
-
-        session(['default_budget' => null]);
-
-        $budget->delete();
-
-        return redirect()->route('budgets.index')->with('status', 'Budget deleted.');
     }
 }

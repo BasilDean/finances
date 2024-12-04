@@ -23,7 +23,7 @@ class AccountController extends Controller
 
         $fields = Account::getFields();
 
-        $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
+        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
         $search = $request->input('search');
 
         $query = $budget->accounts()->orderBy('updated_at', 'desc');

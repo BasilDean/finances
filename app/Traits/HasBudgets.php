@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Budget;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait HasBudgets
 {
@@ -18,9 +19,9 @@ trait HasBudgets
         return $this->belongsToMany(Budget::class, 'budget_user');
     }
 
-    public function settings(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function settings(): HasOne
     {
-        return $this->hasOne(Setting::class, 'setting_user');
+        return $this->hasOne(Setting::class);
     }
 
     /**

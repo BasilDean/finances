@@ -22,7 +22,7 @@ class IncomeController extends Controller
     {
         $this->authorize('viewAny', Income::class);
         $incomes = Income::with('account')->orderBy('updated_at', 'desc')->paginate(20);
-        $budget = Budget::where('slug', session()->get('default_budget'))->first();
+        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
         $accounts = $budget->accounts()->get();
 //        dd($incomes);
         return Inertia::render('Incomes/Index', [

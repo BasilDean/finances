@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('default_currency')->default('RUB');
             $table->timestamps();
             $table->softDeletes();

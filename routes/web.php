@@ -13,15 +13,15 @@ Route::get('/', function () {
     if (!auth()->check()) {
         return redirect()->route('login');
     }
-    if (session()->has('default_budget')) {
-        return redirect()->route('budgets.show', ['budget' => session('default_budget')]);
+    if (auth()->user()->settings['active_budget']) {
+        return redirect()->route('budgets.show', ['budget' => auth()->user()->settings['active_budget']]);
     }
     return redirect()->route('budgets.index');
 })->name('home');
 
 Route::get('/dashboard', function () {
-    if (session()->has('default_budget')) {
-        return redirect()->route('budgets.show', ['budget' => session('default_budget')]);
+    if (auth()->user()->settings['active_budget']) {
+        return redirect()->route('budgets.show', ['budget' => auth()->user()->settings['active_budget']]);
     }
     return redirect()->route('budgets.index');
 })->middleware(['auth', 'verified'])->name('dashboard');

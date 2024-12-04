@@ -74,7 +74,7 @@ class Account extends Model
             $account->slug = $slug;
         });
         static::created(function ($account) {
-            $budget = Budget::where('slug', session()->get('default_budget'))->first();
+            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
             if ($budget) {
                 $account->budgets()->attach($budget);
                 $total = $budget->getBudgetTotal();
@@ -84,14 +84,14 @@ class Account extends Model
             }
         });
         static::updated(function ($account) {
-            $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
+            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {
                 $budget->updateBudgetTotal($total);
             }
         });
         static::deleted(function ($account) {
-            $budget = Budget::where('slug', session()->get('default_budget'))->firstOrFail();
+            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {
                 $budget->updateBudgetTotal($total);

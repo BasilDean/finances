@@ -159,6 +159,8 @@ const showingNavigationDropdown = ref(false);
                                             {{ $t('profile') }}
                                         </DropdownLink>
                                         <DropdownLink
+                                            :href="route('budgets.index')" v-html="$t('change budget')" />
+                                        <DropdownLink
                                             :href="route('logout')"
                                             as="button"
                                             method="post"

@@ -21,7 +21,7 @@ class ExpenseController extends Controller
 
         $this->authorize('viewAny', Expense::class);
         $expenses = Expense::with('account')->with('user')->with('categories')->orderBy('created_at', 'desc')->paginate(20);
-        $budget = Budget::where('slug', session()->get('default_budget'))->first();
+        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
         $accounts = $budget->accounts()->get();
         return Inertia::render('Expenses/Index', [
             'expenses' => $expenses,
@@ -33,7 +33,7 @@ class ExpenseController extends Controller
     {
         $this->authorize('create', Expense::class);
         $expenses = Expense::with('account')->with('user')->with('categories')->orderBy('created_at', 'desc')->limit(20)->paginate(20);
-        $budget = Budget::where('slug', session()->get('default_budget'))->first();
+        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
         $accounts = $budget->accounts()->get();
         return Inertia::render('Expenses/Create', [
             'expenses' => $expenses,
