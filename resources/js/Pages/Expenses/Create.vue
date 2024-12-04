@@ -21,7 +21,7 @@ const form = useForm({
     title: '',
     amount: 0,
     currency: 'RUB',
-    type: 'account'
+    type: 'expense'
 });
 
 
@@ -31,9 +31,9 @@ const createAccount = () => {
 </script>
 
 <template>
-    <Head title="Создать новый счёт" />
+    <Head title="Создать новый расход" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :fillable-fields="fillableFields" :title="$t('create new account')" type="accounts" />
+        <Create :fields="fields" :fillable-fields="fillableFields" :title="$t('create new expense')" type="expense" />
     </AuthenticatedLayout>
 </template>

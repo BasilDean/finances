@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BudgetRequest;
 use App\Models\Budget;
+use App\Models\Expense;
+use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,35 +74,25 @@ class BudgetController extends Controller
     public function show(Budget $budget): Response
     {
         $this->authorize('view', $budget);
-
         session(['default_budget' => $budget->slug]);
 
-        $accounts = $budget->accounts()->orderBy('updated_at', 'desc')->take(5)->get();
-        $total = $budget->getBudgetTotal();
+        $accounts = $budget->accounts()
+            ->select('accounts.title', 'accounts.slug', 'accounts.amount', 'accounts.currency')->orderBy('accounts.updated_at', 'desc')->take(3)->get();
 
-        $incomes = $budget->accounts()
-            ->with('incomes') // Assuming accounts have a relationship called 'incomes'
-            ->get()
-            ->pluck('incomes')
-            ->flatten()
-            ->sortByDesc('updated_at')
-            ->take(10);
+        $accountIds = $budget->accounts()->pluck('account_id')->toArray();
 
-        $expenses = $budget->accounts()
-            ->with('expenses') // Assuming accounts have a relationship called 'incomes'
-            ->get()
-            ->pluck('expenses')
-            ->flatten()
-            ->sortByDesc('updated_at')
-            ->take(10);
+        $lastIncomes = Income::whereIn('account_id', $accountIds)
+            ->select('title', 'slug', 'amount', 'currency')->orderBy('updated_at', 'desc')->take(3)->get();
+
+        $lastExpenses = Expense::whereIn('account_id', $accountIds)
+            ->select('title', 'slug', 'amount', 'currency')->orderBy('updated_at', 'desc')->take(15)->get();
 
         return Inertia::render('Budgets/Show', [
             'status' => session('status'),
             'budget' => $budget,
             'accounts' => $accounts,
-            'total' => $total,
-            'incomes' => $incomes,
-            'expenses' => $expenses,
+            'incomes' => $lastIncomes,
+            'expenses' => $lastExpenses,
         ]);
     }
 

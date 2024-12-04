@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,18 @@ Route::middleware('auth')->prefix('expense')->group(function () {
     Route::delete('/{expense:slug}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
     Route::get('autocomplete/title', [ExpenseController::class, 'autocompleteTitle'])->name('expense.autocomplete.title');
     Route::get('autocomplete/category', [ExpenseController::class, 'autocompleteCategory'])->name('expense.autocomplete.category');
+});
+
+Route::middleware('auth')->prefix('payments')->group(function () {
+    Route::get('/', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/', [PaymentController::class, 'store'])->name('payments.store');
+    Route::get('/{payments:id}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::get('/{payments:slug}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::patch('/{payments:slug}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::delete('/{payments:slug}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    Route::get('autocomplete/title', [PaymentController::class, 'autocompleteTitle'])->name('payments.autocomplete.title');
+    Route::get('autocomplete/category', [PaymentController::class, 'autocompleteCategory'])->name('payments.autocomplete.category');
 });
 
 require __DIR__ . '/auth.php';

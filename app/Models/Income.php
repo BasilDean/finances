@@ -26,6 +26,7 @@ class Income extends Model
 
         static::creating(function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
+            $income->slug = $income->id;
         });
 
         static::updating(function ($income) {

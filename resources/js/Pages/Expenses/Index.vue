@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import expenseIndex from '@/Components/Expense/Index.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
@@ -123,11 +123,10 @@ const createexpense = () => {
                     Расходы
                 </h2>
 
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="openCreateModal = true">
+                <Link :href="route('expense.create')"
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Создать
-                </button>
+                </Link>
             </div>
         </template>
 

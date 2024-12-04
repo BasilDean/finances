@@ -29,6 +29,18 @@ class ExpenseController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $this->authorize('create', Expense::class);
+        $expenses = Expense::with('account')->with('user')->with('categories')->orderBy('created_at', 'desc')->limit(20)->paginate(20);
+        $budget = Budget::where('slug', session()->get('default_budget'))->first();
+        $accounts = $budget->accounts()->get();
+        return Inertia::render('Expenses/Create', [
+            'expenses' => $expenses,
+            'accounts' => $accounts,
+        ]);
+    }
+
     public function store(ExpenseRequest $request)
     {
         $this->authorize('create', Expense::class);
