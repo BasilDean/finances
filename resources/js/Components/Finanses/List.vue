@@ -1,7 +1,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3';
 import Paginator from '@/Components/Finanses/Paginator.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import debounce from 'lodash/debounce';
@@ -76,10 +76,9 @@ const filterDates = [
 ];
 
 const selected = ref(filterDates[0]);
+const search = ref('');
 
 if (props.type) {
-    const search = ref(props.filters.search || '');
-
     const updateSearch = debounce(() => {
         router.visit(getRoute(props.type, 'index'), {
             method: 'get',
@@ -92,6 +91,9 @@ if (props.type) {
     onMounted(() => {
         search.value = props.filters.search || '';
     });
+
+    // Watch for changes in search and trigger the debounced update
+    watch(search, updateSearch);
 }
 </script>
 
@@ -151,7 +153,7 @@ if (props.type) {
                                   fill-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <input id="table-search" v-model="search"
+                    <input v-if="props.type" id="table-search" v-model="search"
                            :placeholder="$t('search')"
                            class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                            name="search"

@@ -74,12 +74,14 @@ class Account extends Model
             $account->slug = $slug;
         });
         static::created(function ($account) {
-            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-            if ($budget) {
-                $account->budgets()->attach($budget);
-                $total = $budget->getBudgetTotal();
-                if ($budget->balance !== $total) {
-                    $budget->updateBudgetTotal($total);
+            if (auth()->user() && auth()->user()->settings['active_budget']) {
+                $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
+                if ($budget) {
+                    $account->budgets()->attach($budget);
+                    $total = $budget->getBudgetTotal();
+                    if ($budget->balance !== $total) {
+                        $budget->updateBudgetTotal($total);
+                    }
                 }
             }
         });

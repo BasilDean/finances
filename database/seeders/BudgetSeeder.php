@@ -25,11 +25,10 @@ class BudgetSeeder extends Seeder
 
             $budget = Budget::create($data);
 
-
-// Get all users and attach them to the budget
             $users = User::all();
             $budget->users()->attach($users);
         }
+
 
         fclose($csvFile);
     }

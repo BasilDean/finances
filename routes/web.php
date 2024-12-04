@@ -13,14 +13,14 @@ Route::get('/', function () {
     if (!auth()->check()) {
         return redirect()->route('login');
     }
-    if (auth()->user()->settings['active_budget']) {
+    if (auth()->user() && auth()->user()->settings && auth()->user()->settings['active_budget']) {
         return redirect()->route('budgets.show', ['budget' => auth()->user()->settings['active_budget']]);
     }
     return redirect()->route('budgets.index');
 })->name('home');
 
 Route::get('/dashboard', function () {
-    if (auth()->user()->settings['active_budget']) {
+    if (auth()->user() && auth()->user() && auth()->user()->settings && auth()->user()->settings['active_budget']) {
         return redirect()->route('budgets.show', ['budget' => auth()->user()->settings['active_budget']]);
     }
     return redirect()->route('budgets.index');
