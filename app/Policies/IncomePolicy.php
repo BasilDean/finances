@@ -12,43 +12,71 @@ class IncomePolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user !== null;
     }
 
     public function view(User $user, Income $income): bool
     {
-        return true;
-        // TODO create actual policies
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->incomes()->where('id', $income->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function create(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user !== null;
     }
 
     public function update(User $user, Income $income): bool
     {
-        return true;
-        // TODO create actual policies
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->incomes()->where('id', $income->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function delete(User $user, Income $income): bool
     {
-        return true;
-        // TODO create actual policies
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->incomes()->where('id', $income->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function restore(User $user, Income $income): bool
     {
-        return true;
-        // TODO create actual policies
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->incomes()->where('id', $income->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function forceDelete(User $user, Income $income): bool
     {
-        return true;
-        // TODO create actual policies
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->incomes()->where('id', $income->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
