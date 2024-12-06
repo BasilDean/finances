@@ -27,31 +27,46 @@ class AccountPolicy
 
     public function create(User $user): bool
     {
-        return true;
-        // TODO create actual policies;
+        return $user !== null;
     }
 
     public function update(User $user, Account $account): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            if ($budget->accounts()->where('account_id', $account->id)->exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function delete(User $user, Account $account): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            if ($budget->accounts()->where('account_id', $account->id)->exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function restore(User $user, Account $account): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            if ($budget->accounts()->where('account_id', $account->id)->exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function forceDelete(User $user, Account $account): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            if ($budget->accounts()->where('account_id', $account->id)->exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
