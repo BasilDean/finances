@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeRequest;
 use App\Models\Account;
-use App\Models\Budget;
 use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -18,16 +17,41 @@ class IncomeController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $this->authorize('viewAny', Income::class);
-        $incomes = Income::with('account')->orderBy('updated_at', 'desc')->paginate(20);
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-        $accounts = $budget->accounts()->get();
-//        dd($incomes);
+
+        $search = $request->input('search');
+
+//        $query = Income::with('account')->orderBy('updated_at', 'desc');
+        $query = Income::with(['user', 'account'])->orderBy('updated_at', 'desc');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('currency', 'like', '%' . $search . '%');
+            });
+        }
+
+        $incomes = $query->paginate(20);
+        $incomes->getCollection()->transform(function ($income) {
+            return [
+                'id' => $income->id,
+                'title' => $income->title,
+                'slug' => $income->slug,
+                'amount' => $income->amount,
+                'currency' => $income->currency,
+                'created_at' => $income->created_at->format('H:i d-m-Y'),
+                'category' => $income->source,
+                'user' => $income->user->name ?? null, // Extract user's name
+                'account' => $income->account->title ?? null, // Extract account's title
+            ];
+        });
+        $fields = Income::getFields();
         return Inertia::render('Incomes/Index', [
             'incomes' => $incomes,
-            'accounts' => $accounts,
+            'fields' => $fields,
+            'filters' => request()->all('search'),
         ]);
     }
 

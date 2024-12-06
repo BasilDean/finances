@@ -29,7 +29,7 @@ class AccountController extends Controller
         $query = $budget->accounts()->orderBy('updated_at', 'desc');
 
         if ($search) {
-            $query->where('title', 'like', '%' . $search . '%')->orWhere('amount', 'like', '%' . $search . '%'); // Adjust fields as necessary
+            $query->where('normalized_title', 'like', '%' . $search . '%')->orWhere('amount', 'like', '%' . $search . '%'); // Adjust fields as necessary
         }
 
         $accounts = $query->paginate(10);
@@ -62,34 +62,55 @@ class AccountController extends Controller
         ]);
     }
 
-    public function show(Account $account)
+    public function show(Account $account, Request $request)
     {
         $this->authorize('view', $account);
         $fields = Income::getFields();
 
         $fetchCount = 50;
 
-        $expenses = $account->expenses()->take($fetchCount)->get()->map(function ($expense) {
+        $search = $request->input('search');
+
+        $query1 = $account->expenses();
+        $query2 = $account->incomes();
+
+        if ($search) {
+            $query1->where(function ($q) use ($search) {
+                $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('currency', 'like', '%' . $search . '%');
+            });
+            $query2->where(function ($q) use ($search) {
+                $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('currency', 'like', '%' . $search . '%');
+            });
+        }
+
+
+        $expenses = $query1->take($fetchCount)->get()->map(function ($expense) {
             return [
                 'title' => $expense->title,
                 'amount' => -1 * $expense->amount,
                 'currency' => $expense->currency,
-                'date' => $expense->created_at->format('Y-m-d H:i:s'),
+                'created_at' => $expense->created_at->format('H:i d-m-Y'),
                 'user' => $expense->user->name,
                 'category' => $expense->categories()->pluck('title')->implode(', '),
                 'account' => $expense->account->title,
+                'slug' => $expense->slug,
 
             ];
         });
-        $incomes = $account->incomes()->take($fetchCount)->get()->map(function ($income) {
+        $incomes = $query2->take($fetchCount)->get()->map(function ($income) {
             return [
                 'title' => $income->title,
                 'amount' => $income->amount,
                 'currency' => $income->currency,
-                'date' => $income->created_at->format('Y-m-d H:i:s'),
+                'created_at' => $income->created_at->format('H:i d-m-Y'),
                 'user' => $income->user->name,
                 'category' => $income->source,
                 'account' => $income->account->title,
+                'slug' => $income->slug,
             ];
         });
         $items = collect([...$expenses, ...$incomes])->sortByDesc('date');
@@ -112,6 +133,7 @@ class AccountController extends Controller
             'account' => $account,
             'items' => $paginator,
             'fields' => $fields,
+            'filters' => request()->all('search'),
         ]);
     }
 

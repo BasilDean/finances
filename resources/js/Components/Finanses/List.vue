@@ -1,5 +1,5 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import Paginator from '@/Components/Finanses/Paginator.vue';
 import { onMounted, ref, watch } from 'vue';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue';
@@ -11,7 +11,7 @@ import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 const props = defineProps(
     {
         type: {
-            required: false,
+            required: true,
             type: String,
             default: false
         },
@@ -78,9 +78,12 @@ const filterDates = [
 const selected = ref(filterDates[0]);
 const search = ref('');
 
+
+const { url } = usePage();
+
 if (props.type) {
     const updateSearch = debounce(() => {
-        router.visit(getRoute(props.type, 'index'), {
+        router.visit(url, {
             method: 'get',
             data: { search: search.value },
             preserveState: true,
@@ -99,6 +102,8 @@ if (props.type) {
 
 <template>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <pre class="text-white">
+        </pre>
         <div
             class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <div v-if="filterByDate && filterDates.length > 0" class="w-80">
@@ -181,6 +186,7 @@ if (props.type) {
                           class="px-3 sm:px-3 py-1 sm:py-3 block"
                           v-html="$t(item[key])" />
                     <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="$t(item[key])" />
+                    <!--                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="item[key]" />-->
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">

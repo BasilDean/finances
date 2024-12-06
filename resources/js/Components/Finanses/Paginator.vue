@@ -9,15 +9,15 @@ const props = defineProps(
         },
         from: {
             required: true,
-            type: String
+            type: Number
         },
         to: {
             required: true,
-            type: String
+            type: Number
         },
         total: {
             required: true,
-            type: String
+            type: Number
         }
     }
 );

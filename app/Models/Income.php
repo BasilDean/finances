@@ -85,6 +85,12 @@ class Income extends Model
                     'cash',
                     'account'
                 ]
+            ],
+            'created_at' => [
+                'type' => 'date',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => false
             ]
         ];
     }

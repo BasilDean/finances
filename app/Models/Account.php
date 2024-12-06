@@ -40,7 +40,9 @@ class Account extends Model
                 'hideOnMobile' => false,
                 'show' => true,
                 'editable' => true,
-                'values' => config('currencies')
+                'values' => config('currencies'),
+                'filter' => true,
+                'filter-type' => 'select'
             ],
             'type' => [
                 'type' => 'list',
@@ -50,7 +52,9 @@ class Account extends Model
                 'values' => [
                     'cash',
                     'account'
-                ]
+                ],
+                'filter' => true,
+                'filter-type' => 'select'
             ]
         ];
     }
@@ -72,6 +76,11 @@ class Account extends Model
             }
 
             $account->slug = $slug;
+            $account->normalized_title = mb_strtolower($account->title);
+        });
+
+        static::updating(function ($account) {
+            $account->normalized_title = mb_strtolower($account->title);
         });
         static::created(function ($account) {
             if (auth()->user() && auth()->user()->settings['active_budget']) {

@@ -12,14 +12,17 @@ class AccountPolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
-        // TODO create actual policies;
+        return $user !== null;
     }
 
     public function view(User $user, Account $account): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            if ($budget->accounts()->where('account_id', $account->id)->exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function create(User $user): bool

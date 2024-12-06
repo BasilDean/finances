@@ -21,6 +21,10 @@ defineProps({
     search: {
         type: Object,
         default: {}
+    },
+    filters: {
+        type: Object,
+        default: {}
     }
 });
 
@@ -44,7 +48,7 @@ const goBack = () => {
                             {{ account.amount }} {{ $t(account.currency) }}</h2>
                     </div>
                 </div>
-                <List :fields="fields" :items="items" :show-detail-page="false" filters="" type="accounts" />
+                <List :fields="fields" :filters="filters" :items="items" :show-detail-page="false" type="accounts" />
             </div>
         </div>
     </AuthenticatedLayout>
