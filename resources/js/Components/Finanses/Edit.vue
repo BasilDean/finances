@@ -9,6 +9,8 @@ import { pick } from 'lodash';
 
 
 import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
+import DatePicker from '@/Components/DatePicker.vue';
+import Multiselect from '@/Components/Miltiselect.vue';
 
 
 const props = defineProps({
@@ -26,6 +28,7 @@ const props = defineProps({
     }
 });
 const formData = pick(props.item, Object.keys(props.fields));
+console.log(formData);
 
 const form = useForm(formData);
 
@@ -41,7 +44,7 @@ const createBudget = () => {
             <div class="bg-gray-800 py-6 sm:py-8">
                 <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
-                        <span>{{ $t('create new budget') }}</span>
+                        <span>{{ $t('edit') }} {{ item.title }}</span>
                     </h2>
                     <form @submit.prevent="createBudget()">
                         <div class="space-y-12">
@@ -59,6 +62,11 @@ const createBudget = () => {
 
                                                 <Select v-else-if="params.type === 'list'" v-model="form[key]"
                                                         :model-value="form[key]" :options="params.values" />
+                                                <multiselect v-else-if="params.type === 'relation'" v-model="form[key]"
+                                                             :allow-empty="false" :name="key" :options="params.values"
+                                                             :placeholder="$t(key)" :track-by="params.showField" />
+                                                <date-picker v-else-if="params.type === 'date'" v-model="form[key]"
+                                                             options="" />
                                                 <TextInput v-else :id="key"
                                                            v-model="form[key]"
                                                            :model-value="form[key]" :name="key" />
@@ -73,7 +81,7 @@ const createBudget = () => {
                         </div>
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <Link :href="route('budgets.index')"
+                            <Link :href="route(type + '.index')"
                                   class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border"
                                   type="button">
                                 <ArrowLeftCircleIcon class="size-6" />

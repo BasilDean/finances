@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ExpenseController extends Controller
 {
@@ -42,7 +43,7 @@ class ExpenseController extends Controller
                 'amount' => $expense->amount,
                 'currency' => $expense->currency,
                 'created_at' => $expense->created_at->format('H:i d-m-Y'),
-                'source' => $expense->categories()->pluck('title'),
+                'source' => $expense->categories()->pluck('title')->implode(', '),
                 'user' => $expense->user->name ?? null, // Extract user's name
                 'account' => $expense->account->title ?? null, // Extract account's title
             ];
@@ -97,14 +98,38 @@ class ExpenseController extends Controller
         return $Expense;
     }
 
-    public function update(ExpenseRequest $request, Expense $expense)
+    public function edit(Expense $expense): Response
+    {
+        $this->authorize('update', $expense);
+
+        $fields = Expense::getFields();
+
+        $expenseData = [
+            'id' => $expense->id,
+            'title' => $expense->title,
+            'slug' => $expense->slug,
+            'amount' => $expense->amount,
+            'currency' => $expense->currency,
+            'created_at' => $expense->created_at->format('H:i d-m-Y'),
+            'source' => $expense->categories()->first(),
+            'user' => $expense->user ?? null, // Extract user's name
+            'account' => $expense->account ?? null, // Extract account's title
+        ];
+        return Inertia::render('Expenses/Edit', [
+            'expense' => $expenseData,
+            'fields' => $fields,
+        ]);
+    }
+
+
+    public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
     {
 
         $this->authorize('update', $expense);
 
         $expense->update($request->validated());
 
-        return $expense;
+        return redirect()->route('expense.edit', $expense->slug)->with('status', 'Expense updated.');
     }
 
     public function destroy(Expense $Expense): RedirectResponse
@@ -113,6 +138,6 @@ class ExpenseController extends Controller
 
         $Expense->delete();
 
-        return redirect()->route('expense.index')->with('status', 'Income deleted.');
+        return redirect()->route('expense.index')->with('status', 'Expense deleted.');
     }
 }
