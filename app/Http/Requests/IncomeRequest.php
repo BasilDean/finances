@@ -14,6 +14,7 @@ class IncomeRequest extends FormRequest
             'user' => ['required'],
             'source' => ['required'],
             'amount' => ['required', 'numeric'],
+            'created_at' => ['date']
         ];
     }
 

@@ -18,6 +18,7 @@ class Income extends Model
         'source',
         'amount',
         'currency',
+        'created_at',
     ];
 
     public static function boot()
@@ -26,7 +27,8 @@ class Income extends Model
 
         static::creating(function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
-            $income->slug = $income->id;
+            $lastIncomeId = Income::withTrashed()->latest('id')->value('id') ?? 0;
+            $income->slug = $lastIncomeId + 1;
         });
 
         static::updating(function ($income) {
@@ -34,7 +36,7 @@ class Income extends Model
         });
     }
 
-    public static function getFields()
+    public static function getFields(): array
     {
         $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
         $accounts = $budget->accounts;

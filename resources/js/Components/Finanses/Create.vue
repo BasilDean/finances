@@ -26,7 +26,6 @@ const props = defineProps({
         type: String
     }
 });
-console.log(props.fields);
 const formData = mapValues(props.fields, (field, key) => {
     switch (field.type) {
         case 'number':
@@ -35,8 +34,9 @@ const formData = mapValues(props.fields, (field, key) => {
             return field.values[0]; // Default value for list
         case 'relation':
             return field.values[0]; // Default value for relation
-        case 'text':
         case 'date':
+            return new Date();
+        case 'text':
         default:
             return ''; // Default value for text and any other type
     }
@@ -58,9 +58,6 @@ const createItem = () => {
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
                         <span>{{ title }}</span>
                     </h2>
-                    <pre class="text-white">
-                        {{ form }}
-                    </pre>
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
 

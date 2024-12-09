@@ -17,7 +17,7 @@ const props = defineProps(
 const date = ref();
 
 const model = defineModel({
-    type: Object,
+    type: Date,
     required: true
 });
 

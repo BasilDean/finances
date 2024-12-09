@@ -43,7 +43,7 @@ const props = defineProps({
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <List :fields="fields" :filters="filters" :items="incomes" :show-detail-page="true" type="income" />
+                <List :fields="fields" :filters="filters" :items="incomes" :show-detail-page="false" type="income" />
             </div>
         </div>
 

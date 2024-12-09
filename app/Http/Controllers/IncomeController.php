@@ -6,7 +6,6 @@ use App\Http\Requests\IncomeRequest;
 use App\Models\Account;
 use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +23,7 @@ class IncomeController extends Controller
         $search = $request->input('search');
 
 //        $query = Income::with('account')->orderBy('updated_at', 'desc');
-        $query = Income::with(['user', 'account'])->orderBy('updated_at', 'desc');
+        $query = Income::with(['user', 'account'])->orderBy('created_at', 'desc');
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')
@@ -42,7 +41,7 @@ class IncomeController extends Controller
                 'amount' => $income->amount,
                 'currency' => $income->currency,
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
-                'category' => $income->source,
+                'source' => $income->source,
                 'user' => $income->user->name ?? null, // Extract user's name
                 'account' => $income->account->title ?? null, // Extract account's title
             ];
@@ -61,9 +60,7 @@ class IncomeController extends Controller
 
         $fields = Income::getFields();
         return Inertia::render('Incomes/Create', [
-//            'incomes' => $incomes,
             'fields' => $fields,
-//            'filters' => request()->all('search'),
         ]);
     }
 
@@ -71,7 +68,8 @@ class IncomeController extends Controller
     {
         $this->authorize('create', Income::class);
 
-        $account = Account::findOrFail($request->account_id);
+        $account_id = $request->account['id'];
+        $account = Account::findOrFail($account_id);
         $currency = $account->currency;
 
         $user_id = Auth::id();
@@ -80,6 +78,7 @@ class IncomeController extends Controller
         $income->fill($request->validated());
         $income->user_id = $user_id;
         $income->currency = $currency;
+        $income->account_id = $account_id;
         $income->save();
 
         $account->amount += $request->amount;
@@ -108,27 +107,15 @@ class IncomeController extends Controller
     {
         $this->authorize('delete', $income);
 
+        $amount = $income->amount;
+
+        $account_id = $income->account_id;
+        $account = Account::findOrFail($account_id);
+        $account->amount += $amount;
+        $account->save();
+
         $income->delete();
 
-        return response()->json();
-    }
-
-    public function autocomplete(Request $request): JsonResponse
-    {
-        $query = $request->get('query');
-
-        if (strlen($query) < 3) {
-            return response()->json([]);
-        }
-        $normalizedQuery = mb_strtolower($query);
-        $results = Income::where('normalized_title', 'LIKE', "%{$normalizedQuery}%")
-            ->limit('5')
-            ->pluck('title')
-            ->unique() // Ensure unique titles
-            ->filter(function ($title) use ($query) {
-                return mb_strtolower($title) !== mb_strtolower($query);
-            })
-            ->values(); // Reset keys after filtering;
-        return response()->json($results);
+        return redirect()->route('income.index')->with('status', 'Income deleted.');
     }
 }

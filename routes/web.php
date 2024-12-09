@@ -61,7 +61,6 @@ Route::middleware('auth')->prefix('income')->group(function () {
     Route::get('/{income:slug}/edit', [IncomeController::class, 'edit'])->name('income.edit');
     Route::patch('/{income:slug}', [IncomeController::class, 'update'])->name('income.update');
     Route::delete('/{income:slug}', [IncomeController::class, 'destroy'])->name('income.destroy');
-    Route::get('autocomplete/title', [IncomeController::class, 'autocomplete'])->name('income.autocomplete.title');
 });
 
 Route::middleware('auth')->prefix('expense')->group(function () {
