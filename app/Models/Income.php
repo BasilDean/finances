@@ -36,6 +36,9 @@ class Income extends Model
 
     public static function getFields()
     {
+        $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
+        $accounts = $budget->accounts;
+        $users = $budget->users;
         return [
             'title' => [
                 'type' => 'string',
@@ -53,7 +56,7 @@ class Income extends Model
                 'type' => 'list',
                 'hideOnMobile' => false,
                 'show' => true,
-                'editable' => true,
+                'editable' => false,
                 'values' => config('currencies')
             ],
             'user' => [
@@ -61,47 +64,41 @@ class Income extends Model
                 'hideOnMobile' => false,
                 'show' => true,
                 'editable' => true,
-                'values' => [
-                    'cash',
-                    'account'
-                ]
+                'values' => $users,
+                'multiple' => false,
+                'showField' => 'name',
             ],
-            'category' => [
-                'type' => 'relation',
+            'source' => [
+                'type' => 'text',
                 'hideOnMobile' => false,
                 'show' => true,
                 'editable' => true,
-                'values' => [
-                    'cash',
-                    'account'
-                ]
             ],
             'account' => [
                 'type' => 'relation',
                 'hideOnMobile' => false,
                 'show' => true,
                 'editable' => true,
-                'values' => [
-                    'cash',
-                    'account'
-                ]
+                'values' => $accounts,
+                'multiple' => false,
+                'showField' => 'title',
             ],
             'created_at' => [
                 'type' => 'date',
                 'hideOnMobile' => false,
                 'show' => true,
-                'editable' => false
+                'editable' => true
             ]
         ];
-    }
-
-    public function account(): BelongsTo
-    {
-        return $this->belongsTo(Account::class);
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 }

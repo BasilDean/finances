@@ -55,6 +55,18 @@ class IncomeController extends Controller
         ]);
     }
 
+    public function create(Request $request): Response
+    {
+        $this->authorize('create', Income::class);
+
+        $fields = Income::getFields();
+        return Inertia::render('Incomes/Create', [
+//            'incomes' => $incomes,
+            'fields' => $fields,
+//            'filters' => request()->all('search'),
+        ]);
+    }
+
     public function store(IncomeRequest $request): RedirectResponse
     {
         $this->authorize('create', Income::class);

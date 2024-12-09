@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ValidCurrencyRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IncomeRequest extends FormRequest
@@ -11,8 +10,8 @@ class IncomeRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'account_id' => ['required'],
-            'user_id' => ['integer', 'exists:users,id'],
+            'account' => ['required'],
+            'user' => ['required'],
             'source' => ['required'],
             'amount' => ['required', 'numeric'],
         ];

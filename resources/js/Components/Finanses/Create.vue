@@ -4,10 +4,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import NumberInput from '@/Components/NumberInput.vue';
 import InputError from '@/Components/InputError.vue';
+import Multiselect from '@/Components/Miltiselect.vue';
 import Select from '@/Components/Select.vue';
 
 import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
 import { mapValues } from 'lodash';
+import DatePicker from '@/Components/DatePicker.vue';
 
 
 const props = defineProps({
@@ -24,7 +26,21 @@ const props = defineProps({
         type: String
     }
 });
-const formData = mapValues(props.fields, () => '');
+console.log(props.fields);
+const formData = mapValues(props.fields, (field, key) => {
+    switch (field.type) {
+        case 'number':
+            return 0; // Default value for number
+        case 'list':
+            return field.values[0]; // Default value for list
+        case 'relation':
+            return field.values[0]; // Default value for relation
+        case 'text':
+        case 'date':
+        default:
+            return ''; // Default value for text and any other type
+    }
+});
 
 const form = useForm(formData);
 
@@ -42,7 +58,9 @@ const createItem = () => {
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
                         <span>{{ title }}</span>
                     </h2>
-
+                    <pre class="text-white">
+                        {{ form }}
+                    </pre>
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
 
@@ -58,6 +76,11 @@ const createItem = () => {
 
                                             <Select v-else-if="params.type === 'list'" v-model="form[key]"
                                                     :model-value="form[key]" :options="params.values" />
+                                            <multiselect v-else-if="params.type === 'relation'" v-model="form[key]"
+                                                         :allow-empty="false" :name="key" :options="params.values"
+                                                         :placeholder="$t(key)" :track-by="params.showField" />
+                                            <date-picker v-else-if="params.type === 'date'" v-model="form[key]"
+                                                         options="" />
                                             <TextInput v-else :id="key"
                                                        v-model="form[key]"
                                                        :model-value="form[key]" :name="key" />
