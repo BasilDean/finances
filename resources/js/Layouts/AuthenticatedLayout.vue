@@ -23,7 +23,7 @@ const links = [
     {
         name: 'Расход',
         description: 'добавить новую покупку или платёж',
-        href: route('expense.index'),
+        href: route('expense.create'),
         icon: MinusCircleIcon
     },
     {

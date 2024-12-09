@@ -10,6 +10,7 @@ import Select from '@/Components/Select.vue';
 import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
 import { mapValues } from 'lodash';
 import DatePicker from '@/Components/DatePicker.vue';
+import { reactive, watch } from 'vue';
 
 
 const props = defineProps({
@@ -24,9 +25,14 @@ const props = defineProps({
     title: {
         required: false,
         type: String
+    },
+    resetFields: {
+        required: false,
+        type: Array
     }
 });
-const formData = mapValues(props.fields, (field, key) => {
+console.log(props.resetFields);
+const formData = reactive(mapValues(props.fields, (field, key) => {
     switch (field.type) {
         case 'number':
             return 0; // Default value for number
@@ -36,14 +42,39 @@ const formData = mapValues(props.fields, (field, key) => {
             return field.values[0]; // Default value for relation
         case 'date':
             return new Date();
-        case 'text':
+        case 'string':
         default:
             return ''; // Default value for text and any other type
     }
-});
+}));
 
 const form = useForm(formData);
 
+// Watch for changes to the resetFields prop
+watch(() => props.resetFields, (newFields) => {
+    console.log(`newFields ${newFields}`);
+    if (newFields) {
+        newFields.forEach(field => {
+            if (form.hasOwnProperty(field)) {
+                switch (props.fields[field].type) {
+                    case 'number':
+                        form[field] = 0;
+                        break;
+                    case 'list':
+                    case 'relation':
+                        form[field] = props.fields[field].values[0];
+                        break;
+                    case 'date':
+                        form[field] = new Date();
+                        break;
+                    case 'string':
+                    default:
+                        form[field] = '';
+                }
+            }
+        });
+    }
+});
 
 const createItem = () => {
     form.post(route(props.type + '.store'));

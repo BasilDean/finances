@@ -88,7 +88,11 @@ class ExpenseController extends Controller
         $account->amount -= $request->amount;
         $account->save();
 
-        return redirect()->route('expense.create')->with('success', 'expense created.');
+        $fields = Expense::getFields();
+        return Inertia::render('Expenses/Create', [
+            'fields' => $fields,
+            'resetFields' => ['title', 'amount'],
+        ]);
     }
 
     public function show(Expense $Expense)

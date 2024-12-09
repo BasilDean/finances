@@ -7,13 +7,13 @@ const props = defineProps({
     status: {
         type: String
     },
-    fillableFields: {
-        required: true,
-        type: Object
-    },
     fields: {
         required: true,
         type: Object
+    },
+    resetFields: {
+        required: false,
+        type: Array
     }
 });
 
@@ -23,17 +23,12 @@ const form = useForm({
     currency: 'RUB',
     type: 'expense'
 });
-
-
-const createAccount = () => {
-    form.post(route('expense.store'));
-};
 </script>
 
 <template>
     <Head title="Создать новый расход" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :fillable-fields="fillableFields" :title="$t('create new expense')" type="expense" />
+        <Create :fields="fields" :resetFields="resetFields" :title="$t('create new expense')" type="expense" />
     </AuthenticatedLayout>
 </template>
