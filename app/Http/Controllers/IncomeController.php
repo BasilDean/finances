@@ -116,7 +116,7 @@ class IncomeController extends Controller
         ]);
     }
 
-    public function update(IncomeRequest $request, Income $income)
+    public function update(IncomeRequest $request, Income $income): RedirectResponse
     {
         $this->authorize('update', $income);
 
@@ -125,7 +125,7 @@ class IncomeController extends Controller
         return redirect()->route('income.edit', $income->slug)->with('status', 'Income updated.');
     }
 
-    public function destroy(Income $income)
+    public function destroy(Income $income): RedirectResponse
     {
         $this->authorize('delete', $income);
 

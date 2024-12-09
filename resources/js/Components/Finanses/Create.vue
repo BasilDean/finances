@@ -58,6 +58,9 @@ const createItem = () => {
                     <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
                         <span>{{ title }}</span>
                     </h2>
+                    <pre class="text-white">
+                        {{ form }}
+                    </pre>
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
 

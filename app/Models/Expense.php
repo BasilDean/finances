@@ -24,10 +24,29 @@ class Expense extends Model
 
         static::creating(function ($expense) {
             $expense->normalized_title = mb_strtolower($expense->title);
+            $lastIncomeId = Expense::withTrashed()->latest('id')->value('id') ?? 0;
+            $expense->slug = $lastIncomeId + 1;
         });
-
+        static::created(function ($expense) {
+            $account = Account::find($expense->account_id);
+            $amount = $expense->amount;
+            $account->update(['amount' => $account->amount - $amount]);
+        });
         static::updating(function ($expense) {
             $expense->normalized_title = mb_strtolower($expense->title);
+            $account = Account::find($expense->account_id);
+            $amount = $expense->getOriginal('amount');
+            $account->update(['amount' => $account->amount + $amount]);
+        });
+        static::updated(function ($expense) {
+            $account = Account::find($expense->account_id);
+            $amount = $expense->amount;
+            $account->update(['amount' => $account->amount - $amount]);
+        });
+        static::deleting(function ($expense) {
+            $account = Account::find($expense->account_id);
+            $amount = $expense->amount;
+            $account->update(['amount' => $account->amount + $amount]);
         });
     }
 
