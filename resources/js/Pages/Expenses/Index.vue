@@ -40,11 +40,18 @@ const form = useForm({
                 >
                     Расходы
                 </h2>
+                <div class="flex gap-2">
 
-                <Link :href="route('expense.create')"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Создать
-                </Link>
+                    <Link :href="route('expense.create')"
+                          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Создать расход
+                    </Link>
+
+                    <Link :href="route('purchase.create')"
+                          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Создать покупку
+                    </Link>
+                </div>
             </div>
         </template>
 

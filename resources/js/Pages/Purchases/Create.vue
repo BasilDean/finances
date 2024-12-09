@@ -19,9 +19,9 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head title="Создать новый расход" />
+    <Head title="Создать новую покупку" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :resetFields="resetFields" :title="$t('create new expense')" type="expense" />
+        <Create :fields="fields" :title="$t('create new purchase')" type="purchase" />
     </AuthenticatedLayout>
 </template>

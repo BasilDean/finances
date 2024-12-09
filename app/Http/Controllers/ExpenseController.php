@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Account;
 use App\Models\Expense;
+use App\Models\Purchase;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,17 +24,25 @@ class ExpenseController extends Controller
 
         $search = $request->input('search');
 
-        $query = Expense::with(['user', 'account'])->orderBy('created_at', 'desc');
+        $query1 = Expense::with(['user', 'account'])->orderBy('created_at', 'desc');
+        $query2 = Purchase::with(['user', 'account'])->orderBy('created_at', 'desc');
+
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query1->where(function ($q) use ($search) {
+                $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('currency', 'like', '%' . $search . '%');
+            });
+            $query2->where(function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')
                     ->orWhere('amount', 'like', '%' . $search . '%')
                     ->orWhere('currency', 'like', '%' . $search . '%');
             });
         }
 
-        $expenses = $query->paginate(20);
+        $query1 = $query1->union($query2);
+        $expenses = $query1->paginate(20);
 
         $expenses->getCollection()->transform(function ($expense) {
             return [

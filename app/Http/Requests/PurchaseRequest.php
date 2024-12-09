@@ -9,9 +9,8 @@ class PurchaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'account_id' => ['required', 'exists:accounts'],
-            'user_id' => ['required', 'exists:users'],
-            'normalized_title' => ['required'],
+            'account' => ['required'],
+            'user' => ['required'],
             'title' => ['required'],
             'amount' => ['required', 'integer'],
             'currency' => ['required'],
