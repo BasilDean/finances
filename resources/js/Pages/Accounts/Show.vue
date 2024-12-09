@@ -48,7 +48,7 @@ const goBack = () => {
                             {{ account.amount }} {{ $t(account.currency) }}</h2>
                     </div>
                 </div>
-                <List :fields="fields" :filters="filters" :items="items" :show-detail-page="false" type="accounts" />
+                <List :fields="fields" :filters="filters" :items="items" :show-detail-page="false" type="income" />
             </div>
         </div>
     </AuthenticatedLayout>

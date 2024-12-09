@@ -22,7 +22,6 @@ class IncomeController extends Controller
 
         $search = $request->input('search');
 
-//        $query = Income::with('account')->orderBy('updated_at', 'desc');
         $query = Income::with(['user', 'account'])->orderBy('created_at', 'desc');
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -94,25 +93,41 @@ class IncomeController extends Controller
         return $income;
     }
 
+    public function edit(Income $income): Response
+    {
+        $this->authorize('update', $income);
+
+        $fields = Income::getFields();
+
+        $incomeData = [
+            'id' => $income->id,
+            'title' => $income->title,
+            'slug' => $income->slug,
+            'amount' => $income->amount,
+            'currency' => $income->currency,
+            'created_at' => $income->created_at->format('H:i d-m-Y'),
+            'source' => $income->source,
+            'user' => $income->user->name ?? null, // Extract user's name
+            'account' => $income->account->title ?? null, // Extract account's title
+        ];
+        return Inertia::render('Incomes/Edit', [
+            'income' => $incomeData,
+            'fields' => $fields,
+        ]);
+    }
+
     public function update(IncomeRequest $request, Income $income)
     {
         $this->authorize('update', $income);
 
         $income->update($request->validated());
 
-        return $income;
+        return redirect()->route('income.edit', $income->slug)->with('status', 'Income updated.');
     }
 
     public function destroy(Income $income)
     {
         $this->authorize('delete', $income);
-
-        $amount = $income->amount;
-
-        $account_id = $income->account_id;
-        $account = Account::findOrFail($account_id);
-        $account->amount += $amount;
-        $account->save();
 
         $income->delete();
 

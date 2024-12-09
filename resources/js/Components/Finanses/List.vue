@@ -190,7 +190,7 @@ if (props.type) {
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">
-                        <EditButton :slug="item.slug" :type="type" />
+                        <EditButton :slug="item.slug" :type="item.kind ?? type" />
                         <DeleteButton :slug="item.slug" :title="item.title" :type="type" />
                     </div>
                 </td>

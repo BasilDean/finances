@@ -30,9 +30,26 @@ class Income extends Model
             $lastIncomeId = Income::withTrashed()->latest('id')->value('id') ?? 0;
             $income->slug = $lastIncomeId + 1;
         });
-
+        static::created(function ($income) {
+            $account = Account::find($income->account_id);
+            $amount = $income->amount;
+            $account->update(['amount' => $account->amount + $amount]);
+        });
         static::updating(function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
+            $account = Account::find($income->account_id);
+            $amount = $income->getOriginal('amount');
+            $account->update(['amount' => $account->amount - $amount]);
+        });
+        static::updated(function ($income) {
+            $account = Account::find($income->account_id);
+            $amount = $income->amount;
+            $account->update(['amount' => $account->amount + $amount]);
+        });
+        static::deleting(function ($income) {
+            $account = Account::find($income->account_id);
+            $amount = $income->amount;
+            $account->update(['amount' => $account->amount - $amount]);
         });
     }
 

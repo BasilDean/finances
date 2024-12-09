@@ -62,7 +62,7 @@ class AccountController extends Controller
         ]);
     }
 
-    public function show(Account $account, Request $request)
+    public function show(Account $account, Request $request): Response
     {
         $this->authorize('view', $account);
         $fields = Income::getFields();
@@ -95,10 +95,10 @@ class AccountController extends Controller
                 'currency' => $expense->currency,
                 'created_at' => $expense->created_at->format('H:i d-m-Y'),
                 'user' => $expense->user->name,
-                'category' => $expense->categories()->pluck('title')->implode(', '),
+                'source' => $expense->categories()->pluck('title')->implode(', '),
                 'account' => $expense->account->title,
                 'slug' => $expense->slug,
-
+                'kind' => 'expense'
             ];
         });
         $incomes = $query2->take($fetchCount)->get()->map(function ($income) {
@@ -108,9 +108,10 @@ class AccountController extends Controller
                 'currency' => $income->currency,
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
                 'user' => $income->user->name,
-                'category' => $income->source,
+                'source' => $income->source,
                 'account' => $income->account->title,
                 'slug' => $income->slug,
+                'kind' => 'income'
             ];
         });
         $items = collect([...$expenses, ...$incomes])->sortByDesc('date');

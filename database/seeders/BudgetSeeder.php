@@ -29,6 +29,14 @@ class BudgetSeeder extends Seeder
             $budget->users()->attach($users);
         }
 
+        $budget = Budget::find(1)->first();
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->settings()->create([
+                'active_budget' => $budget->slug,
+            ]);
+        }
+
 
         fclose($csvFile);
     }

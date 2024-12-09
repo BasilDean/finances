@@ -29,7 +29,7 @@ const links = [
     {
         name: 'Доход',
         description: 'добавить новое поступление денег на счёт',
-        href: route('income.index'),
+        href: route('income.create'),
         icon: PlusCircleIcon
     },
     {

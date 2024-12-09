@@ -95,14 +95,16 @@ class Account extends Model
             }
         });
         static::updated(function ($account) {
-            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
-            $total = $budget->getBudgetTotal();
-            if ($budget->balance !== $total) {
-                $budget->updateBudgetTotal($total);
+            if (auth()->user() && auth()->user()->settings) {
+                $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
+                $total = $budget->getBudgetTotal();
+                if ($budget->balance !== $total) {
+                    $budget->updateBudgetTotal($total);
+                }
             }
         });
         static::deleted(function ($account) {
-            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {
                 $budget->updateBudgetTotal($total);
