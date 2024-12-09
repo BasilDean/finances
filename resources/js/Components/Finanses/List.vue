@@ -185,8 +185,8 @@ if (props.type) {
                     <Link v-if="showDetailPage" :href="getRoute(props.type, 'show', item.slug)"
                           class="px-3 sm:px-3 py-1 sm:py-3 block"
                           v-html="$t(item[key])" />
-                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="$t(item[key])" />
-                    <!--                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="item[key]" />-->
+                    <!--                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="$t(item[key])" />-->
+                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="item[key]" />
                 </td>
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">

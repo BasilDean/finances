@@ -16,16 +16,43 @@ class ExpenseController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
 
         $this->authorize('viewAny', Expense::class);
-        $expenses = Expense::with('account')->with('user')->with('categories')->orderBy('created_at', 'desc')->paginate(20);
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-        $accounts = $budget->accounts()->get();
+
+        $search = $request->input('search');
+
+        $query = Expense::with(['user', 'account'])->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('currency', 'like', '%' . $search . '%');
+            });
+        }
+
+        $expenses = $query->paginate(20);
+
+        $expenses->getCollection()->transform(function ($expense) {
+            return [
+                'id' => $expense->id,
+                'title' => $expense->title,
+                'slug' => $expense->slug,
+                'amount' => $expense->amount,
+                'currency' => $expense->currency,
+                'created_at' => $expense->created_at->format('H:i d-m-Y'),
+                'source' => $expense->categories()->pluck('title'),
+                'user' => $expense->user->name ?? null, // Extract user's name
+                'account' => $expense->account->title ?? null, // Extract account's title
+            ];
+        });
+        $fields = Expense::getFields();
         return Inertia::render('Expenses/Index', [
             'expenses' => $expenses,
-            'accounts' => $accounts,
+            'fields' => $fields,
+            'filters' => request()->all('search'),
         ]);
     }
 

@@ -31,14 +31,75 @@ class Expense extends Model
         });
     }
 
-    public function account(): BelongsTo
+    public static function getFields(): array
     {
-        return $this->belongsTo(Account::class);
+        $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
+        $accounts = $budget->accounts;
+        $users = $budget->users;
+        return [
+            'title' => [
+                'type' => 'string',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'amount' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'currency' => [
+                'type' => 'list',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => false,
+                'values' => config('currencies')
+            ],
+            'user' => [
+                'type' => 'relation',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => $users,
+                'multiple' => false,
+                'showField' => 'name',
+            ],
+            'source' => [
+                'type' => 'relation',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => Category::all(),
+                'multiple' => true,
+                'showField' => 'title',
+            ],
+            'account' => [
+                'type' => 'relation',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+                'values' => $accounts,
+                'multiple' => false,
+                'showField' => 'title',
+            ],
+            'created_at' => [
+                'type' => 'date',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true
+            ]
+        ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function categories(): BelongsToMany
