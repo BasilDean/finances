@@ -10,13 +10,14 @@ class Purchase extends Expense
 {
     use HasFactory, SoftDeletes;
 
+    // Add a dynamic property to every instance of Purchase
     public static function boot(): void
     {
         parent::boot();
 
         static::creating(function ($expense) {
             $expense->normalized_title = mb_strtolower($expense->title);
-            $lastIncomeId = Expense::withTrashed()->latest('id')->value('id') ?? 0;
+            $lastIncomeId = Purchase::withTrashed()->latest('id')->value('id') ?? 0;
             $expense->slug = $lastIncomeId + 1;
         });
         static::created(function ($expense) {
@@ -101,6 +102,11 @@ class Purchase extends Expense
                 'editable' => true
             ]
         ];
+    }
+
+    public function getTypeAttribute(): string
+    {
+        return 'purchase';
     }
 
     public function items(): HasMany

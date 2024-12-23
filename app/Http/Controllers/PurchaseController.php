@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PurchaseRequest;
 use App\Models\Account;
 use App\Models\Purchase;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -25,7 +26,7 @@ class PurchaseController extends Controller
         ]);
     }
 
-    public function store(Request $request): Response
+    public function store(PurchaseRequest $request): Response
     {
         $this->authorize('create', Purchase::class);
 

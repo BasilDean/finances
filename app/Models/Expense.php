@@ -12,13 +12,14 @@ class Expense extends Model
 {
     use SoftDeletes, HasFactory;
 
+    // Add a dynamic property to every instance of Expense
     protected $fillable = [
         'title',
         'amount',
         'currency',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -114,6 +115,11 @@ class Expense extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getTypeAttribute(): string
+    {
+        return 'expense';
     }
 
     public function account(): BelongsTo

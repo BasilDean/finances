@@ -86,9 +86,9 @@ Route::middleware('auth')->prefix('purchase')->group(function () {
 
 
 Route::middleware('auth')->prefix('purchase-item')->group(callback: function () {
-    Route::post('/', [PurchaseItemController::class, 'store'])->name('purchase.store');
-    Route::patch('/{purchase:slug}', [PurchaseItemController::class, 'update'])->name('purchase.update');
-    Route::delete('/{purchase:slug}', [PurchaseItemController::class, 'destroy'])->name('purchase.destroy');
+    Route::post('/', [PurchaseItemController::class, 'store'])->name('purchaseItem.store');
+    Route::patch('/{purchaseItem:slug}', [PurchaseItemController::class, 'update'])->name('purchaseItem.update');
+    Route::delete('/{purchaseItem:slug}', [PurchaseItemController::class, 'destroy'])->name('purchaseItem.destroy');
 });
 
 Route::middleware('auth')->prefix('payments')->group(function () {

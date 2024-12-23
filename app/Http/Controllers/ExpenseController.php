@@ -6,10 +6,12 @@ use App\Http\Requests\ExpenseRequest;
 use App\Models\Account;
 use App\Models\Expense;
 use App\Models\Purchase;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,42 +26,77 @@ class ExpenseController extends Controller
 
         $search = $request->input('search');
 
-        $query1 = Expense::with(['user', 'account'])->orderBy('created_at', 'desc');
-        $query2 = Purchase::with(['user', 'account'])->orderBy('created_at', 'desc');
-
-
-        if ($search) {
-            $query1->where(function ($q) use ($search) {
+// Base query for Expenses with type field
+        $expenses = Expense::select(
+            'expenses.id',
+            'expenses.title',
+            'expenses.slug',
+            'expenses.amount',
+            'expenses.currency',
+            'expenses.created_at',
+            DB::raw("'expense' as type"),
+            'expenses.user_id', // Include user_id for lazy-loading
+            'expenses.account_id' // Include account_id for lazy-loading
+        )
+            ->when($search, function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')
                     ->orWhere('amount', 'like', '%' . $search . '%')
                     ->orWhere('currency', 'like', '%' . $search . '%');
             });
-            $query2->where(function ($q) use ($search) {
+
+// Base query for Purchases with type field
+        $purchases = Purchase::select(
+            'purchases.id',
+            'purchases.title',
+            'purchases.slug',
+            'purchases.amount',
+            'purchases.currency',
+            'purchases.created_at',
+            DB::raw("'purchase' as type"),
+            'purchases.user_id', // Include user_id for lazy-loading
+            'purchases.account_id' // Include account_id for lazy-loading
+        )
+            ->when($search, function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')
                     ->orWhere('amount', 'like', '%' . $search . '%')
                     ->orWhere('currency', 'like', '%' . $search . '%');
             });
-        }
 
-        $query1 = $query1->union($query2);
-        $expenses = $query1->paginate(20);
+// Combine the queries with union all and sort
+        $combined = $expenses->unionAll($purchases)
+            ->orderBy('created_at', 'desc'); // Sort by most recent
 
-        $expenses->getCollection()->transform(function ($expense) {
+// Paginate the combined query
+        $paginated = DB::table(DB::raw("({$combined->toSql()}) as combined"))
+            ->mergeBindings($combined->getQuery())
+            ->paginate(20);
+
+// Transform the results for the view
+        $paginated->getCollection()->transform(function ($record) {
+            $user = User::find($record->user_id)->name; // Lazy load user
+            $account = Account::find($record->account_id)->title; // Lazy load account
+            $categories = $record->type === 'expense'
+                ? Expense::find($record->id)->categories()->pluck('title')->implode(', ')
+                : Purchase::find($record->id)->categories()->pluck('title')->implode(', ');
             return [
-                'id' => $expense->id,
-                'title' => $expense->title,
-                'slug' => $expense->slug,
-                'amount' => $expense->amount,
-                'currency' => $expense->currency,
-                'created_at' => $expense->created_at->format('H:i d-m-Y'),
-                'source' => $expense->categories()->pluck('title')->implode(', '),
-                'user' => $expense->user->name ?? null, // Extract user's name
-                'account' => $expense->account->title ?? null, // Extract account's title
+                'id' => $record->id,
+                'title' => $record->title,
+                'slug' => $record->slug,
+                'amount' => $record->amount,
+                'currency' => $record->currency,
+                'created_at' => date('H:i d-m-Y', strtotime($record->created_at)),
+                'source' => $categories,
+                'user' => $user, // Populate user's name dynamically if needed
+                'account' => $account, // Populate account's title dynamically if needed
+                'kind' => $record->type, // 'expense' or 'purchase'
             ];
         });
+
+// Pass the transformed data to Inertia
         $fields = Expense::getFields();
+
         return Inertia::render('Expenses/Index', [
-            'expenses' => $expenses,
+            'expenses' => $paginated,
             'fields' => $fields,
             'filters' => request()->all('search'),
         ]);
@@ -142,7 +179,12 @@ class ExpenseController extends Controller
 
         $expense->update($request->validated());
 
-        return redirect()->route('expense.edit', $expense->slug)->with('status', 'Expense updated.');
+
+        $expense->user_id = $request->user['id'];
+        $expense->account_id = $request->account['id'];
+        $expense->save();
+
+        return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
     }
 
     public function destroy(Expense $Expense): RedirectResponse

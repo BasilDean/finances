@@ -58,17 +58,18 @@ const deleteItem = () => {
                         </div>
                         <div class="mt-4 grid gap-4 sm:mt-6 lg:grid-cols-2 lg:grid-rows-3 max-lg:row-start-2">
                             <ShortList :items="accounts" class=" lg:rounded-tl-[2rem]"
-                                       subtitle="Все счета (включая наличку)." title="Счета" type="accounts" />
+                                       link="show" subtitle="Все счета (включая наличку)." title="Счета"
+                                       type="accounts" />
                             <ShortList :items="incomes"
                                        class="lg:row-start-2 max-lg:row-start-4 max-lg:rounded-b-[2rem]"
-                                       subtitle="Последние доходы." title="Доходы" type="income" />
+                                       link="edit" subtitle="Последние доходы." title="Доходы" type="income" />
                             <ShortList :items="{}"
                                        class="max-lg:row-start-3 lg:col-start-1 lg:row-start-3 lg:rounded-bl-[2rem]"
-                                       subtitle="Регулярные платежи и кредиты." title="Платежи и задолженности"
-                                       type="payments" />
+                                       link="edit" subtitle="Регулярные платежи и кредиты."
+                                       title="Платежи и задолженности" type="payments" />
                             <ShortList :items="expenses"
                                        class="lg:row-span-3 max-lg:row-start-1 max-lg:rounded-t-[2rem] lg:rounded-r-[2rem]"
-                                       subtitle="Список последних расходов." title="Расходы"
+                                       link="edit" subtitle="Список последних расходов." title="Расходы"
                                        type="expense" />
                         </div>
                     </div>

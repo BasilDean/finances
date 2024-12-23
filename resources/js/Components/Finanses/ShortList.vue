@@ -18,6 +18,10 @@ const props = defineProps({
     subtitle: {
         required: false,
         type: String
+    },
+    link: {
+        required: true,
+        type: String
     }
 });
 </script>
@@ -40,7 +44,7 @@ const props = defineProps({
                 class="flex flex-col flex-1 items-center justify-center px-6 max-lg:pb-4 max-lg:pt-4 sm:px-8 lg:pb-2">
                 <dl v-for="item in items" :key="item.slug" class="divide-y divide-gray-100 w-full flex flex-col">
                     <Link
-                        :href="route(`${type}.edit`, item.slug)"
+                        :href="route(`${type}.${link}`, item.slug)"
                         class="px-1 py-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0">
                         <dt class="text-sm/6 font-medium text-white sm:col-span-1">
                             {{ item.title }}

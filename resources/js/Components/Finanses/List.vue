@@ -182,7 +182,7 @@ if (props.type) {
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td v-for="(params, key) in fields"
                     v-show="params.show" :class="params.hideOnMobile ? 'hidden sm:table-cell' : ''">
-                    <Link v-if="showDetailPage" :href="getRoute(props.type, 'show', item.slug)"
+                    <Link v-if="showDetailPage" :href="getRoute(item.kind ?? type, 'show', item.slug)"
                           class="px-3 sm:px-3 py-1 sm:py-3 block"
                           v-html="$t(item[key])" />
                     <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="$t(item[key])" />
@@ -191,7 +191,7 @@ if (props.type) {
                 <td class="hidden sm:block">
                     <div class="flex px-1 sm:px-3 py-1 sm:py-3 justify-end gap-4 ">
                         <EditButton :slug="item.slug" :type="item.kind ?? type" />
-                        <DeleteButton :slug="item.slug" :title="item.title" :type="type" />
+                        <DeleteButton :slug="item.slug" :title="item.title" :type="item.kind ?? type" />
                     </div>
                 </td>
             </tr>
