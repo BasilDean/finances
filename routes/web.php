@@ -76,6 +76,7 @@ Route::middleware('auth')->prefix('expense')->group(function () {
 });
 
 Route::middleware('auth')->prefix('purchase')->group(function () {
+    Route::get('/', [ExpenseController::class, 'index'])->name('purchase.index');
     Route::get('/create', [PurchaseController::class, 'create'])->name('purchase.create');
     Route::post('/', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/{purchase:slug}', [PurchaseController::class, 'show'])->name('purchase.show');

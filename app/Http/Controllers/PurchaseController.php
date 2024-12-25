@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Account;
 use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,8 +55,41 @@ class PurchaseController extends Controller
     {
     }
 
-    public function edit($id)
+    public function edit(Purchase $purchase)
     {
+        $this->authorize('update', $purchase);
+
+        $fields = Purchase::getFields();
+        $itemFields = PurchaseItem::getFields();
+
+        $items = $purchase->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'purchase_id' => $item->purchase_id,
+                'title' => $item->title,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+            ];
+        });
+
+        $purchaseData = [
+            'id' => $purchase->id,
+            'title' => $purchase->title,
+            'slug' => $purchase->slug,
+            'amount' => $purchase->amount,
+            'currency' => $purchase->currency,
+            'created_at' => $purchase->created_at->format('H:i d-m-Y'),
+            'source' => $purchase->categories()->first(),
+            'user' => $purchase->user ?? null, // Extract user's name
+            'account' => $purchase->account ?? null, // Extract account's title
+            'items' => $items,
+        ];
+        return Inertia::render('Purchases/Edit', [
+            'purchase' => $purchaseData,
+            'fields' => $fields,
+            'itemFields' => $itemFields,
+        ]);
+
     }
 
     public function update(Request $request, $id)

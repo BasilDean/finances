@@ -12,23 +12,21 @@ import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/
 import DatePicker from '@/Components/DatePicker.vue';
 import Multiselect from '@/Components/Miltiselect.vue';
 
-
 const props = defineProps({
     item: {
         required: true,
-        type: Object
+        type: Object,
     },
     fields: {
         required: true,
-        type: Object
+        type: Object,
     },
     type: {
         required: true,
-        type: String
-    }
+        type: String,
+    },
 });
 const formData = pick(props.item, Object.keys(props.fields));
-console.log(formData);
 
 const form = useForm(formData);
 
@@ -65,8 +63,7 @@ const createBudget = () => {
                                                 <multiselect v-else-if="params.type === 'relation'" v-model="form[key]"
                                                              :allow-empty="false" :name="key" :options="params.values"
                                                              :placeholder="$t(key)" :track-by="params.showField" />
-                                                <date-picker v-else-if="params.type === 'date'" v-model="form[key]"
-                                                             options="" />
+                                                <date-picker v-else-if="params.type === 'date'" v-model="form[key]"/>
                                                 <TextInput v-else :id="key"
                                                            v-model="form[key]"
                                                            :model-value="form[key]" :name="key" />

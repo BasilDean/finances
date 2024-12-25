@@ -14,12 +14,13 @@ const props = defineProps(
     }
 );
 
-const date = ref();
+const date = ref(new Date());
 
 const model = defineModel({
     type: Date,
     required: true
 });
+console.log(model.value);
 
 const displayName = ({ title, name }) => {
     return `${title || ''} ${name || ''}`.trim();

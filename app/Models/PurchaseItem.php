@@ -22,4 +22,41 @@ class PurchaseItem extends Model
     {
         return $this->belongsTo(Purchase::class);
     }
+
+    public static function getFields()
+    {
+
+        return [
+            'id' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => false,
+                'editable' => false,
+            ],
+            'purchase_id' => [
+                'type' => 'string',
+                'hideOnMobile' => false,
+                'show' => false,
+                'editable' => false,
+            ],
+            'title' => [
+                'type' => 'string',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'quantity' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+            'price' => [
+                'type' => 'number',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
+        ];
+    }
 }

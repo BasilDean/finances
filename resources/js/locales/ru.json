@@ -33,5 +33,9 @@
     "category": "Категория",
     "source": "Категория",
     "change budget": "Сменить бюджет",
-    "created_at": "Дата"
+    "created_at": "Дата",
+    "Add product": "Добавить товар",
+    "quantity": "Колличество",
+    "price": "Цена",
+    "edit items": "Редактировать элементы"
 }
