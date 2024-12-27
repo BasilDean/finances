@@ -18,10 +18,25 @@ class PurchaseItem extends Model
         'quantity',
     ];
 
-    public function purchase(): BelongsTo
+    public static function boot(): void
     {
-        return $this->belongsTo(Purchase::class);
+        parent::boot();
+
+        static::creating(function ($item) {
+            $item->normalized_title = mb_strtolower($item->title);
+        });
+        static::created(function ($item) {
+        });
+        static::updating(function ($item) {
+            $item->normalized_title = mb_strtolower($item->title);
+        });
+        static::updated(function ($item) {
+        });
+        static::deleting(function ($item) {
+        });
     }
+
+    // Add a dynamic property to every instance of Purchase
 
     public static function getFields()
     {
@@ -58,5 +73,10 @@ class PurchaseItem extends Model
                 'editable' => true,
             ],
         ];
+    }
+
+    public function purchase(): BelongsTo
+    {
+        return $this->belongsTo(Purchase::class);
     }
 }

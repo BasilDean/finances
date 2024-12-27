@@ -12,43 +12,71 @@ class ExpensePolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
-        // TODO create actual policies;
+        return $user !== null;
     }
 
-    public function view(User $user, Expense $Expense): bool
+    public function view(User $user, Expense $expense): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->expenses()->where('id', $expense->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function create(User $user): bool
     {
-        return true;
-        // TODO create actual policies;
+        return $user !== null;
     }
 
-    public function update(User $user, Expense $Expense): bool
+    public function update(User $user, Expense $expense): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->expenses()->where('id', $expense->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public function delete(User $user, Expense $Expense): bool
+    public function delete(User $user, Expense $expense): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->expenses()->where('id', $expense->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public function restore(User $user, Expense $Expense): bool
+    public function restore(User $user, Expense $expense): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->expenses()->where('id', $expense->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public function forceDelete(User $user, Expense $Expense): bool
+    public function forceDelete(User $user, Expense $expense): bool
     {
-        return true;
-        // TODO create actual policies;
+        foreach ($user->budgets()->get() as $budget) {
+            foreach ($budget->accounts()->get() as $account) {
+                if ($account->expenses()->where('id', $expense->id)->exists()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

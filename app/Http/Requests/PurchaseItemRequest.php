@@ -9,7 +9,7 @@ class PurchaseItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'purchase_id' => ['required', 'exists:purchases'],
+//            'purchase_id' => ['required', 'exists:purchases'],
             'title' => ['required'],
             'price' => ['required', 'numeric'],
             'quantity' => ['required', 'numeric'],

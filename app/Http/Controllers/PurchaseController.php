@@ -17,16 +17,6 @@ class PurchaseController extends Controller
 {
     use AuthorizesRequests;
 
-    public function create(): Response
-    {
-        $this->authorize('create', Purchase::class);
-
-        $fields = Purchase::getFields();
-        return Inertia::render('Purchases/Create', [
-            'fields' => $fields,
-        ]);
-    }
-
     public function store(PurchaseRequest $request): Response
     {
         $this->authorize('create', Purchase::class);
@@ -45,14 +35,37 @@ class PurchaseController extends Controller
 
         $purchase->categories()->sync($request->source['id']);
 
-        return Inertia::render('Purchases/Show', [
-            'purchase' => $purchase
+        $fields = Purchase::getFields();
+        $itemFields = PurchaseItem::getFields();
+        $items = $purchase->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'purchase_id' => $item->purchase_id,
+                'title' => $item->title,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+            ];
+        });
+
+        $purchaseData = [
+            'id' => $purchase->id,
+            'title' => $purchase->title,
+            'slug' => $purchase->slug,
+            'amount' => $purchase->amount,
+            'currency' => $purchase->currency,
+            'created_at' => $purchase->created_at->format('H:i d-m-Y'),
+            'source' => $purchase->categories()->first(),
+            'user' => $purchase->user ?? null, // Extract user's name
+            'account' => $purchase->account ?? null, // Extract account's title
+            'items' => $items,
+        ];
+
+        return Inertia::render('Purchases/Edit', [
+            'purchase' => $purchaseData,
+            'fields' => $fields,
+            'itemFields' => $itemFields,
         ])->with('success', 'Purchase was successfully created.');
 
-    }
-
-    public function show($id)
-    {
     }
 
     public function edit(Purchase $purchase)
@@ -77,6 +90,7 @@ class PurchaseController extends Controller
             'title' => $purchase->title,
             'slug' => $purchase->slug,
             'amount' => $purchase->amount,
+            'total_calculated' => $purchase->amount_calculated,
             'currency' => $purchase->currency,
             'created_at' => $purchase->created_at->format('H:i d-m-Y'),
             'source' => $purchase->categories()->first(),
@@ -92,10 +106,6 @@ class PurchaseController extends Controller
 
     }
 
-    public function update(Request $request, $id)
-    {
-    }
-
     public function destroy(Purchase $purchase): RedirectResponse
     {
         $this->authorize('delete', $purchase);
@@ -103,5 +113,40 @@ class PurchaseController extends Controller
         $purchase->delete();
 
         return redirect()->route('expense.index')->with('status', 'Expense deleted.');
+    }
+
+    public function createOrUpdateItems(Request $request, Purchase $purchase)
+    {
+        $items = $request->localItems;
+        foreach ($items as $item) {
+            if ($item['id']) {
+                $purchaseItem = PurchaseItem::findOrFail($item['id']);
+                $purchaseItem->update($item);
+                $purchaseItem->save();
+            } else {
+                $purchase->items()->create($item);
+                $purchase->save();
+            }
+        }
+        $total = $purchase->items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+        $purchase->amount_calculated = $total;
+        $purchase->save();
+        return redirect()->back();
+    }
+
+    public function update(Request $request, $id)
+    {
+    }
+
+    public function create(): Response
+    {
+        $this->authorize('create', Purchase::class);
+
+        $fields = Purchase::getFields();
+        return Inertia::render('Purchases/Create', [
+            'fields' => $fields,
+        ]);
     }
 }

@@ -79,17 +79,15 @@ Route::middleware('auth')->prefix('purchase')->group(function () {
     Route::get('/', [ExpenseController::class, 'index'])->name('purchase.index');
     Route::get('/create', [PurchaseController::class, 'create'])->name('purchase.create');
     Route::post('/', [PurchaseController::class, 'store'])->name('purchase.store');
-    Route::get('/{purchase:slug}', [PurchaseController::class, 'show'])->name('purchase.show');
     Route::get('/{purchase:slug}/edit', [PurchaseController::class, 'edit'])->name('purchase.edit');
+    Route::post('/{purchase:slug}/items', [PurchaseController::class, 'createOrUpdateItems'])->name('purchase.items');
     Route::patch('/{purchase:slug}', [PurchaseController::class, 'update'])->name('purchase.update');
     Route::delete('/{purchase:slug}', [PurchaseController::class, 'destroy'])->name('purchase.destroy');
 });
 
 
 Route::middleware('auth')->prefix('purchase-item')->group(callback: function () {
-    Route::post('/', [PurchaseItemController::class, 'store'])->name('purchaseItem.store');
-    Route::patch('/{purchaseItem:slug}', [PurchaseItemController::class, 'update'])->name('purchaseItem.update');
-    Route::delete('/{purchaseItem:slug}', [PurchaseItemController::class, 'destroy'])->name('purchaseItem.destroy');
+    Route::delete('/{purchaseItem:id}', [PurchaseItemController::class, 'destroy'])->name('purchaseItem.destroy');
 });
 
 Route::middleware('auth')->prefix('payments')->group(function () {

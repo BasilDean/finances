@@ -126,4 +126,9 @@ class Account extends Model
     {
         return $this->hasMany(related: Expense::class);
     }
+
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(related: Purchase::class);
+    }
 }
