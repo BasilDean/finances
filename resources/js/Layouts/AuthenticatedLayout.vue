@@ -10,6 +10,7 @@ import {
     BanknotesIcon,
     CalendarDaysIcon,
     MinusCircleIcon,
+    PaperAirplaneIcon,
     PlusCircleIcon,
     ShoppingCartIcon,
     UserCircleIcon,
@@ -37,6 +38,12 @@ const links = [
         description: 'добавить новое поступление денег на счёт',
         href: route('income.create'),
         icon: PlusCircleIcon,
+    },
+    {
+        name: 'Перевод',
+        description: 'добавить перевод',
+        href: route('exchanges.create'),
+        icon: PaperAirplaneIcon,
     },
     {
         name: 'Счёт',
