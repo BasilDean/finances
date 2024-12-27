@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Income extends Model
@@ -119,5 +120,15 @@ class Income extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function getTypeAttribute(): string
+    {
+        return 'income';
+    }
+
+    public function exchanges(): HasMany
+    {
+        return $this->hasMany(Exchange::class);
     }
 }

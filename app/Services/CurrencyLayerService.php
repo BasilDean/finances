@@ -8,13 +8,13 @@ use GuzzleHttp\Exception\GuzzleException;
 class CurrencyLayerService
 {
     protected Client $client;
-    protected String $accessToken;
+    protected string $accessToken;
+
     public function __construct(Client $client)
     {
         $this->client = $client;
         $this->accessToken = config('app.CURRENCY_LAYER_ACCESS_KEY');
     }
-
 
     /**
      * @throws GuzzleException

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
@@ -98,6 +99,16 @@ Route::middleware('auth')->prefix('payments')->group(function () {
     Route::get('/{payments:slug}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
     Route::patch('/{payments:slug}', [PaymentController::class, 'update'])->name('payments.update');
     Route::delete('/{payments:slug}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+});
+
+Route::middleware('auth')->prefix('exchanges')->group(function () {
+    Route::get('/', [ExchangeController::class, 'index'])->name('exchanges.index');
+    Route::get('/create', [ExchangeController::class, 'create'])->name('exchanges.create');
+    Route::post('/', [ExchangeController::class, 'store'])->name('exchanges.store');
+    Route::get('/{exchange:id}', [ExchangeController::class, 'show'])->name('exchanges.show');
+    Route::get('/{exchange:id}/edit', [ExchangeController::class, 'edit'])->name('exchanges.edit');
+    Route::patch('/{exchange:id}', [ExchangeController::class, 'update'])->name('exchanges.update');
+    Route::delete('/{exchange:id}', [ExchangeController::class, 'destroy'])->name('exchanges.destroy');
 });
 
 require __DIR__ . '/auth.php';

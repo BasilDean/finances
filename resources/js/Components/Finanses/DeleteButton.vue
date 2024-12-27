@@ -25,7 +25,7 @@ const deleteForm = useForm({});
 
 const deleteItem = (type, slug, title) => {
     const confirmation = prompt('Чтобы удалить запись введите её название');
-    if (confirmation === title) {
+    if (confirmation == title) {
         deleteForm.delete(getDeleteRoute(props.type, props.slug));
     } else {
         alert('Название введено не верно!');

@@ -131,4 +131,14 @@ class Account extends Model
     {
         return $this->hasMany(related: Purchase::class);
     }
+
+    public function exchangesFrom(): HasMany
+    {
+        return $this->hasMany(related: Exchange::class, foreignKey: 'account_from');
+    }
+
+    public function exchangesTo(): HasMany
+    {
+        return $this->hasMany(related: Exchange::class, foreignKey: 'account_to');
+    }
 }
