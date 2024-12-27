@@ -28,9 +28,9 @@ defineProps({
 
     <AuthenticatedLayout>
         <ItemList
+            v-model:items="purchase.items"
             :currency="purchase.currency"
             :fields="itemFields"
-            :items="purchase.items"
             :purchase="purchase.slug"
             :total="purchase.amount"
             :total_calculated="purchase.total_calculated"

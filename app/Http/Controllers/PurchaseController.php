@@ -17,7 +17,7 @@ class PurchaseController extends Controller
 {
     use AuthorizesRequests;
 
-    public function store(PurchaseRequest $request): Response
+    public function store(PurchaseRequest $request): RedirectResponse
     {
         $this->authorize('create', Purchase::class);
 
@@ -35,36 +35,7 @@ class PurchaseController extends Controller
 
         $purchase->categories()->sync($request->source['id']);
 
-        $fields = Purchase::getFields();
-        $itemFields = PurchaseItem::getFields();
-        $items = $purchase->items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'purchase_id' => $item->purchase_id,
-                'title' => $item->title,
-                'quantity' => $item->quantity,
-                'price' => $item->price,
-            ];
-        });
-
-        $purchaseData = [
-            'id' => $purchase->id,
-            'title' => $purchase->title,
-            'slug' => $purchase->slug,
-            'amount' => $purchase->amount,
-            'currency' => $purchase->currency,
-            'created_at' => $purchase->created_at->format('H:i d-m-Y'),
-            'source' => $purchase->categories()->first(),
-            'user' => $purchase->user ?? null, // Extract user's name
-            'account' => $purchase->account ?? null, // Extract account's title
-            'items' => $items,
-        ];
-
-        return Inertia::render('Purchases/Edit', [
-            'purchase' => $purchaseData,
-            'fields' => $fields,
-            'itemFields' => $itemFields,
-        ])->with('success', 'Purchase was successfully created.');
+        return redirect()->route('purchase.edit', $purchase->id)->with('success', 'purchase created.');
 
     }
 
@@ -133,11 +104,22 @@ class PurchaseController extends Controller
         });
         $purchase->amount_calculated = $total;
         $purchase->save();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'success');
     }
 
-    public function update(Request $request, $id)
+    public function update(PurchaseRequest $request, Purchase $purchase)
     {
+
+        $this->authorize('update', $purchase);
+
+        $purchase->update($request->validated());
+
+
+        $purchase->user_id = $request->user['id'];
+        $purchase->account_id = $request->account['id'];
+        $purchase->save();
+
+        return redirect()->route('expense.index', $purchase->slug)->with('status', 'Expense updated.');
     }
 
     public function create(): Response

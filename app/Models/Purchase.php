@@ -15,30 +15,31 @@ class Purchase extends Expense
     {
         parent::boot();
 
-        static::creating(function ($expense) {
-            $expense->normalized_title = mb_strtolower($expense->title);
+        static::creating(function ($purchase) {
+            $purchase->normalized_title = mb_strtolower($purchase->title);
+            $purchase->amount_calculated = 0;
             $lastIncomeId = Purchase::withTrashed()->latest('id')->value('id') ?? 0;
-            $expense->slug = $lastIncomeId + 1;
+            $purchase->slug = $lastIncomeId + 1;
         });
-        static::created(function ($expense) {
-            $account = Account::find($expense->account_id);
-            $amount = $expense->amount;
+        static::created(function ($purchase) {
+            $account = Account::find($purchase->account_id);
+            $amount = $purchase->amount;
             $account->update(['amount' => $account->amount - $amount]);
         });
-        static::updating(function ($expense) {
-            $expense->normalized_title = mb_strtolower($expense->title);
-            $account = Account::find($expense->account_id);
-            $amount = $expense->getOriginal('amount');
+        static::updating(function ($purchase) {
+            $purchase->normalized_title = mb_strtolower($purchase->title);
+            $account = Account::find($purchase->account_id);
+            $amount = $purchase->getOriginal('amount');
             $account->update(['amount' => $account->amount + $amount]);
         });
-        static::updated(function ($expense) {
-            $account = Account::find($expense->account_id);
-            $amount = $expense->amount;
+        static::updated(function ($purchase) {
+            $account = Account::find($purchase->account_id);
+            $amount = $purchase->amount;
             $account->update(['amount' => $account->amount - $amount]);
         });
-        static::deleting(function ($expense) {
-            $account = Account::find($expense->account_id);
-            $amount = $expense->amount;
+        static::deleting(function ($purchase) {
+            $account = Account::find($purchase->account_id);
+            $amount = $purchase->amount;
             $account->update(['amount' => $account->amount + $amount]);
         });
     }

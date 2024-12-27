@@ -38,7 +38,8 @@ const props = defineProps({
 });
 
 const { t } = useI18n(); // Provides access to the translation method `t`
-const localItems = reactive([...props.items]);
+let localItems = reactive([...props.items]);
+const emit = defineEmits(['update:items']); // This enables emitting the changes
 
 const addItem = () => {
     localItems.push(
@@ -68,6 +69,8 @@ const saveItems = () => {
         }
     }
     form.post(route('purchase.items', props.purchase));
+
+    emit('update:items', localItems); // Emit updated localItems to parent
 };
 
 const deleteForm = useForm({});
@@ -81,6 +84,7 @@ function deleteItem(localIndex, id) {
         if (confirm('Вы уверены, что хотите удалить этот элемент?')) {
             localItems.splice(localIndex, 1);
             deleteForm.delete(getDeleteRoute(id));
+            emit('update:items', localItems); // Emit updated localItems to parent
         }
     } else {
         localItems.splice(localIndex, 1);
