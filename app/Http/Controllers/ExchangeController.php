@@ -86,7 +86,7 @@ class ExchangeController extends Controller
 
             // Extract the desired rate
             $rateKey = "{$currencyTo}{$currencyFrom}";
-            $exchange->oficial_rate = $rates['quotes'][$rateKey] ?? null;
+            $exchange->oficial_rate = $rates['quotes'][$rateKey] ?? 0;
         }
         $exchange->save();
 
