@@ -1,7 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
+defineProps({
     type: {
         required: true,
         type: String,
@@ -59,7 +59,13 @@ const props = defineProps({
                             {{ $t(item.title) }}
                         </dt>
                         <dd class="mt-1 text-sm/6 text-white sm:mt-0">
-                            {{ item.amount }}
+                            {{
+                                new Intl.NumberFormat('ru-RU', {
+                                    style: 'currency', // Use currency format
+                                    currency: 'RUB', // Adjust currency code as needed
+                                    minimumFractionDigits: 2, // Always show two decimal places
+                                }).format(item.amount)
+                            }}
                             {{ $t(item.currency) }}
                         </dd>
                     </Link>

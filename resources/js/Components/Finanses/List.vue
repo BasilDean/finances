@@ -2,6 +2,8 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Paginator from '@/Components/Finanses/Paginator.vue';
 import { onMounted, ref, watch } from 'vue';
+
+import { useI18n } from 'vue-i18n';
 import {
     Listbox,
     ListboxButton,
@@ -12,6 +14,8 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import debounce from 'lodash/debounce';
 import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
+
+const { t } = useI18n(); // Enable translations in the script
 
 const props = defineProps({
     type: {
@@ -48,6 +52,21 @@ const props = defineProps({
         type: Object,
     },
 });
+
+const formatValue = (value) => {
+    // return 'test';
+    // If it's a number, format it (e.g., with a locale-specific grouping)
+    if (typeof value === 'number') {
+        return new Intl.NumberFormat('ru-RU', {
+            style: 'currency', // Use currency format
+            currency: 'RUB', // Adjust currency code as needed
+            minimumFractionDigits: 2, // Always show two decimal places
+        }).format(value); // Example output: "1 234 567,89 ₽"
+    }
+
+    // If it's a string or other type, pass it through the translation filter
+    return t(value); // Translate text keys
+};
 
 const getRoute = (type, action, slug = '') => {
     if (slug !== '') {
@@ -231,6 +250,7 @@ if (props.type) {
                     <th
                         v-for="(params, key) in fields"
                         v-show="params.show"
+                        :key="key"
                         :class="
                             params.hideOnMobile
                                 ? 'hidden px-1 py-1 sm:table-cell sm:px-3 sm:py-3'
@@ -263,15 +283,15 @@ if (props.type) {
                                 getRoute(item.kind ?? type, 'show', item.slug)
                             "
                             class="block px-3 py-1 sm:px-3 sm:py-3"
-                            v-html="$t(item[key])"
-                        />
-                        <span
-                            v-else
-                            class="block px-3 py-1 sm:px-3 sm:py-3"
-                            v-html="$t(item[key])"
-                        />
+                        >
+                            {{ formatValue(item[key]) }}
+                        </Link>
+                        <span v-else class="block px-3 py-1 sm:px-3 sm:py-3">
+                            {{ formatValue(item[key]) }}
+                        </span>
                         <!--                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="item[key]" />-->
                     </td>
+
                     <td class="hidden sm:block">
                         <div
                             class="flex justify-end gap-4 px-1 py-1 sm:px-3 sm:py-3"
