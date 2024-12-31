@@ -62,7 +62,7 @@ defineProps({
                             {{
                                 new Intl.NumberFormat('ru-RU', {
                                     style: 'currency', // Use currency format
-                                    currency: 'RUB', // Adjust currency code as needed
+                                    currency: item.currency, // Adjust currency code as needed
                                     minimumFractionDigits: 2, // Always show two decimal places
                                 }).format(item.amount)
                             }}

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('slug');
             $table->boolean('regular');
             $table->string('frequency')->nullable();
-            $table->string('amount');
+            $table->float('amount');
             $table->string('currency');
             $table->timestamps();
             $table->softDeletes();

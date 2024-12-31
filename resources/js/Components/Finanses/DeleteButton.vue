@@ -24,9 +24,12 @@ const getDeleteRoute = (type, slug) => {
 const deleteForm = useForm({});
 
 const deleteItem = (type, slug, title) => {
+    console.log(
+        `title = ${title} slug = ${slug} type = ${type} getDeleteRoute(type, slug) = ${getDeleteRoute(type, slug)}`,
+    );
     const confirmation = prompt('Чтобы удалить запись введите её название');
-    if (confirmation == title) {
-        deleteForm.delete(getDeleteRoute(props.type, props.slug));
+    if (confirmation === title) {
+        deleteForm.delete(getDeleteRoute(type, slug));
     } else {
         alert('Название введено не верно!');
     }

@@ -41,7 +41,7 @@ const props = defineProps({
                                     {{
                                         new Intl.NumberFormat('ru-RU', {
                                             style: 'currency', // Use currency format
-                                            currency: 'RUB', // Adjust currency code as needed
+                                            currency: budget.currency, // Adjust currency code as needed
                                             minimumFractionDigits: 2, // Always show two decimal places
                                         }).format(budget.balance)
                                     }}

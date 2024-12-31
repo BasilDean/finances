@@ -53,15 +53,21 @@ const props = defineProps({
     },
 });
 
-const formatValue = (value) => {
-    // return 'test';
+const formatValue = (value, currency = null, type = '', key = '') => {
     // If it's a number, format it (e.g., with a locale-specific grouping)
-    if (typeof value === 'number') {
+    if (type === 'number' && key !== 'credit_percent') {
         return new Intl.NumberFormat('ru-RU', {
             style: 'currency', // Use currency format
-            currency: 'RUB', // Adjust currency code as needed
-            minimumFractionDigits: 2, // Always show two decimal places
+            currency: currency ?? 'RUB', // Adjust currency code as needed
+            minimumFractionDigits: 1, // Always show two decimal places
         }).format(value); // Example output: "1 234 567,89 ₽"
+    }
+    if (typeof value === 'boolean') {
+        if (value) {
+            return t('yes');
+        } else {
+            return t('no');
+        }
     }
 
     // If it's a string or other type, pass it through the translation filter
@@ -284,12 +290,25 @@ if (props.type) {
                             "
                             class="block px-3 py-1 sm:px-3 sm:py-3"
                         >
-                            {{ formatValue(item[key]) }}
+                            {{
+                                formatValue(
+                                    item[key],
+                                    item.currency,
+                                    params.type,
+                                    key,
+                                )
+                            }}
                         </Link>
                         <span v-else class="block px-3 py-1 sm:px-3 sm:py-3">
-                            {{ formatValue(item[key]) }}
+                            {{
+                                formatValue(
+                                    item[key],
+                                    item.currency,
+                                    params.type,
+                                    key,
+                                )
+                            }}
                         </span>
-                        <!--                    <span v-else class="px-3 sm:px-3 py-1 sm:py-3 block" v-html="item[key]" />-->
                     </td>
 
                     <td class="hidden sm:block">

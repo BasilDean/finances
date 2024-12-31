@@ -95,10 +95,10 @@ Route::middleware('auth')->prefix('payments')->group(function () {
     Route::get('/', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/', [PaymentController::class, 'store'])->name('payments.store');
-    Route::get('/{payments:id}', [PaymentController::class, 'show'])->name('payments.show');
-    Route::get('/{payments:slug}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
-    Route::patch('/{payments:slug}', [PaymentController::class, 'update'])->name('payments.update');
-    Route::delete('/{payments:slug}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    Route::get('/{payment:slug}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::get('/{payment:slug}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::patch('/{payment:slug}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::delete('/{payment:slug}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 });
 
 Route::middleware('auth')->prefix('exchanges')->group(function () {

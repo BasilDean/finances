@@ -7,11 +7,13 @@ import InputError from '@/Components/InputError.vue';
 import Multiselect from '@/Components/Miltiselect.vue';
 import Select from '@/Components/Select.vue';
 
-import { ArrowLeftCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline/index.js';
+import {
+    ArrowLeftCircleIcon,
+    CheckCircleIcon,
+} from '@heroicons/vue/24/outline/index.js';
 import { mapValues } from 'lodash';
 import DatePicker from '@/Components/DatePicker.vue';
 import { reactive, watch } from 'vue';
-
 
 const props = defineProps({
     fields: {
@@ -42,16 +44,21 @@ const formData = reactive(
                 return field.values[0]; // Default value for relation
             case 'date':
                 return new Date();
+            case 'boolean':
+                return false;
             case 'string':
             default:
                 return ''; // Default value for text and any other type
-    }
-}));
+        }
+    }),
+);
 
 const form = useForm(formData);
 
 // Watch for changes to the resetFields prop
-watch(() => props.resetFields, (newFields) => {
+watch(
+    () => props.resetFields,
+    (newFields) => {
         if (newFields) {
             newFields.forEach((field) => {
                 if (Object.hasOwn(form, field)) {
@@ -86,52 +93,101 @@ const createItem = () => {
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
             <div class="bg-gray-800 py-6 sm:py-8">
                 <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-                    <h2 class="text-center text-base/7 font-semibold text-white flex justify-center items-center space-x-2 w-full">
+                    <h2
+                        class="flex w-full items-center justify-center space-x-2 text-center text-base/7 font-semibold text-white"
+                    >
                         <span>{{ title }}</span>
                     </h2>
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
-
                             <div class="border-b border-gray-900/10 pb-12">
-
-                                <div class="mt-10 flex flex-col gap-x-6 gap-y-8">
-                                    <div v-for="(params, key) in fields" v-show="params.editable" :key="key">
-                                        <InputLabel :target="key" :value="$t(key)" />
+                                <div
+                                    class="mt-10 flex flex-col gap-x-6 gap-y-8"
+                                >
+                                    <div
+                                        v-for="(params, key) in fields"
+                                        v-show="params.editable"
+                                        :key="key"
+                                    >
+                                        <InputLabel
+                                            :target="key"
+                                            :value="$t(key)"
+                                        />
                                         <div class="mt-2">
-                                            <NumberInput v-if="params.type === 'number'" :id="key"
-                                                         v-model="form[key]"
-                                                         :model-value="form[key]" :name="key" />
+                                            <NumberInput
+                                                v-if="params.type === 'number'"
+                                                :id="key"
+                                                v-model="form[key]"
+                                                :model-value="form[key]"
+                                                :name="key"
+                                            />
 
-                                            <Select v-else-if="params.type === 'list'" v-model="form[key]"
-                                                    :model-value="form[key]" :options="params.values" />
-                                            <multiselect v-else-if="params.type === 'relation'" v-model="form[key]"
-                                                         :allow-empty="false" :name="key" :options="params.values"
-                                                         :placeholder="$t(key)" :track-by="params.showField" />
-                                            <date-picker v-else-if="params.type === 'date'" v-model="form[key]"
-                                                         options="" />
-                                            <TextInput v-else :id="key"
-                                                       v-model="form[key]"
-                                                       :model-value="form[key]" :name="key" />
-                                            <InputError v-if="form.errors[key]"
-                                                        :message="$t(key) +  form.errors[key]" />
+                                            <Select
+                                                v-else-if="
+                                                    params.type === 'list'
+                                                "
+                                                v-model="form[key]"
+                                                :model-value="form[key]"
+                                                :options="params.values"
+                                            />
+                                            <Select
+                                                v-else-if="
+                                                    params.type === 'boolean'
+                                                "
+                                                v-model="form[key]"
+                                                :model-value="form[key]"
+                                                :options="['true', 'false']"
+                                            />
+                                            <multiselect
+                                                v-else-if="
+                                                    params.type === 'relation'
+                                                "
+                                                v-model="form[key]"
+                                                :allow-empty="false"
+                                                :name="key"
+                                                :options="params.values"
+                                                :placeholder="$t(key)"
+                                                :track-by="params.showField"
+                                            />
+                                            <date-picker
+                                                v-else-if="
+                                                    params.type === 'date'
+                                                "
+                                                v-model="form[key]"
+                                                options=""
+                                            />
+                                            <TextInput
+                                                v-else
+                                                :id="key"
+                                                v-model="form[key]"
+                                                :model-value="form[key]"
+                                                :name="key"
+                                            />
+                                            <InputError
+                                                v-if="form.errors[key]"
+                                                :message="
+                                                    $t(key) + form.errors[key]
+                                                "
+                                            />
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <Link :href="route('home')"
-                                  class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border"
-                                  type="button">
+                            <Link
+                                :href="route('home')"
+                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                type="button"
+                            >
                                 <ArrowLeftCircleIcon class="size-6" />
                                 {{ $t('cancel') }}
                             </Link>
                             <button
-                                class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border"
-                                type="submit">
+                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                type="submit"
+                            >
                                 {{ $t('save') }}
                                 <CheckCircleIcon class="size-6" />
                             </button>

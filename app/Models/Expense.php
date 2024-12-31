@@ -73,7 +73,7 @@ class Expense extends Model
             'currency' => [
                 'type' => 'list',
                 'hideOnMobile' => false,
-                'show' => true,
+                'show' => false,
                 'editable' => false,
                 'values' => config('currencies')
             ],
