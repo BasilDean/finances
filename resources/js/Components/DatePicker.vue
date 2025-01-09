@@ -27,17 +27,6 @@ const parseStringToDate = (dateString) => {
 if (typeof model.value === 'string') {
     model.value = parseStringToDate(model.value); // Convert the string to a Date object
 }
-
-// Format a date object to a custom string (if needed for display or API)
-const formatDateToString = (date) => {
-    const pad = (num) => num.toString().padStart(2, '0'); // Padding helper
-    return `${pad(date.getHours())}:${pad(date.getMinutes())} ${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
-};
-
-// Simulated display name function
-const displayName = ({ title, name }) => {
-    return `${title || ''} ${name || ''}`.trim();
-};
 </script>
 
 <template>

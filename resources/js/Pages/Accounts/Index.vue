@@ -7,18 +7,18 @@ import CreateButton from '@/Components/Finanses/CreateButton.vue';
 defineProps({
     fields: {
         required: true,
-        type: Object
+        type: Object,
     },
     filters: {
         type: Object,
-        default: {}
+        default: () => ({}),
     },
     accounts: {
-        type: Object
+        type: Object,
     },
     status: {
-        type: String
-    }
+        type: String,
+    },
 });
 const type = 'accounts';
 </script>
@@ -28,21 +28,25 @@ const type = 'accounts';
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between align-center">
+            <div class="align-center flex justify-between">
                 <h2
                     class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
                 >
                     Личные счета
                 </h2>
-                <CreateButton :route="route(type+'.create')" />
+                <CreateButton :route="route(type + '.create')" />
             </div>
         </template>
 
-
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <List :fields="fields" :filters="filters"
-                      :items="accounts" :show-detail-page="true" :type="type" />
+                <List
+                    :fields="fields"
+                    :filters="filters"
+                    :items="accounts"
+                    :show-detail-page="true"
+                    :type="type"
+                />
             </div>
         </div>
     </AuthenticatedLayout>

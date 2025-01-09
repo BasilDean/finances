@@ -7,25 +7,25 @@ import { ArrowUturnLeftIcon } from '@heroicons/vue/24/outline/index.js';
 
 defineProps({
     items: {
-        type: Object
+        type: Object,
     },
     account: {
-        type: Object
+        type: Object,
     },
     fields: {
-        type: Object
+        type: Object,
     },
     status: {
-        type: String
+        type: String,
     },
     search: {
         type: Object,
-        default: {}
+        default: () => ({}),
     },
     filters: {
         type: Object,
-        default: {}
-    }
+        default: () => ({}),
+    },
 });
 
 const goBack = () => {
@@ -40,15 +40,30 @@ const goBack = () => {
         <div class="py-6">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-3 lg:px-4">
                 <div class="bg-gray-800 py-3 sm:py-4">
-                    <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8 relative">
-                        <div class="absolute text-white top-2 left-6" @click="goBack()">
+                    <div
+                        class="relative mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8"
+                    >
+                        <div
+                            class="absolute left-6 top-2 text-white"
+                            @click="goBack()"
+                        >
                             <ArrowUturnLeftIcon class="size-3 text-white" />
                         </div>
-                        <h2 class="text-center text-base/7 font-semibold text-white">{{ account.title }} -
-                            {{ account.amount }} {{ $t(account.currency) }}</h2>
+                        <h2
+                            class="text-center text-base/7 font-semibold text-white"
+                        >
+                            {{ account.title }} - {{ account.amount }}
+                            {{ $t(account.currency) }}
+                        </h2>
                     </div>
                 </div>
-                <List :fields="fields" :filters="filters" :items="items" :show-detail-page="false" type="income" />
+                <List
+                    :fields="fields"
+                    :filters="filters"
+                    :items="items"
+                    :show-detail-page="false"
+                    type="income"
+                />
             </div>
         </div>
     </AuthenticatedLayout>

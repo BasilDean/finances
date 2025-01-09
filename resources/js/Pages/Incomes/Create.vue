@@ -3,22 +3,25 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Create from '@/Components/Finanses/Create.vue';
 
-const props = defineProps({
+defineProps({
     status: {
-        type: String
+        type: String,
     },
     fields: {
         required: true,
-        type: Object
-    }
+        type: Object,
+    },
 });
-
 </script>
 
 <template>
     <Head title="Создать новый счёт" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :title="$t('create new income')" type="income" />
+        <Create
+            :fields="fields"
+            :title="$t('create new income')"
+            type="income"
+        />
     </AuthenticatedLayout>
 </template>

@@ -23,7 +23,14 @@ class BudgetController extends Controller
 
         $fields = Budget::getFields();
         $search = $request->input('search');
-        $query = Auth::user()->budgets()->orderBy('updated_at', 'desc');
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user) {
+                $query = $user->budgets()->orderBy('updated_at', 'desc');
+            }
+        } else {
+            $query = Budget::query()->whereRaw('0 = 1');
+        }
 
         if ($search) {
             $query->where('title', 'like', '%' . $search . '%'); // Adjust fields as necessary

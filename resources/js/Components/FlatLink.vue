@@ -1,8 +1,7 @@
 <script setup>
-import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
+defineProps({
     href: {
         type: String,
         required: true,
@@ -14,11 +13,10 @@ const props = defineProps({
         type: String,
     },
 });
-
 </script>
 
 <template>
-    <Link :href="href" :class="classes">
+    <Link :class="classes" :href="href">
         <slot />
     </Link>
 </template>

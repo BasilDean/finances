@@ -9,7 +9,7 @@ class AccountsSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = fopen(base_path('database/seeders/csv/accounts.csv'), 'r');
+        $csvFile = fopen(base_path('database/seeders/csv/accounts.csv'), 'rb');
         $header = fgetcsv($csvFile);
 
         while ($row = fgetcsv($csvFile)) {

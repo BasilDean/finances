@@ -9,7 +9,7 @@ class CurrencyRatesSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = fopen(base_path('database/seeders/csv/currency_rates.csv'), 'r');
+        $csvFile = fopen(base_path('database/seeders/csv/currency_rates.csv'), 'rb');
         $header = fgetcsv($csvFile);
 
         while ($row = fgetcsv($csvFile)) {

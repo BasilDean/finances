@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Create from '@/Components/Finanses/Create.vue';
 
-const props = defineProps({
+defineProps({
     status: {
         type: String,
     },

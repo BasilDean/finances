@@ -34,7 +34,7 @@ const props = defineProps({
     },
 });
 const formData = reactive(
-    mapValues(props.fields, (field, key) => {
+    mapValues(props.fields, (field) => {
         switch (field.type) {
             case 'number':
                 return 0; // Default value for number

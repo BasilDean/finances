@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Income extends Model
@@ -22,32 +21,32 @@ class Income extends Model
         'created_at',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($income) {
+        static::creating(static function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
             $lastIncomeId = Income::withTrashed()->latest('id')->value('id') ?? 0;
             $income->slug = $lastIncomeId + 1;
         });
-        static::created(function ($income) {
+        static::created(static function ($income) {
             $account = Account::find($income->account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount + $amount]);
         });
-        static::updating(function ($income) {
+        static::updating(static function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
             $account = Account::find($income->account_id);
             $amount = $income->getOriginal('amount');
             $account->update(['amount' => $account->amount - $amount]);
         });
-        static::updated(function ($income) {
+        static::updated(static function ($income) {
             $account = Account::find($income->account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount + $amount]);
         });
-        static::deleting(function ($income) {
+        static::deleting(static function ($income) {
             $account = Account::find($income->account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount - $amount]);
@@ -120,15 +119,5 @@ class Income extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
-    }
-
-    public function getTypeAttribute(): string
-    {
-        return 'income';
-    }
-
-    public function exchanges(): HasMany
-    {
-        return $this->hasMany(Exchange::class);
     }
 }

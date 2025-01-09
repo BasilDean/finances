@@ -10,7 +10,7 @@ class ExpenseSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvFile = fopen(base_path('database/seeders/csv/expenses.csv'), 'r');
+        $csvFile = fopen(base_path('database/seeders/csv/expenses.csv'), 'rb');
         $header = fgetcsv($csvFile);
 
         while ($row = fgetcsv($csvFile)) {
@@ -29,7 +29,7 @@ class ExpenseSeeder extends Seeder
         fclose($csvFile);
 
 
-        $csvFile = fopen(base_path('database/seeders/csv/category_expense.csv'), 'r');
+        $csvFile = fopen(base_path('database/seeders/csv/category_expense.csv'), 'rb');
         $header = fgetcsv($csvFile);
 
         while ($row = fgetcsv($csvFile)) {

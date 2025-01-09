@@ -3,23 +3,23 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Edit from '@/Components/Finanses/Edit.vue';
 
-const props = defineProps({
+defineProps({
     expense: {
         type: Object,
-        required: true
+        required: true,
     },
     status: {
-        type: String
+        type: String,
     },
     fields: {
         required: true,
-        type: Object
-    }
+        type: Object,
+    },
 });
 </script>
 
 <template>
-    <Head :title="'Редактировать ' + expense.title " />
+    <Head :title="'Редактировать ' + expense.title" />
 
     <AuthenticatedLayout>
         <Edit :fields="fields" :item="expense" type="expense" />

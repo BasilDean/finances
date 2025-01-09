@@ -1,46 +1,45 @@
 <script setup>
 const notifications = [
     {
-        message: 'Hey, what\'s up? All set for the presentation?',
-        time: 'a few moments ago'
+        message: "Hey, what's up? All set for the presentation?",
+        time: 'a few moments ago',
     },
     {
         message: 'started following you.',
-        time: '10 minutes ago'
+        time: '10 minutes ago',
     },
     {
         message: 'love your story. See it and view more stories.',
-        time: '44 minutes ago'
+        time: '44 minutes ago',
     },
     {
-        message:
-            'mentioned you in a comment: @bonnie.green what do you say?',
-        time: '1 hour ago'
+        message: 'mentioned you in a comment: @bonnie.green what do you say?',
+        time: '1 hour ago',
     },
     {
         message:
             'posted a new video: Glassmorphism - learn how to implement the new design trend.',
-        time: '3 hours ago'
-    }
+        time: '3 hours ago',
+    },
 ];
 
 const showNotifications = () => {
     document.getElementById('notification-dropdown').classList.toggle('hidden');
 };
-
 </script>
 
 <template>
     <button
-        class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        class="mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:ring-4 focus:ring-gray-300 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-600"
         data-dropdown-toggle="notification-dropdown"
-        type="button" @click.prevent=showNotifications()
+        type="button"
+        @click.prevent="showNotifications()"
     >
         <span class="sr-only">View notifications</span>
         <!-- Bell icon -->
         <svg
             aria-hidden="true"
-            class="w-6 h-6"
+            class="h-6 w-6"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -52,40 +51,40 @@ const showNotifications = () => {
     </button>
     <div
         id="notification-dropdown"
-        class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
+        class="z-50 my-4 hidden max-w-sm list-none divide-y divide-gray-100 overflow-hidden rounded rounded-xl bg-white text-base shadow-lg dark:divide-gray-600 dark:bg-gray-700"
     >
         <div
-            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
+            class="block bg-gray-50 px-4 py-2 text-center text-base font-medium text-gray-700 dark:bg-gray-600 dark:text-gray-300"
         >
             Notifications
         </div>
         <div>
-            <a v-for="notification in notifications"
-               class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
-               href="#"
+            <a
+                v-for="(notification, index) in notifications"
+                :key="index"
+                class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+                href="#"
             >
-                <div class="pl-3 w-full">
+                <div class="w-full pl-3">
                     <div
-                        class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
+                        class="mb-1.5 text-sm font-normal text-gray-500 dark:text-gray-400"
                     >
                         {{ notification.message }}
                     </div>
-                    <div
-                        class="text-xs font-medium text-black dark:text-white"
-                    >
+                    <div class="text-xs font-medium text-black dark:text-white">
                         {{ notification.time }}
                     </div>
                 </div>
             </a>
         </div>
         <a
-            class="block py-2 text-md font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline"
+            class="text-md block bg-gray-50 py-2 text-center font-medium text-gray-900 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline"
             href="#"
         >
             <div class="inline-flex items-center">
                 <svg
                     aria-hidden="true"
-                    class="mr-2 w-4 h-4 text-gray-500 dark:text-gray-400"
+                    class="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -103,6 +102,4 @@ const showNotifications = () => {
     </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
