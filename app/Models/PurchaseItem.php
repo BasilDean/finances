@@ -12,7 +12,7 @@ class PurchaseItem extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'purchase_id',
+        'expense_id',
         'title',
         'price',
         'quantity',
@@ -22,12 +22,12 @@ class PurchaseItem extends Model
     {
         parent::boot();
 
-        static::creating(function ($item) {
+        static::creating(static function ($item) {
             $item->normalized_title = mb_strtolower($item->title);
         });
         static::created(function ($item) {
         });
-        static::updating(function ($item) {
+        static::updating(static function ($item) {
             $item->normalized_title = mb_strtolower($item->title);
         });
         static::updated(function ($item) {
@@ -38,7 +38,7 @@ class PurchaseItem extends Model
 
     // Add a dynamic property to every instance of Purchase
 
-    public static function getFields()
+    public static function getFields(): array
     {
 
         return [
@@ -48,7 +48,7 @@ class PurchaseItem extends Model
                 'show' => false,
                 'editable' => false,
             ],
-            'purchase_id' => [
+            'expense_id' => [
                 'type' => 'string',
                 'hideOnMobile' => false,
                 'show' => false,
@@ -75,8 +75,8 @@ class PurchaseItem extends Model
         ];
     }
 
-    public function purchase(): BelongsTo
+    public function expense(): BelongsTo
     {
-        return $this->belongsTo(Purchase::class);
+        return $this->belongsTo(Expense::class);
     }
 }

@@ -82,6 +82,15 @@ const createBudget = () => {
                                                     :model-value="form[key]"
                                                     :options="params.values"
                                                 />
+                                                <Select
+                                                    v-else-if="
+                                                        params.type ===
+                                                        'boolean'
+                                                    "
+                                                    v-model="form[key]"
+                                                    :model-value="form[key]"
+                                                    :options="['true', 'false']"
+                                                />
                                                 <multiselect
                                                     v-else-if="
                                                         params.type ===

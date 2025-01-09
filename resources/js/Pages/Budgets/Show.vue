@@ -5,7 +5,7 @@ import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 import ShortList from '@/Components/Finanses/ShortList.vue';
 
-const props = defineProps({
+defineProps({
     budget: {
         type: Object,
     },

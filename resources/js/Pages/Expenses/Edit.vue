@@ -3,25 +3,41 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Edit from '@/Components/Finanses/Edit.vue';
 
-const props = defineProps({
+import ItemList from '@/Components/Purchases/ItemList.vue';
+
+defineProps({
     expense: {
         type: Object,
-        required: true
+        required: true,
     },
     status: {
-        type: String
+        type: String,
     },
     fields: {
         required: true,
-        type: Object
-    }
+        type: Object,
+    },
+    itemFields: {
+        required: true,
+        type: Object,
+    },
 });
 </script>
 
 <template>
-    <Head :title="'Редактировать ' + expense.title " />
+    <Head :title="'Редактировать ' + expense.title" />
 
     <AuthenticatedLayout>
+        <div v-if="expense.has_items">
+            <ItemList
+                :currency="expense.currency"
+                :fields="itemFields"
+                :items="expense.items"
+                :purchase="expense.slug"
+                :total="expense.amount"
+                :total_calculated="expense.amount_calculated"
+            />
+        </div>
         <Edit :fields="fields" :item="expense" type="expense" />
     </AuthenticatedLayout>
 </template>

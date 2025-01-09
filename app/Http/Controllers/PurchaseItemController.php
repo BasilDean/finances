@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseItem;
+use Illuminate\Http\RedirectResponse;
 
 class PurchaseItemController extends Controller
 {
-    public function destroy(PurchaseItem $purchaseItem)
+    public function destroy(PurchaseItem $purchaseItem): RedirectResponse
     {
-        $purchase = $purchaseItem->purchase;
+        $purchase = $purchaseItem->expense;
 
         $purchaseItem->delete();
 

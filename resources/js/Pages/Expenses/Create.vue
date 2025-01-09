@@ -3,18 +3,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Create from '@/Components/Finanses/Create.vue';
 
-const props = defineProps({
+defineProps({
     status: {
-        type: String
+        type: String,
     },
     fields: {
         required: true,
-        type: Object
+        type: Object,
     },
     resetFields: {
         required: false,
-        type: Array
-    }
+        type: Array,
+    },
 });
 </script>
 
@@ -22,6 +22,11 @@ const props = defineProps({
     <Head title="Создать новый расход" />
 
     <AuthenticatedLayout>
-        <Create :fields="fields" :resetFields="resetFields" :title="$t('create new expense')" type="expense" />
+        <Create
+            :fields="fields"
+            :resetFields="resetFields"
+            :title="$t('create new expense')"
+            type="expense"
+        />
     </AuthenticatedLayout>
 </template>

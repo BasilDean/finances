@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('purchase_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_id');
+            $table->foreignId('expense_id')->constrained('expenses')->cascadeOnDelete();
             $table->string('title');
             $table->string('normalized_title');
             $table->float('price');

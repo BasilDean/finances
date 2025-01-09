@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('title');
             $table->float('amount');
             $table->string('currency');
+            $table->boolean('has_items')->default(false);
             $table->timestamps();
             $table->softDeletes();
 

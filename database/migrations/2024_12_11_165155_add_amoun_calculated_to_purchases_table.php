@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('purchases', function (Blueprint $table) {
+        Schema::table('expenses', function (Blueprint $table) {
 
             $table->float('amount_calculated')->default(0);
         });
@@ -15,7 +15,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::table('purchases', function (Blueprint $table) {
+        Schema::table('expenses', function (Blueprint $table) {
             $table->dropColumn('amount_calculated');
         });
     }

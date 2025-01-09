@@ -68,7 +68,7 @@ const saveItems = () => {
             }
         }
     }
-    form.post(route('purchase.items', props.purchase));
+    form.post(route('expense.items', props.purchase));
 
     emit('update:items', localItems); // Emit updated localItems to parent
 };

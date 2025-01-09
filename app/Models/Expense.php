@@ -17,6 +17,7 @@ class Expense extends Model
     protected $fillable = [
         'title',
         'amount',
+        'has_items',
         'currency',
     ];
 
@@ -77,6 +78,12 @@ class Expense extends Model
                 'editable' => false,
                 'values' => config('currencies')
             ],
+            'has_items' => [
+                'type' => 'boolean',
+                'hideOnMobile' => false,
+                'show' => true,
+                'editable' => true,
+            ],
             'user' => [
                 'type' => 'relation',
                 'hideOnMobile' => false,
@@ -136,5 +143,10 @@ class Expense extends Model
     public function exchanges(): HasMany
     {
         return $this->hasMany(Exchange::class);
+    }
+    
+    public function items(): HasMany
+    {
+        return $this->hasMany(PurchaseItem::class);
     }
 }

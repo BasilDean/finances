@@ -7,7 +7,6 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseItemController;
 use Illuminate\Support\Facades\Route;
 
@@ -70,20 +69,10 @@ Route::middleware('auth')->prefix('expense')->group(function () {
     Route::get('/', [ExpenseController::class, 'index'])->name('expense.index');
     Route::get('/create', [ExpenseController::class, 'create'])->name('expense.create');
     Route::post('/', [ExpenseController::class, 'store'])->name('expense.store');
-    Route::get('/{expense:id}', [ExpenseController::class, 'show'])->name('expense.show');
     Route::get('/{expense:slug}/edit', [ExpenseController::class, 'edit'])->name('expense.edit');
+    Route::post('/{expense:slug}/items', [ExpenseController::class, 'createOrUpdateItems'])->name('expense.items');
     Route::patch('/{expense:slug}', [ExpenseController::class, 'update'])->name('expense.update');
     Route::delete('/{expense:slug}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
-});
-
-Route::middleware('auth')->prefix('purchase')->group(function () {
-    Route::get('/', [ExpenseController::class, 'index'])->name('purchase.index');
-    Route::get('/create', [PurchaseController::class, 'create'])->name('purchase.create');
-    Route::post('/', [PurchaseController::class, 'store'])->name('purchase.store');
-    Route::get('/{purchase:slug}/edit', [PurchaseController::class, 'edit'])->name('purchase.edit');
-    Route::post('/{purchase:slug}/items', [PurchaseController::class, 'createOrUpdateItems'])->name('purchase.items');
-    Route::patch('/{purchase:slug}', [PurchaseController::class, 'update'])->name('purchase.update');
-    Route::delete('/{purchase:slug}', [PurchaseController::class, 'destroy'])->name('purchase.destroy');
 });
 
 

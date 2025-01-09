@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeRequest;
 use App\Models\Account;
+use App\Models\Budget;
 use App\Models\Income;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
@@ -20,9 +21,12 @@ class IncomeController extends Controller
     {
         $this->authorize('viewAny', Income::class);
 
+        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+        $accounts = $budget->accounts->pluck('id')->toArray();
+
         $search = $request->input('search');
 
-        $query = Income::with(['user', 'account'])->orderBy('created_at', 'desc');
+        $query = Income::with(['user', 'account'])->whereIn('account_id', $accounts)->orderBy('created_at', 'desc');
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')

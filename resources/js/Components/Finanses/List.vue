@@ -72,6 +72,7 @@ const formatValue = (value, currency = null, type = '', key = '') => {
 
     // If it's a string or other type, pass it through the translation filter
     return t(value); // Translate text keys
+    // return value; // Translate text keys
 };
 
 const getRoute = (type, action, slug = '') => {

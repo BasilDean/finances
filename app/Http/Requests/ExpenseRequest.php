@@ -11,6 +11,7 @@ class ExpenseRequest extends FormRequest
         return [
             'title' => ['required'],
             'amount' => ['required', 'numeric'],
+            'has_items' => ['required'],
         ];
     }
 

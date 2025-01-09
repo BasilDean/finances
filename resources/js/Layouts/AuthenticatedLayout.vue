@@ -12,7 +12,6 @@ import {
     MinusCircleIcon,
     PaperAirplaneIcon,
     PlusCircleIcon,
-    ShoppingCartIcon,
     UserCircleIcon,
 } from '@heroicons/vue/24/outline';
 
@@ -26,12 +25,6 @@ const links = [
         description: 'добавить новый расход',
         href: route('expense.create'),
         icon: MinusCircleIcon,
-    },
-    {
-        name: 'Покупку',
-        description: 'добавить новую покупку',
-        href: route('purchase.create'),
-        icon: ShoppingCartIcon,
     },
     {
         name: 'Доход',
@@ -207,8 +200,9 @@ const showingNavigationDropdown = ref(false);
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('budgets.index')"
-                                            v-html="$t('change budget')"
-                                        />
+                                        >
+                                            $t('change budget')
+                                        </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             as="button"
