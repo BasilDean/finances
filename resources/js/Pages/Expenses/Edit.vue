@@ -1,9 +1,9 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Edit from '@/Components/Finanses/Edit.vue';
 
 import ItemList from '@/Components/Purchases/ItemList.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     expense: {
@@ -27,7 +27,7 @@ defineProps({
 <template>
     <Head :title="'Редактировать ' + expense.title" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <div v-if="expense.has_items">
             <ItemList
                 :currency="expense.currency"
@@ -39,5 +39,5 @@ defineProps({
             />
         </div>
         <Edit :fields="fields" :item="expense" type="expense" />
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import List from '@/Components/Finanses/List.vue';
 
 import { ArrowUturnLeftIcon } from '@heroicons/vue/24/outline/index.js';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     items: {
@@ -36,7 +36,7 @@ const goBack = () => {
 <template>
     <Head :title="account.title" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <div class="py-6">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-3 lg:px-4">
                 <div class="bg-gray-800 py-3 sm:py-4">
@@ -66,5 +66,5 @@ const goBack = () => {
                 />
             </div>
         </div>
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

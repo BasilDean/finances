@@ -201,7 +201,7 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink
                                             :href="route('budgets.index')"
                                         >
-                                            $t('change budget')
+                                            {{ $t('change budget') }}
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
@@ -297,9 +297,9 @@ const showingNavigationDropdown = ref(false);
             </header>
 
             <!-- Page Content -->
-            <main>
+            <div id="testa">
                 <slot />
-            </main>
+            </div>
         </div>
     </div>
 </template>

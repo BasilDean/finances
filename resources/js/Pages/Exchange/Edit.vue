@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Edit from '@/Components/Finanses/Edit.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     item: {
@@ -23,7 +23,7 @@ defineProps({
 <template>
     <Head title="Редактировать перевод" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <Edit :fields="fields" :item="item" type="exchanges" />
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

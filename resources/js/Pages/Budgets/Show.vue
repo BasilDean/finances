@@ -1,9 +1,9 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 import ShortList from '@/Components/Finanses/ShortList.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     budget: {
@@ -27,7 +27,7 @@ defineProps({
 <template>
     <Head title="Budgets" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                 <div class="rounded-lg bg-slate-800 py-6 sm:py-8">
@@ -101,5 +101,5 @@ defineProps({
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

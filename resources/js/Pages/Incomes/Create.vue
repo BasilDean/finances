@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Create from '@/Components/Finanses/Create.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     status: {
@@ -17,11 +17,11 @@ defineProps({
 <template>
     <Head title="Создать новый счёт" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <Create
             :fields="fields"
             :title="$t('create new income')"
             type="income"
         />
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

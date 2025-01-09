@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import List from '@/Components/Finanses/List.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     expenses: {
@@ -23,7 +23,7 @@ defineProps({
 <template>
     <Head title="Расходы" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <template #header>
             <div class="align-center flex justify-between">
                 <h2
@@ -56,5 +56,5 @@ defineProps({
                 />
             </div>
         </div>
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

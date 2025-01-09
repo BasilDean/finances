@@ -1,8 +1,8 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import List from '@/Components/Finanses/List.vue';
 import CreateButton from '@/Components/Finanses/CreateButton.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     fields: {
@@ -26,7 +26,7 @@ const type = 'accounts';
 <template>
     <Head title="Личные счета" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <template #header>
             <div class="align-center flex justify-between">
                 <h2
@@ -49,5 +49,5 @@ const type = 'accounts';
                 />
             </div>
         </div>
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

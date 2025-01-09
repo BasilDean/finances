@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Edit from '@/Components/Finanses/Edit.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     income: {
@@ -21,7 +21,7 @@ defineProps({
 <template>
     <Head :title="'Редактировать ' + income.title" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <Edit :fields="fields" :item="income" type="income" />
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

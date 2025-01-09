@@ -4,27 +4,10 @@ const notifications = [
         message: "Hey, what's up? All set for the presentation?",
         time: 'a few moments ago',
     },
-    {
-        message: 'started following you.',
-        time: '10 minutes ago',
-    },
-    {
-        message: 'love your story. See it and view more stories.',
-        time: '44 minutes ago',
-    },
-    {
-        message: 'mentioned you in a comment: @bonnie.green what do you say?',
-        time: '1 hour ago',
-    },
-    {
-        message:
-            'posted a new video: Glassmorphism - learn how to implement the new design trend.',
-        time: '3 hours ago',
-    },
 ];
 
 const showNotifications = () => {
-    document.getElementById('notification-dropdown').classList.toggle('hidden');
+    // document.getElementById('notification-dropdown').classList.toggle('hidden');
 };
 </script>
 

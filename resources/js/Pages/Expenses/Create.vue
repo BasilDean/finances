@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Create from '@/Components/Finanses/Create.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
     status: {
@@ -21,12 +21,12 @@ defineProps({
 <template>
     <Head title="Создать новый расход" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <Create
             :fields="fields"
             :resetFields="resetFields"
             :title="$t('create new expense')"
             type="expense"
         />
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>
