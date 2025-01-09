@@ -31,9 +31,19 @@ class Income extends Model
             $income->slug = $lastIncomeId + 1;
         });
         static::created(static function ($income) {
-            $account = Account::find($income->account_id);
+            $account_id = $income->account_id;
+            $account = Account::find($account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount + $amount]);
+            Operation::create([
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'operation_type' => 'income',
+                'operation_id' => $income->id,
+                'description' => $income->title,
+                'balance_after' => $account->amount,
+                'performed_at' => $income->updated_at,
+            ]);
         });
         static::updating(static function ($income) {
             $income->normalized_title = mb_strtolower($income->title);
@@ -42,14 +52,32 @@ class Income extends Model
             $account->update(['amount' => $account->amount - $amount]);
         });
         static::updated(static function ($income) {
-            $account = Account::find($income->account_id);
+            $account_id = $income->account_id;
+            $account = Account::find($account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount + $amount]);
+            $operation = Operation::where('operation_id', $income->id)
+                ->where('operation_type', 'income')
+                ->first();
+            $operation->update([
+                'account_id' => $account_id,
+                'amount' => $amount,
+                'balance_after' => $account->amount,
+                'description' => $income->title,
+                'performed_at' => $income->updated_at,
+            ]);
         });
         static::deleting(static function ($income) {
             $account = Account::find($income->account_id);
             $amount = $income->amount;
             $account->update(['amount' => $account->amount - $amount]);
+
+
+            $operation = Operation::where('operation_id', $income->id)
+                ->where('operation_type', 'income')
+                ->first();
+
+            $operation->delete();
         });
     }
 

@@ -111,8 +111,8 @@ class IncomeController extends Controller
             'currency' => $income->currency,
             'created_at' => $income->created_at->format('H:i d-m-Y'),
             'source' => $income->source,
-            'user' => $income->user->name ?? null, // Extract user's name
-            'account' => $income->account->title ?? null, // Extract account's title
+            'user' => $income->user ?? null, // Extract user's name
+            'account' => $income->account ?? null, // Extract account's title
         ];
         return Inertia::render('Incomes/Edit', [
             'income' => $incomeData,
@@ -125,6 +125,12 @@ class IncomeController extends Controller
         $this->authorize('update', $income);
 
         $income->update($request->validated());
+
+        $income->account_id = $request->account['id'];
+
+        $income->user_id = $request->user['id'];
+
+        $income->save();
 
         return redirect()->route('income.edit', $income->slug)->with('status', 'Income updated.');
     }
