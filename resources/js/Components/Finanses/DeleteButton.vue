@@ -28,7 +28,7 @@ const deleteItem = (type, slug, title) => {
         `title = ${title} slug = ${slug} type = ${type} getDeleteRoute(type, slug) = ${getDeleteRoute(type, slug)}`,
     );
     const confirmation = prompt('Чтобы удалить запись введите её название');
-    if (confirmation === title) {
+    if (confirmation == title) {
         deleteForm.delete(getDeleteRoute(type, slug));
     } else {
         alert('Название введено не верно!');

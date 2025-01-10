@@ -114,7 +114,7 @@ class AccountController extends Controller
                 'kind' => 'income'
             ];
         });
-        $items = collect([...$expenses, ...$incomes])->sortByDesc('date');
+        $items = collect([...$expenses, ...$incomes])->sortBy('created_at');
 
         $totalItems = $items->count();
         $currentPage = LengthAwarePaginator::resolveCurrentPage();

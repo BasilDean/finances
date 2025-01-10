@@ -14,6 +14,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import debounce from 'lodash/debounce';
 import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
+import { round } from 'lodash';
 
 const { t } = useI18n(); // Enable translations in the script
 
@@ -55,6 +56,9 @@ const props = defineProps({
 
 const formatValue = (value, currency = null, type = '', key = '') => {
     // If it's a number, format it (e.g., with a locale-specific grouping)
+    if (key === 'credit_percent' || key === 'exchange_rate') {
+        return round(value, 2);
+    }
     if (type === 'number' && key !== 'credit_percent') {
         return new Intl.NumberFormat('ru-RU', {
             style: 'currency', // Use currency format
@@ -294,7 +298,11 @@ if (props.type) {
                             {{
                                 formatValue(
                                     item[key],
-                                    item.currency,
+                                    key === 'amount_from'
+                                        ? item.currency_from
+                                        : key === 'amount_to'
+                                          ? item.currency_to
+                                          : item.currency,
                                     params.type,
                                     key,
                                 )
@@ -304,7 +312,11 @@ if (props.type) {
                             {{
                                 formatValue(
                                     item[key],
-                                    item.currency,
+                                    key === 'amount_from'
+                                        ? item.currency_from
+                                        : key === 'amount_to'
+                                          ? item.currency_to
+                                          : item.currency,
                                     params.type,
                                     key,
                                 )

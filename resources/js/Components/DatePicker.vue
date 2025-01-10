@@ -1,37 +1,28 @@
 <script setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { ref } from 'vue';
 
-defineProps({
-    range: {
-        required: false,
-        type: Boolean,
-        default: false,
-    },
+const model = defineModel({
+    type: Date,
+    required: true,
 });
 
-// Define the model value as a date
-const model = ref(new Date());
-
-// Convert a custom formatted string to a Date object
-const parseStringToDate = (dateString) => {
-    const [time, date] = dateString.split(' ');
-    const [hour, minute] = time.split(':').map(Number);
-    const [day, month, year] = date.split('-').map(Number);
-
-    return new Date(year, month - 1, day, hour, minute);
+// Custom format function to display date as DD-MM-YYYY
+const formatDate = (date) => {
+    if (!date) return '';
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`; // Format as DD-MM-YYYY
 };
-
-// Watch or initialize model value in case input is a preformatted string
-if (typeof model.value === 'string') {
-    model.value = parseStringToDate(model.value); // Convert the string to a Date object
-}
 </script>
 
 <template>
     <div>
-        <VueDatePicker v-model="model"></VueDatePicker>
+        <VueDatePicker v-model="model" :format="formatDate"></VueDatePicker>
     </div>
 </template>
 

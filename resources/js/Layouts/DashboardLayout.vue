@@ -142,7 +142,7 @@ const showSubmenu = (id) => {
 </script>
 
 <template>
-    <div class="bg-gray-50 antialiased dark:bg-gray-900">
+    <div class="h-full min-h-screen bg-gray-50 antialiased dark:bg-gray-900">
         <nav
             class="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white px-4 py-2.5 dark:border-gray-700 dark:bg-gray-800"
         >
@@ -507,7 +507,7 @@ const showSubmenu = (id) => {
             </div>
         </aside>
 
-        <main class="h-screen p-4 pt-20 md:ml-64">
+        <main class="h-full min-h-screen p-4 pt-20 md:ml-64">
             <slot />
         </main>
     </div>

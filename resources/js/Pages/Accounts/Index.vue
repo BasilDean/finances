@@ -27,19 +27,16 @@ const type = 'accounts';
     <Head title="Личные счета" />
 
     <DashboardLayout>
-        <template #header>
-            <div class="align-center flex justify-between">
-                <h2
-                    class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
-                >
-                    Личные счета
-                </h2>
-                <CreateButton :route="route(type + '.create')" />
-            </div>
-        </template>
-
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                <div class="align-center flex justify-between">
+                    <h2
+                        class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
+                    >
+                        Личные счета
+                    </h2>
+                    <CreateButton :route="route(type + '.create')" />
+                </div>
                 <List
                     :fields="fields"
                     :filters="filters"

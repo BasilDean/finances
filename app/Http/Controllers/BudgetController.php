@@ -86,10 +86,10 @@ class BudgetController extends Controller
         $accountIds = $budget->accounts()->pluck('account_id')->toArray();
 
         $lastIncomes = Income::whereIn('account_id', $accountIds)
-            ->select('title', 'slug', 'amount', 'currency')->orderBy('updated_at', 'desc')->take(3)->get();
+            ->select('title', 'slug', 'amount', 'currency')->orderBy('created_at', 'desc')->take(3)->get();
 
         $lastExpenses = Expense::whereIn('account_id', $accountIds)
-            ->select('title', 'slug', 'amount', 'currency')->orderBy('updated_at', 'desc')->take(15)->get();
+            ->select('title', 'slug', 'amount', 'currency')->orderBy('created_at', 'desc')->take(15)->get();
 
         return Inertia::render('Budgets/Show', [
             'status' => session('status'),

@@ -80,6 +80,7 @@ class ExpenseController extends Controller
         $expense->user_id = $user_id;
         $expense->currency = $currency;
         $expense->account_id = $account_id;
+        $expense->created_at = $request->created_at;
         $expense->save();
 
         $expense->categories()->sync($request->source['id']);

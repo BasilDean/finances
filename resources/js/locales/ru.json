@@ -38,6 +38,7 @@
     "source": "Категория",
     "change budget": "Сменить бюджет",
     "created_at": "Дата",
+    "updated_at": "Дата",
     "Add product": "Добавить товар",
     "quantity": "Колличество",
     "price": "Цена",

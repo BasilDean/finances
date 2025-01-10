@@ -22,6 +22,7 @@ class Exchange extends Model
         'user_id',
         'income_id',
         'expense_id',
+        'created_at',
     ];
 
     public static function boot()
@@ -58,12 +59,20 @@ class Exchange extends Model
         static::updating(function ($exchange) {
             if ($exchange->getOriginal('amount_from') && $exchange->getOriginal('amount_from') != $exchange->amount_from) {
                 $exchange->expense->amount = $exchange->amount_from;
-                $exchange->expense->save();
             }
             if ($exchange->getOriginal('amount_to') && $exchange->getOriginal('amount_to') != $exchange->amount_to) {
                 $exchange->income->amount = $exchange->amount_to;
-                $exchange->income->save();
             }
+            $exchange->income->created_at = $exchange->created_at;
+            $exchange->income->currency = $exchange->currency_to;
+            $exchange->income->account()->associate($exchange->account_to);
+            $exchange->income->user()->associate($exchange->user_id);
+            $exchange->income->save();
+            $exchange->expense->created_at = $exchange->created_at;
+            $exchange->expense->currency = $exchange->currency_from;
+            $exchange->expense->account()->associate($exchange->account_from);
+            $exchange->expense->user()->associate($exchange->user_id);
+            $exchange->expense->save();
         });
         static::updated(function ($exchange) {
         });

@@ -72,6 +72,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
+            'created_at' => $request->created_at,
         ];
 
         $exchange = Exchange::create($data);
@@ -142,6 +143,7 @@ class ExchangeController extends Controller
 
     public function update(ExchangeRequest $request, Exchange $exchange)
     {
+//        dd($request->created_at);
         $this->authorize('update', $exchange);
 
         $currencyFrom = $request->account_from['currency'];
@@ -159,9 +161,12 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
+            'created_at' => $request->created_at,
         ];
 //        dd($data);
         $exchange->update($data);
+//        $exchange->created_at = $request->created_at;
+//        $exchange->save();
 
         $exchange->accountFrom()->associate($request->account_from['id']);
         $exchange->accountTo()->associate($request->account_to['id']);

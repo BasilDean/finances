@@ -12,8 +12,8 @@ import {
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline/index.js';
 import { mapValues } from 'lodash';
-import DatePicker from '@/Components/DatePicker.vue';
 import { reactive, watch } from 'vue';
+import DatePicker from '@/Components/DatePicker.vue';
 
 const props = defineProps({
     fields: {
@@ -82,6 +82,12 @@ watch(
         }
     },
 );
+
+// Format a date object to a custom string (if needed for display or API)
+const formatDateToString = (date) => {
+    const pad = (num) => num.toString().padStart(2, '0');
+    return `${pad(date.getHours())}:${pad(date.getMinutes())} ${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+};
 
 const createItem = () => {
     form.post(route(props.type + '.store'));
@@ -153,8 +159,10 @@ const createItem = () => {
                                                 v-else-if="
                                                     params.type === 'date'
                                                 "
+                                                :id="key"
                                                 v-model="form[key]"
-                                                options=""
+                                                :model-value="form[key]"
+                                                :name="key"
                                             />
                                             <TextInput
                                                 v-else

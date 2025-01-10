@@ -19,6 +19,7 @@ class Expense extends Model
         'amount',
         'has_items',
         'currency',
+        'created_at',
     ];
 
     public static function boot(): void

@@ -107,7 +107,10 @@ const createBudget = () => {
                                                     v-else-if="
                                                         params.type === 'date'
                                                     "
+                                                    :id="key"
                                                     v-model="form[key]"
+                                                    :model-value="form[key]"
+                                                    :name="key"
                                                 />
                                                 <TextInput
                                                     v-else

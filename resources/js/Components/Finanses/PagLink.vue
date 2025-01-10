@@ -30,7 +30,7 @@ defineProps({
             "
             :href="link"
         >
-            {{ text }}
+            <span v-html="text" />
         </Link>
         <span
             v-else

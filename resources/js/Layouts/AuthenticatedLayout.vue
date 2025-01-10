@@ -297,9 +297,9 @@ const showingNavigationDropdown = ref(false);
             </header>
 
             <!-- Page Content -->
-            <div id="testa">
+            <main>
                 <slot />
-            </div>
+            </main>
         </div>
     </div>
 </template>

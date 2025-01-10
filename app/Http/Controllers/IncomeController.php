@@ -44,6 +44,7 @@ class IncomeController extends Controller
                 'amount' => $income->amount,
                 'currency' => $income->currency,
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
+                'updated_at' => $income->created_at->format('H:i d-m-Y'),
                 'source' => $income->source,
                 'user' => $income->user->name ?? null, // Extract user's name
                 'account' => $income->account->title ?? null, // Extract account's title
@@ -82,6 +83,7 @@ class IncomeController extends Controller
         $income->user_id = $user_id;
         $income->currency = $currency;
         $income->account_id = $account_id;
+        $income->created_at = $request->created_at;
         $income->save();
 
         $account->amount += $request->amount;
@@ -129,10 +131,11 @@ class IncomeController extends Controller
         $income->account_id = $request->account['id'];
 
         $income->user_id = $request->user['id'];
+        $income->created_at = $request->created_at;
 
         $income->save();
 
-        return redirect()->route('income.edit', $income->slug)->with('status', 'Income updated.');
+        return redirect()->route('income.index')->with('status', 'Income updated.');
     }
 
     public function destroy(Income $income): RedirectResponse
