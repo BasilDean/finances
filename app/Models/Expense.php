@@ -27,6 +27,8 @@ class Expense extends Model
         parent::boot();
 
         static::creating(static function ($expense) {
+            
+            $expense->title = ucfirst($expense->title);
             $expense->normalized_title = mb_strtolower($expense->title);
             $lastIncomeId = Expense::withTrashed()->latest('id')->value('id') ?? 0;
             $expense->slug = $lastIncomeId + 1;

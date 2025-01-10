@@ -1,14 +1,36 @@
 <script setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { onMounted } from 'vue';
 
-const model = defineModel({
-    type: Date,
-    required: true,
+const props = defineProps({
+    range: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+const date = defineModel(
+    {
+        type: [Date, Array],
+        required: true,
+    },
+    'date',
+);
+
+onMounted(() => {
+    if (props.range) {
+        const startDate = new Date();
+        const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
+        date.value = [startDate, endDate];
+    } else {
+        date.value = new Date();
+    }
 });
 
 // Custom format function to display date as DD-MM-YYYY
 const formatDate = (date) => {
+    if (props.range) return;
     if (!date) return '';
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
@@ -22,7 +44,7 @@ const formatDate = (date) => {
 
 <template>
     <div>
-        <VueDatePicker v-model="model" :format="formatDate"></VueDatePicker>
+        <VueDatePicker v-model="date" :range @change="formatDate" />
     </div>
 </template>
 

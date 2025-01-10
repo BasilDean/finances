@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Budget;
 use App\Models\Expense;
 use App\Models\PurchaseItem;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,18 +30,57 @@ class ExpenseController extends Controller
 
 
         $search = $request->input('search');
+        $period = $request->input('period');
+        $range = $request->input('range');
 
 
-        $query = Expense::with(['user', 'account'])->whereIn('account_id', $accounts)->orderBy('created_at', 'desc');
+        $query = Expense::with(['user', 'account'])->whereIn('account_id', $accounts);
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('normalized_title', 'like', '%' . $search . '%')
+                    ->orWhere('title', 'like', '%' . $search . '%')
                     ->orWhere('amount', 'like', '%' . $search . '%')
                     ->orWhere('currency', 'like', '%' . $search . '%');
             });
         }
+        if (!$period || $period === 'week') {
+            $startOfWeek = auth()->user()->settings['start_of_the_week'] ?? 'monday';
 
-        $expenses = $query->paginate(20);
+
+// Map day names to Carbon constants
+            $daysOfWeek = [
+                'sunday' => Carbon::SUNDAY,
+                'monday' => Carbon::MONDAY,
+                'tuesday' => Carbon::TUESDAY,
+                'wednesday' => Carbon::WEDNESDAY,
+                'thursday' => Carbon::THURSDAY,
+                'friday' => Carbon::FRIDAY,
+                'saturday' => Carbon::SATURDAY,
+            ];
+
+// Determine the start date from the user's preference
+            $startDate = Carbon::now()->startOfWeek($daysOfWeek[$startOfWeek]);
+
+// Determine the end date (7 days after the start of the week)
+            $endDate = $startDate->copy()->addDays(6);
+
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } elseif ($period === 'month') {
+            $query->whereMonth('created_at', Carbon::now()->month);
+        } elseif ($period === 'year') {
+            $query->whereYear('created_at', Carbon::now()->year);
+        } elseif ($period === 'custom') {
+            if ($range) {
+//                $range = explode(' - ', $range);
+                $startDate = Carbon::parse($range[0]);
+                $endDate = Carbon::parse($range[1]);
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+        }
+        $query->orderBy('created_at', 'desc');
+
+
+        $expenses = $query->paginate(20)->appends($request->all());
         $expenses->getCollection()->transform(function ($expense) {
             return [
                 'id' => $expense->id,
@@ -61,9 +101,10 @@ class ExpenseController extends Controller
         return Inertia::render('Expenses/Index', [
             'expenses' => $expenses,
             'fields' => $fields,
-            'filters' => request()->all('search'),
+            'filters' => request()->all(),
         ]);
     }
+
 
     public function store(ExpenseRequest $request)
     {
@@ -153,8 +194,10 @@ class ExpenseController extends Controller
             if ($item['id']) {
                 $expenseItem = PurchaseItem::findOrFail($item['id']);
                 $expenseItem->update($item);
+                $expenseItem->title = ucfirst($expenseItem->title);
                 $expenseItem->save();
             } else {
+                $item['title'] = ucfirst($item['title']);
                 $expense->items()->create($item);
                 $expense->save();
             }

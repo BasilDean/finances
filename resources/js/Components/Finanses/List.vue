@@ -4,17 +4,11 @@ import Paginator from '@/Components/Finanses/Paginator.vue';
 import { onMounted, ref, watch } from 'vue';
 
 import { useI18n } from 'vue-i18n';
-import {
-    Listbox,
-    ListboxButton,
-    ListboxOption,
-    ListboxOptions,
-} from '@headlessui/vue';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import debounce from 'lodash/debounce';
 import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 import { round } from 'lodash';
+import DatePicker from '@/Components/DatePicker.vue';
 
 const { t } = useI18n(); // Enable translations in the script
 
@@ -55,16 +49,15 @@ const props = defineProps({
 });
 
 const formatValue = (value, currency = null, type = '', key = '') => {
-    // If it's a number, format it (e.g., with a locale-specific grouping)
     if (key === 'credit_percent' || key === 'exchange_rate') {
         return round(value, 2);
     }
     if (type === 'number' && key !== 'credit_percent') {
         return new Intl.NumberFormat('ru-RU', {
-            style: 'currency', // Use currency format
-            currency: currency ?? 'RUB', // Adjust currency code as needed
-            minimumFractionDigits: 1, // Always show two decimal places
-        }).format(value); // Example output: "1 234 567,89 ₽"
+            style: 'currency',
+            currency: currency ?? 'RUB',
+            minimumFractionDigits: 1,
+        }).format(value);
     }
     if (typeof value === 'boolean') {
         if (value) {
@@ -73,10 +66,7 @@ const formatValue = (value, currency = null, type = '', key = '') => {
             return t('no');
         }
     }
-
-    // If it's a string or other type, pass it through the translation filter
     return t(value); // Translate text keys
-    // return value; // Translate text keys
 };
 
 const getRoute = (type, action, slug = '') => {
@@ -89,36 +79,49 @@ const getRoute = (type, action, slug = '') => {
 const filterDates = [
     {
         id: 1,
-        name: 'За всё время',
+        name: 'За последнюю неделю',
+        value: 'week',
     },
     {
         id: 2,
-        name: 'За последнюю неделю',
+        name: 'За последний месяц',
+        value: 'month',
     },
     {
         id: 3,
-        name: 'За последний месяц',
+        name: 'За последний год',
+        value: 'year',
     },
     {
         id: 4,
-        name: 'За последний год',
+        name: 'За всё время',
+        value: 'all',
     },
     {
         id: 5,
         name: 'За произвольный период',
+        value: 'custom',
     },
 ];
 
-const selected = ref(filterDates[0]);
 const search = ref('');
+const period = ref('week');
+const range = ref([]);
 
 const { url } = usePage();
 
 if (props.type) {
-    const updateSearch = debounce(() => {
+    const updateFilters = debounce(() => {
+        const data = {
+            search: search.value,
+            period: period.value,
+        };
+        if (period.value === 'custom') {
+            data.range = range.value;
+        }
         router.visit(url, {
             method: 'get',
-            data: { search: search.value },
+            data: data,
             preserveState: true,
             replace: true,
         });
@@ -126,96 +129,25 @@ if (props.type) {
 
     onMounted(() => {
         search.value = props.filters.search || '';
+        period.value = props.filters.period || 'week';
+        range.value = props.filters.range || [];
     });
 
     // Watch for changes in search and trigger the debounced update
-    watch(search, updateSearch);
+    watch(search, updateFilters);
+    watch(period, updateFilters);
+    watch(range, updateFilters);
 }
 </script>
 
 <template>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div
+        class="relative min-h-screen min-w-full overflow-x-auto shadow-md sm:rounded-lg"
+    >
         <div
             v-if="filters"
-            class="flex-column flex flex-wrap items-center justify-between space-y-4 pb-4 sm:flex-row sm:space-y-0"
+            class="flex-column flex flex-wrap items-start justify-start space-x-3 space-y-0 pb-4 sm:flex-row sm:space-y-0"
         >
-            <div v-if="filterByDate && filterDates.length > 0" class="w-80">
-                <Listbox v-model="selected" as="div">
-                    <div class="relative mt-2">
-                        <ListboxButton
-                            class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm/6"
-                        >
-                            <span class="flex items-center">
-                                <span class="ml-3 block truncate">{{
-                                    selected.name
-                                }}</span>
-                            </span>
-                            <span
-                                class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2"
-                            >
-                                <ChevronUpDownIcon
-                                    aria-hidden="true"
-                                    class="size-5 text-gray-400"
-                                />
-                            </span>
-                        </ListboxButton>
-
-                        <transition
-                            leave-active-class="transition ease-in duration-100"
-                            leave-from-class="opacity-100"
-                            leave-to-class="opacity-0"
-                        >
-                            <ListboxOptions
-                                class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
-                            >
-                                <ListboxOption
-                                    v-for="person in filterDates"
-                                    :key="person.id"
-                                    v-slot="{ active, selected }"
-                                    :value="person"
-                                    as="template"
-                                >
-                                    <li
-                                        :class="[
-                                            active
-                                                ? 'bg-indigo-600 text-white'
-                                                : 'text-gray-900',
-                                            'relative cursor-default select-none py-2 pl-3 pr-9',
-                                        ]"
-                                    >
-                                        <div class="flex items-center">
-                                            <span
-                                                :class="[
-                                                    selected
-                                                        ? 'font-semibold'
-                                                        : 'font-normal',
-                                                    'ml-3 block truncate',
-                                                ]"
-                                                >{{ person.name }}</span
-                                            >
-                                        </div>
-
-                                        <span
-                                            v-if="selected"
-                                            :class="[
-                                                active
-                                                    ? 'text-white'
-                                                    : 'text-indigo-600',
-                                                'absolute inset-y-0 right-0 flex items-center pr-4',
-                                            ]"
-                                        >
-                                            <CheckIcon
-                                                aria-hidden="true"
-                                                class="size-5"
-                                            />
-                                        </span>
-                                    </li>
-                                </ListboxOption>
-                            </ListboxOptions>
-                        </transition>
-                    </div>
-                </Listbox>
-            </div>
             <div v-if="showSearch">
                 <label class="sr-only" for="table-search">{{
                     $t('search')
@@ -250,9 +182,24 @@ if (props.type) {
                     />
                 </div>
             </div>
+            <div v-if="filterByDate && filterDates.length > 0" class="w-60">
+                <select v-model="period" class="w-100 rounded" name="period">
+                    <option
+                        v-for="item in filterDates"
+                        :key="item.id"
+                        :selected="filters.period === item.value"
+                        :value="item.value"
+                    >
+                        {{ item.name }}
+                    </option>
+                </select>
+            </div>
+            <div v-if="period === 'custom'" class="w-80">
+                <DatePicker v-model="range" range />
+            </div>
         </div>
         <table
-            class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+            class="min-h-full w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
         >
             <thead
                 class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
@@ -290,9 +237,7 @@ if (props.type) {
                     >
                         <Link
                             v-if="showDetailPage"
-                            :href="
-                                getRoute(item.kind ?? type, 'show', item.slug)
-                            "
+                            :href="getRoute(type, 'show', item.slug)"
                             class="block px-3 py-1 sm:px-3 sm:py-3"
                         >
                             {{
@@ -328,14 +273,11 @@ if (props.type) {
                         <div
                             class="flex justify-end gap-4 px-1 py-1 sm:px-3 sm:py-3"
                         >
-                            <EditButton
-                                :slug="item.slug"
-                                :type="item.kind ?? type"
-                            />
+                            <EditButton :slug="item.slug" :type="type" />
                             <DeleteButton
                                 :slug="item.slug"
                                 :title="item.title"
-                                :type="item.kind ?? type"
+                                :type="type"
                             />
                         </div>
                     </td>

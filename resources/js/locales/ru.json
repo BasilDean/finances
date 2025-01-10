@@ -7,6 +7,7 @@
     "search": "Поиск",
     "add": "Добавить",
     "budgets": "Бюджеты",
+    "budget": "Бюджет по умолчанию",
     "create new budget": "Добавить новый бюджет",
     "create new expense": "Добавить новый расход",
     "create new account": "Добавить новый счёт",
@@ -65,5 +66,19 @@
     "false": "Нет",
     "total": "Всего",
     "deadline": "Крайняя дата",
-    "has_items": "Содержит элементы"
+    "has_items": "Содержит элементы",
+    "profile Information": "Информация профиля",
+    "Update your account's profile information and email address.": "Обновите информацию в профиле своей учётной записи и адрес электронной почты.",
+    "name": "имя",
+    "Your email address is unverified.": "Ваш адрес электронной почты не подтверждён.",
+    "Click here to re-send the verification email.": "Нажмите здесь, чтобы отправить письмо для подтверждения ещё раз.",
+    "A new verification link has been sent to your email address.": "На ваш адрес электронной почты отправлена новая ссылка для верификации.",
+    "start of the week": "Начало недели",
+    "monday": "Понедельник",
+    "tuesday": "Вторник",
+    "wednesday": "Среда",
+    "thursday": "Четверг",
+    "friday": "Пятница",
+    "saturday": "Суббота",
+    "sunday": "Воскресенье"
 }

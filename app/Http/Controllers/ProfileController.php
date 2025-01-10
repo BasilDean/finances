@@ -18,9 +18,15 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $budgets = $request->user()->budgets;
+        $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        $settings = $request->user()->settings;
         return Inertia::render('Profile/Edit', [
+            'budgets' => $budgets,
+            'weekdays' => $weekdays,
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'settings' => $settings,
         ]);
     }
 
@@ -34,6 +40,11 @@ class ProfileController extends Controller
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
+
+        $request->user()->settings()->update([
+            'active_budget' => $request->active_budget,
+            'start_of_the_week' => $request->startOfTheWeek,
+        ]);
 
         $request->user()->save();
 

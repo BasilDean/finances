@@ -24,8 +24,8 @@ defineProps({
     <Head title="Расходы" />
 
     <DashboardLayout>
-        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            <div class="py-6">
+        <div class="max-w-8xl mx-auto min-h-screen space-y-6 sm:px-2 lg:px-3">
+            <div class="min-h-screen py-6">
                 <div class="align-center flex justify-between">
                     <h2
                         class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
@@ -44,9 +44,11 @@ defineProps({
                 <List
                     v-if="expenses"
                     :fields="fields"
+                    :filterByDate="true"
                     :filters="filters"
                     :items="expenses"
                     :show-detail-page="false"
+                    class="min-h-screen"
                     type="expense"
                 />
             </div>
