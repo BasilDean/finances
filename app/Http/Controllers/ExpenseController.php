@@ -122,6 +122,7 @@ class ExpenseController extends Controller
         $expense->currency = $currency;
         $expense->account_id = $account_id;
         $expense->created_at = $request->created_at;
+        $expense->has_items = (bool)$request->has_items;
         $expense->save();
 
         $expense->categories()->sync($request->source['id']);
@@ -220,6 +221,8 @@ class ExpenseController extends Controller
 
         $expense->user_id = $request->user['id'];
         $expense->account_id = $request->account['id'];
+
+        $expense->has_items = (bool)$request->has_items;
         $expense->save();
 
         return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
