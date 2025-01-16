@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CurrencyRateRequest;
 use App\Models\CurrencyRate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class CurrencyRateController extends Controller
 {
@@ -40,7 +41,7 @@ class CurrencyRateController extends Controller
         return $currencyRate;
     }
 
-    public function destroy(CurrencyRate $currencyRate): \Illuminate\Http\JsonResponse
+    public function destroy(CurrencyRate $currencyRate): JsonResponse
     {
         $this->authorize('delete', $currencyRate);
 
