@@ -6,14 +6,16 @@ use App\Http\Requests\PaymentRequest;
 use App\Models\Budget;
 use App\Models\Payment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PaymentController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request): Response
     {
         $this->authorize('viewAny', Payment::class);
         $search = $request->input('search');
@@ -47,7 +49,7 @@ class PaymentController extends Controller
         return Payment::create($request->validated());
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', Payment::class);
         $fields = Payment::getFields();
@@ -73,7 +75,7 @@ class PaymentController extends Controller
         return $payment;
     }
 
-    public function destroy(Payment $payment): \Illuminate\Http\RedirectResponse
+    public function destroy(Payment $payment): RedirectResponse
     {
         $this->authorize('delete', $payment);
 
