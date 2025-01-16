@@ -17,21 +17,21 @@ class OperationController extends Controller
         return Operation::all();
     }
 
-    public function store(OperationRequest $request)
+    public function store(OperationRequest $request): Operation
     {
         $this->authorize('create', Operation::class);
 
         return Operation::create($request->validated());
     }
 
-    public function show(Operation $operation)
+    public function show(Operation $operation): Operation
     {
         $this->authorize('view', $operation);
 
         return $operation;
     }
 
-    public function update(OperationRequest $request, Operation $operation)
+    public function update(OperationRequest $request, Operation $operation): Operation
     {
         $this->authorize('update', $operation);
 
@@ -40,7 +40,7 @@ class OperationController extends Controller
         return $operation;
     }
 
-    public function destroy(Operation $operation)
+    public function destroy(Operation $operation): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $operation);
 
