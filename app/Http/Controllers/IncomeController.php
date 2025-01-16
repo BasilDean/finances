@@ -92,7 +92,7 @@ class IncomeController extends Controller
         return redirect()->route('income.index')->with('success', 'Income created.');
     }
 
-    public function show(Income $income)
+    public function show(Income $income): Income
     {
         $this->authorize('view', $income);
 
