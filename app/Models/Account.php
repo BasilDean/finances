@@ -88,7 +88,8 @@ class Account extends Model
                 if ($budget) {
                     $account->budgets()->attach($budget);
                     $total = $budget->getBudgetTotal();
-                    if ($budget->balance !== $total) {
+                    /** @noinspection TypeUnsafeComparisonInspection */
+                    if ($budget->balance != $total) {
                         $budget->updateBudgetTotal($total);
                     }
                 }
@@ -98,7 +99,8 @@ class Account extends Model
             if (auth()->user() && auth()->user()->settings) {
                 $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
                 $total = $budget->getBudgetTotal();
-                if ($budget->balance !== $total) {
+                /** @noinspection TypeUnsafeComparisonInspection */
+                if ($budget->balance != $total) {
                     $budget->updateBudgetTotal($total);
                 }
             }
@@ -106,7 +108,8 @@ class Account extends Model
         static::deleted(static function ($account) {
             $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
             $total = $budget->getBudgetTotal();
-            if ($budget->balance !== $total) {
+            /** @noinspection TypeUnsafeComparisonInspection */
+            if ($budget->balance != $total) {
                 $budget->updateBudgetTotal($total);
             }
         });
