@@ -72,7 +72,7 @@ class Budget extends Model
     public function getBudgetTotal(): string
     {
         $accountsArray = $this->accounts->toArray();
-        $total = array_reduce($accountsArray, function ($sum, $item) {
+        $total = array_reduce($accountsArray, callback: function ($sum, $item) {
             $currencyRate = new CurrencyRate();
 //            dd($item['currency'], $this->currency);
             if ($item['currency'] === $this->currency) {
@@ -87,7 +87,7 @@ class Budget extends Model
                 }
             }
             return $sum;
-        }, 0);
+        }, initial: 0);
         return $total;
     }
 
