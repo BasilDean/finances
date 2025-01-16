@@ -21,7 +21,7 @@ class ExchangeController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Inertia\Response
     {
         $this->authorize('viewAny', Exchange::class);
 
@@ -54,7 +54,7 @@ class ExchangeController extends Controller
         ]);
     }
 
-    public function store(ExchangeRequest $request)
+    public function store(ExchangeRequest $request): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('create', Exchange::class);
         $currencyFrom = $request->account_from['currency'];
@@ -94,7 +94,7 @@ class ExchangeController extends Controller
         return redirect()->route('exchanges.index')->with('success', 'Exchange created successfully');
     }
 
-    public function create()
+    public function create(): \Inertia\Response
     {
         $this->authorize('create', Exchange::class);
 
@@ -104,14 +104,14 @@ class ExchangeController extends Controller
         ]);
     }
 
-    public function show(Exchange $exchange)
+    public function show(Exchange $exchange): Exchange
     {
         $this->authorize('view', $exchange);
 
         return $exchange;
     }
 
-    public function edit(Exchange $exchange)
+    public function edit(Exchange $exchange): \Inertia\Response
     {
         $this->authorize('update', $exchange);
 
@@ -141,7 +141,7 @@ class ExchangeController extends Controller
         ]);
     }
 
-    public function update(ExchangeRequest $request, Exchange $exchange)
+    public function update(ExchangeRequest $request, Exchange $exchange): \Illuminate\Http\RedirectResponse
     {
 //        dd($request->created_at);
         $this->authorize('update', $exchange);
@@ -175,7 +175,7 @@ class ExchangeController extends Controller
         return redirect()->route('exchanges.index')->with('status', 'Exchange updated.');
     }
 
-    public function destroy(Exchange $exchange)
+    public function destroy(Exchange $exchange): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('delete', $exchange);
 
