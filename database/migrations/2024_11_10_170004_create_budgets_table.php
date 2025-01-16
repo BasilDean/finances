@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('budgets', function (Blueprint $table) {
+        Schema::create('budgets', static function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-env node */
 require("@rushstack/eslint-patch/modern-module-resolution")
 

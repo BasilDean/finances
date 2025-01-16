@@ -24,6 +24,7 @@ const i18n = createI18n({
     silentTranslationWarn: true,
 });
 
+// noinspection JSIgnoredPromiseFromCall
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>

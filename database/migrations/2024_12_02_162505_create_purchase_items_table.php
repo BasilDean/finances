@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('purchase_items', function (Blueprint $table) {
+        Schema::create('purchase_items', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('expense_id')->constrained('expenses')->cascadeOnDelete();
             $table->string('title');

@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseItemController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/', static function () {
 
     if (!auth()->check()) {
         return redirect()->route('login');
@@ -21,7 +21,7 @@ Route::get('/', function () {
     return redirect()->route('budgets.index');
 })->name('home');
 
-Route::get('/dashboard', function () {
+Route::get('/dashboard', static function () {
     if (auth()->user() && auth()->user() && auth()->user()->settings && auth()->user()->settings['active_budget']) {
         return redirect()->route('budgets.show', ['budget' => auth()->user()->settings['active_budget']]);
     }

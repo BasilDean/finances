@@ -65,7 +65,7 @@ class Account extends Model
     {
         parent::boot();
 
-        static::creating(function ($account) {
+        static::creating(static function ($account) {
             $slug = Str::slug($account->title);
             $originalSlug = $slug;
             $counter = 1;
@@ -79,10 +79,10 @@ class Account extends Model
             $account->normalized_title = mb_strtolower($account->title);
         });
 
-        static::updating(function ($account) {
+        static::updating(static function ($account) {
             $account->normalized_title = mb_strtolower($account->title);
         });
-        static::created(function ($account) {
+        static::created(static function ($account) {
             if (auth()->user() && auth()->user()->settings['active_budget']) {
                 $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
                 if ($budget) {
@@ -94,7 +94,7 @@ class Account extends Model
                 }
             }
         });
-        static::updated(function ($account) {
+        static::updated(static function ($account) {
             if (auth()->user() && auth()->user()->settings) {
                 $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
                 $total = $budget->getBudgetTotal();
@@ -103,7 +103,7 @@ class Account extends Model
                 }
             }
         });
-        static::deleted(function ($account) {
+        static::deleted(static function ($account) {
             $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {

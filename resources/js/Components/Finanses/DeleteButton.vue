@@ -28,6 +28,7 @@ const deleteItem = (type, slug, title) => {
         `title = ${title} slug = ${slug} type = ${type} getDeleteRoute(type, slug) = ${getDeleteRoute(type, slug)}`,
     );
     const confirmation = prompt('Чтобы удалить запись введите её название');
+    // noinspection EqualityComparisonWithCoercionJS
     if (confirmation == title) {
         deleteForm.delete(getDeleteRoute(type, slug));
     } else {

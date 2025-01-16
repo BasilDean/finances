@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('accounts', function (Blueprint $table) {
+        Schema::table('accounts', static function (Blueprint $table) {
 
             $table->string('normalized_title')->default('')->index();
         });
@@ -15,7 +15,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::table('accounts', function (Blueprint $table) {
+        Schema::table('accounts', static function (Blueprint $table) {
             $table->dropColumn('normalized_title');
         });
     }

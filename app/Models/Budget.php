@@ -48,7 +48,7 @@ class Budget extends Model
     {
         parent::boot();
 
-        static::creating(function ($budget) {
+        static::creating(static function ($budget) {
             $slug = Str::slug($budget->title);
             $originalSlug = $slug;
             $counter = 1;
@@ -61,7 +61,7 @@ class Budget extends Model
 
             $budget->slug = $slug;
         });
-        static::updating(function ($budget) {
+        static::updating(static function ($budget) {
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {
                 $budget->updateBudgetTotal($total);

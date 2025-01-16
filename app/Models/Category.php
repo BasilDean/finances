@@ -21,11 +21,11 @@ class Category extends Model
     {
         parent::boot();
 
-        static::creating(function ($category) {
+        static::creating(static function ($category) {
             $category->normalized_title = mb_strtolower($category->title);
         });
 
-        static::updating(function ($category) {
+        static::updating(static function ($category) {
             $category->normalized_title = mb_strtolower($category->title);
         });
     }

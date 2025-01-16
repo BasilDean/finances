@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
+        Schema::table('settings', static function (Blueprint $table) {
             $table->string('active_budget')->nullable();
         });
     }
 
     public function down(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
+        Schema::table('settings', static function (Blueprint $table) {
             $table->dropColumn('active_budget');
         });
     }

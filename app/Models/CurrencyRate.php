@@ -17,7 +17,9 @@ class CurrencyRate extends Model
 
     public function convertToRubbles($source, $amount)
     {
-        if ($source === 'RUB') return $amount;
+        if ($source === 'RUB') {
+            return $amount;
+        }
         return round($amount / self::where('code_from', 'RUB')->where('code_to', $source)->first()->rate, 2);
     }
 

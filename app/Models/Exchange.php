@@ -29,11 +29,11 @@ class Exchange extends Model
     {
         parent::boot();
 
-        static::creating(function ($exchange) {
+        static::creating(static function ($exchange) {
             $lastId = Exchange::withTrashed()->latest('id')->value('id') ?? 0;
             $exchange->slug = $lastId + 1;
         });
-        static::created(function ($exchange) {
+        static::created(static function ($exchange) {
             $expense = new Expense();
             $expense->title = 'currency exchange';
             $expense->amount = $exchange->amount_from;
@@ -56,7 +56,7 @@ class Exchange extends Model
             $exchange->update(['income_id' => $income->id, 'expense_id' => $expense->id]);
             $exchange->save();
         });
-        static::updating(function ($exchange) {
+        static::updating(static function ($exchange) {
             if ($exchange->getOriginal('amount_from') && $exchange->getOriginal('amount_from') != $exchange->amount_from) {
                 $exchange->expense->amount = $exchange->amount_from;
             }
@@ -74,9 +74,7 @@ class Exchange extends Model
             $exchange->expense->user()->associate($exchange->user_id);
             $exchange->expense->save();
         });
-        static::updated(function ($exchange) {
-        });
-        static::deleted(function ($exchange) {
+        static::deleted(static function ($exchange) {
             $income = Income::find($exchange->income_id);
             $expense = Expense::find($exchange->expense_id);
             $income->delete();

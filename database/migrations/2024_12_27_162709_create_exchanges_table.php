@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('exchanges', function (Blueprint $table) {
+        Schema::create('exchanges', static function (Blueprint $table) {
             $table->id();
             $table->float('amount_from');
             $table->foreignId('account_from')->constrained('accounts', 'id');
