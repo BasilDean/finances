@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class SettingController extends Controller
 {
@@ -40,7 +41,7 @@ class SettingController extends Controller
         return $setting;
     }
 
-    public function destroy(Setting $setting): \Illuminate\Http\JsonResponse
+    public function destroy(Setting $setting): JsonResponse
     {
         $this->authorize('delete', $setting);
 
