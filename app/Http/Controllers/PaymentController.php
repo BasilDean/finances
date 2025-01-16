@@ -13,7 +13,7 @@ class PaymentController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $this->authorize('viewAny', Payment::class);
         $search = $request->input('search');
@@ -40,14 +40,14 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function store(PaymentRequest $request)
+    public function store(PaymentRequest $request): Payment
     {
         $this->authorize('create', Payment::class);
 
         return Payment::create($request->validated());
     }
 
-    public function create()
+    public function create(): \Inertia\Response
     {
         $this->authorize('create', Payment::class);
         $fields = Payment::getFields();
@@ -57,14 +57,14 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function show(Payment $payment)
+    public function show(Payment $payment): Payment
     {
         $this->authorize('view', $payment);
 
         return $payment;
     }
 
-    public function update(PaymentRequest $request, Payment $payment)
+    public function update(PaymentRequest $request, Payment $payment): Payment
     {
         $this->authorize('update', $payment);
 
@@ -73,7 +73,7 @@ class PaymentController extends Controller
         return $payment;
     }
 
-    public function destroy(Payment $payment)
+    public function destroy(Payment $payment): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('delete', $payment);
 
