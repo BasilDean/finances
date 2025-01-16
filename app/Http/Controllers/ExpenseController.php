@@ -19,7 +19,7 @@ class ExpenseController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
 
         $this->authorize('viewAny', Expense::class);
@@ -141,7 +141,7 @@ class ExpenseController extends Controller
         ]);
     }
 
-    public function show(Expense $Expense)
+    public function show(Expense $Expense): Expense
     {
         $this->authorize('view', $Expense);
 
@@ -228,7 +228,7 @@ class ExpenseController extends Controller
         return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
     }
 
-    public function create()
+    public function create(): Response
     {
         $this->authorize('create', Expense::class);
 
