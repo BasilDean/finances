@@ -7,7 +7,9 @@ use App\Models\Exchange;
 use App\Models\User;
 use App\Services\CurrencyLayerService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ExchangeController extends Controller
 {
@@ -21,7 +23,7 @@ class ExchangeController extends Controller
     }
 
 
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Exchange::class);
 
@@ -54,7 +56,7 @@ class ExchangeController extends Controller
         ]);
     }
 
-    public function store(ExchangeRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(ExchangeRequest $request): RedirectResponse
     {
         $this->authorize('create', Exchange::class);
         $currencyFrom = $request->account_from['currency'];
@@ -94,7 +96,7 @@ class ExchangeController extends Controller
         return redirect()->route('exchanges.index')->with('success', 'Exchange created successfully');
     }
 
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $this->authorize('create', Exchange::class);
 
@@ -111,7 +113,7 @@ class ExchangeController extends Controller
         return $exchange;
     }
 
-    public function edit(Exchange $exchange): \Inertia\Response
+    public function edit(Exchange $exchange): Response
     {
         $this->authorize('update', $exchange);
 
@@ -141,7 +143,7 @@ class ExchangeController extends Controller
         ]);
     }
 
-    public function update(ExchangeRequest $request, Exchange $exchange): \Illuminate\Http\RedirectResponse
+    public function update(ExchangeRequest $request, Exchange $exchange): RedirectResponse
     {
 //        dd($request->created_at);
         $this->authorize('update', $exchange);
@@ -175,7 +177,7 @@ class ExchangeController extends Controller
         return redirect()->route('exchanges.index')->with('status', 'Exchange updated.');
     }
 
-    public function destroy(Exchange $exchange): \Illuminate\Http\RedirectResponse
+    public function destroy(Exchange $exchange): RedirectResponse
     {
         $this->authorize('delete', $exchange);
 
