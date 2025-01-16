@@ -17,21 +17,21 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function store(CategoryRequest $request)
+    public function store(CategoryRequest $request): Category
     {
         $this->authorize('create', Category::class);
 
         return Category::create($request->validated());
     }
 
-    public function show(Category $category)
+    public function show(Category $category): Category
     {
         $this->authorize('view', $category);
 
         return $category;
     }
 
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, Category $category): Category
     {
         $this->authorize('update', $category);
 
@@ -40,7 +40,7 @@ class CategoryController extends Controller
         return $category;
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $category);
 
