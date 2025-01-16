@@ -12,6 +12,7 @@ class HandleInertiaRequests extends Middleware
      * The root template that is loaded on the first page visit.
      *
      * @var string
+     * @noinspection PropertyInitializationFlawsInspection
      */
     protected $rootView = 'app';
 
@@ -35,7 +36,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn () => [
+            'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],

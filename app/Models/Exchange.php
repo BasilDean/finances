@@ -57,9 +57,11 @@ class Exchange extends Model
             $exchange->save();
         });
         static::updating(static function ($exchange) {
+            /** @noinspection TypeUnsafeComparisonInspection */
             if ($exchange->getOriginal('amount_from') && $exchange->getOriginal('amount_from') != $exchange->amount_from) {
                 $exchange->expense->amount = $exchange->amount_from;
             }
+            /** @noinspection TypeUnsafeComparisonInspection */
             if ($exchange->getOriginal('amount_to') && $exchange->getOriginal('amount_to') != $exchange->amount_to) {
                 $exchange->income->amount = $exchange->amount_to;
             }

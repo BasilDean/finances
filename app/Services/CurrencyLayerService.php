@@ -30,6 +30,6 @@ class CurrencyLayerService
             ]
         ]);
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
     }
 }
