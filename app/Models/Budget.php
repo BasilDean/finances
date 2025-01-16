@@ -44,7 +44,7 @@ class Budget extends Model
         ];
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -91,7 +91,7 @@ class Budget extends Model
         return $total;
     }
 
-    public function updateBudgetTotal($total)
+    public function updateBudgetTotal($total): void
     {
         $this->balance = $total;
         $this->save();
