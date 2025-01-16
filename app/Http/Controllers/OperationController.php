@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OperationRequest;
 use App\Models\Operation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class OperationController extends Controller
 {
@@ -40,7 +41,7 @@ class OperationController extends Controller
         return $operation;
     }
 
-    public function destroy(Operation $operation): \Illuminate\Http\JsonResponse
+    public function destroy(Operation $operation): JsonResponse
     {
         $this->authorize('delete', $operation);
 
