@@ -25,7 +25,7 @@ class Exchange extends Model
         'created_at',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -87,7 +87,7 @@ class Exchange extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function getFields()
+    public static function getFields(): array
     {
         $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
         $accounts = $budget->accounts;
