@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
@@ -40,7 +41,7 @@ class CategoryController extends Controller
         return $category;
     }
 
-    public function destroy(Category $category): \Illuminate\Http\JsonResponse
+    public function destroy(Category $category): JsonResponse
     {
         $this->authorize('delete', $category);
 

@@ -17,21 +17,21 @@ class CurrencyRateController extends Controller
         return CurrencyRate::all();
     }
 
-    public function store(CurrencyRateRequest $request)
+    public function store(CurrencyRateRequest $request): CurrencyRate
     {
         $this->authorize('create', CurrencyRate::class);
 
         return CurrencyRate::create($request->validated());
     }
 
-    public function show(CurrencyRate $currencyRate)
+    public function show(CurrencyRate $currencyRate): CurrencyRate
     {
         $this->authorize('view', $currencyRate);
 
         return $currencyRate;
     }
 
-    public function update(CurrencyRateRequest $request, CurrencyRate $currencyRate)
+    public function update(CurrencyRateRequest $request, CurrencyRate $currencyRate): CurrencyRate
     {
         $this->authorize('update', $currencyRate);
 
@@ -40,7 +40,7 @@ class CurrencyRateController extends Controller
         return $currencyRate;
     }
 
-    public function destroy(CurrencyRate $currencyRate)
+    public function destroy(CurrencyRate $currencyRate): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $currencyRate);
 
