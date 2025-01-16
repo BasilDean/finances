@@ -17,7 +17,7 @@ class Category extends Model
     ];
 
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
