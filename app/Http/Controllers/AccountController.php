@@ -17,7 +17,7 @@ class AccountController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $this->authorize('viewAny', Account::class);
 
@@ -42,7 +42,7 @@ class AccountController extends Controller
         ]);
     }
 
-    public function store(AccountRequest $request)
+    public function store(AccountRequest $request): RedirectResponse
     {
         $this->authorize('create', Account::class);
         $validatedData = $request->validated();
@@ -50,7 +50,7 @@ class AccountController extends Controller
         return redirect()->route('accounts.index')->with('status', 'Account created.');
     }
 
-    public function create()
+    public function create(): Response
     {
         $this->authorize('create', Account::class);
 
@@ -158,7 +158,7 @@ class AccountController extends Controller
         return redirect()->route('accounts.show', $account->slug)->with('status', 'Budget updated.');
     }
 
-    public function destroy(Account $account)
+    public function destroy(Account $account): RedirectResponse
     {
         $this->authorize('delete', $account);
 
