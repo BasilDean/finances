@@ -50,6 +50,7 @@ Route::middleware('auth')->prefix('accounts')->group(function () {
     Route::get('/create', [AccountController::class, 'create'])->name('accounts.create');
     Route::post('/', [AccountController::class, 'store'])->name('accounts.store');
     Route::get('/{account:slug}', [AccountController::class, 'show'])->name('accounts.show');
+    Route::get('/{account:slug}/statistic', [AccountController::class, 'show_statistic'])->name('accounts.stats');
     Route::get('/{account:slug}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
     Route::patch('/{account:slug}', [AccountController::class, 'update'])->name('accounts.update');
     Route::delete('/{account:slug}', [AccountController::class, 'destroy'])->name('accounts.destroy');

@@ -27,8 +27,8 @@ const type = 'accounts';
     <Head title="Личные счета" />
 
     <DashboardLayout>
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+        <div class="rounded-l bg-slate-800 py-3 sm:py-5">
+            <div class="max-w-8xl mx-auto space-y-6 sm:px-6 lg:px-8">
                 <div class="align-center flex justify-between">
                     <h2
                         class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"

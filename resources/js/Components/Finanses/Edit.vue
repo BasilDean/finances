@@ -38,21 +38,19 @@ const createBudget = () => {
 </script>
 
 <template>
-    <div class="">
-        <div class="mx-auto w-full space-y-6 sm:px-6 lg:px-1">
-            <div class="bg-gray-800 py-6 sm:py-8">
-                <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+    <div class="py-2">
+        <div class="max-w-8xl mx-auto space-y-2 sm:px-1 lg:px-2">
+            <div class="bg-gray-800 py-6 sm:py-4">
+                <div class="max-w-8xl lg:max-w-8xl mx-auto px-6 lg:px-4">
                     <h2
                         class="flex w-full items-center justify-center space-x-2 text-center text-base/7 font-semibold text-white"
                     >
                         <span>{{ $t('edit') }} {{ item.title }}</span>
                     </h2>
                     <form @submit.prevent="createBudget()">
-                        <div class="space-y-6">
-                            <div class="border-b border-gray-900/10 pb-12">
-                                <div
-                                    class="mt-10 flex flex-col gap-x-6 gap-y-2"
-                                >
+                        <div class="space-y-12">
+                            <div class="border-b border-gray-900/10 pb-3">
+                                <div class="mt-4 flex flex-col gap-x-6 gap-y-3">
                                     <div
                                         v-for="(params, key) in fields"
                                         v-show="params.editable"
@@ -133,17 +131,17 @@ const createBudget = () => {
                             </div>
                         </div>
 
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <div class="mt-3 flex items-center justify-end gap-x-3">
                             <Link
                                 :href="route(type + '.index')"
-                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                class="flex select-none items-center gap-2 rounded-lg border bg-gray-900 px-2 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button"
                             >
                                 <ArrowLeftCircleIcon class="size-6" />
                                 {{ $t('cancel') }}
                             </Link>
                             <button
-                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                class="flex select-none items-center gap-2 rounded-lg border bg-gray-900 px-2 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="submit"
                             >
                                 {{ $t('save') }}

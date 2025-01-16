@@ -28,10 +28,10 @@ defineProps({
     <Head title="Budgets" />
 
     <DashboardLayout>
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div class="rounded-lg bg-slate-800 py-6 sm:py-8">
-                    <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+        <div class="py-0">
+            <div class="max-w-9xl mx-auto space-y-1 sm:px-1 lg:px-1">
+                <div class="rounded-lg bg-slate-800 py-3 sm:py-5">
+                    <div class="lg:max-w-8xl max-w-8xl mx-auto px-3 lg:px-4">
                         <div class="flex justify-between">
                             <h2
                                 class="flex w-full items-center justify-start space-x-2 text-center text-base/7 font-semibold text-white"

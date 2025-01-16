@@ -84,10 +84,10 @@ watch(
 );
 
 // Format a date object to a custom string (if needed for display or API)
-const formatDateToString = (date) => {
-    const pad = (num) => num.toString().padStart(2, '0');
-    return `${pad(date.getHours())}:${pad(date.getMinutes())} ${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
-};
+// const formatDateToString = (date) => {
+//     const pad = (num) => num.toString().padStart(2, '0');
+//     return `${pad(date.getHours())}:${pad(date.getMinutes())} ${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+// };
 
 const createItem = () => {
     form.post(route(props.type + '.store'));
@@ -95,10 +95,10 @@ const createItem = () => {
 </script>
 
 <template>
-    <div class="py-12">
-        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            <div class="bg-gray-800 py-6 sm:py-8">
-                <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+    <div class="py-2">
+        <div class="max-w-8xl mx-auto space-y-2 sm:px-1 lg:px-2">
+            <div class="bg-gray-800 py-6 sm:py-4">
+                <div class="max-w-8xl lg:max-w-8xl mx-auto px-6 lg:px-4">
                     <h2
                         class="flex w-full items-center justify-center space-x-2 text-center text-base/7 font-semibold text-white"
                     >
@@ -106,10 +106,8 @@ const createItem = () => {
                     </h2>
                     <form @submit.prevent="createItem()">
                         <div class="space-y-12">
-                            <div class="border-b border-gray-900/10 pb-12">
-                                <div
-                                    class="mt-10 flex flex-col gap-x-6 gap-y-8"
-                                >
+                            <div class="border-b border-gray-900/10 pb-3">
+                                <div class="mt-4 flex flex-col gap-x-6 gap-y-3">
                                     <div
                                         v-for="(params, key) in fields"
                                         v-show="params.editable"
@@ -119,7 +117,7 @@ const createItem = () => {
                                             :target="key"
                                             :value="$t(key)"
                                         />
-                                        <div class="mt-2">
+                                        <div class="mt-1">
                                             <NumberInput
                                                 v-if="params.type === 'number'"
                                                 :id="key"
@@ -183,17 +181,17 @@ const createItem = () => {
                             </div>
                         </div>
 
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <div class="mt-3 flex items-center justify-end gap-x-3">
                             <Link
                                 :href="route('home')"
-                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                class="flex select-none items-center gap-2 rounded-lg border bg-gray-900 px-2 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button"
                             >
                                 <ArrowLeftCircleIcon class="size-6" />
                                 {{ $t('cancel') }}
                             </Link>
                             <button
-                                class="flex select-none items-center gap-3 rounded-lg border bg-gray-900 px-4 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                class="flex select-none items-center gap-2 rounded-lg border bg-gray-900 px-2 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="submit"
                             >
                                 {{ $t('save') }}

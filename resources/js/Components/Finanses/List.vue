@@ -212,7 +212,7 @@ if (props.type) {
                         :class="
                             params.hideOnMobile
                                 ? 'hidden px-1 py-1 sm:table-cell sm:px-3 sm:py-3'
-                                : 'px-1 py-1 sm:px-3 sm:py-3'
+                                : 'px-1 py-1 sm:px-2 sm:py-2'
                         "
                         scope="col"
                     >
@@ -238,7 +238,7 @@ if (props.type) {
                         <Link
                             v-if="showDetailPage"
                             :href="getRoute(type, 'show', item.slug)"
-                            class="block px-3 py-1 sm:px-3 sm:py-3"
+                            class="block px-2 py-1 sm:px-2 sm:py-2"
                         >
                             {{
                                 formatValue(
@@ -253,7 +253,7 @@ if (props.type) {
                                 )
                             }}
                         </Link>
-                        <span v-else class="block px-3 py-1 sm:px-3 sm:py-3">
+                        <span v-else class="block px-1 py-1 sm:px-2 sm:py-2">
                             {{
                                 formatValue(
                                     item[key],
@@ -271,7 +271,7 @@ if (props.type) {
 
                     <td class="hidden sm:block">
                         <div
-                            class="flex justify-end gap-4 px-1 py-1 sm:px-3 sm:py-3"
+                            class="flex justify-end gap-2 px-1 py-1 sm:px-2 sm:py-2"
                         >
                             <EditButton :slug="item.slug" :type="type" />
                             <DeleteButton
