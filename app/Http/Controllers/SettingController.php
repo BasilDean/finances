@@ -17,21 +17,21 @@ class SettingController extends Controller
         return Setting::all();
     }
 
-    public function store(SettingRequest $request)
+    public function store(SettingRequest $request): Setting
     {
         $this->authorize('create', Setting::class);
 
         return Setting::create($request->validated());
     }
 
-    public function show(Setting $setting)
+    public function show(Setting $setting): Setting
     {
         $this->authorize('view', $setting);
 
         return $setting;
     }
 
-    public function update(SettingRequest $request, Setting $setting)
+    public function update(SettingRequest $request, Setting $setting): Setting
     {
         $this->authorize('update', $setting);
 
@@ -40,7 +40,7 @@ class SettingController extends Controller
         return $setting;
     }
 
-    public function destroy(Setting $setting)
+    public function destroy(Setting $setting): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $setting);
 
