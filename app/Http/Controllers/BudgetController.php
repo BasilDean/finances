@@ -112,7 +112,7 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function destroy(Budget $budget)
+    public function destroy(Budget $budget): RedirectResponse
     {
         $this->authorize('delete', $budget);
 
