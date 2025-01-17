@@ -142,4 +142,9 @@ class Account extends Model
     {
         return $this->hasMany(related: Exchange::class, foreignKey: 'account_to');
     }
+
+    public function operations(): HasMany
+    {
+        return $this->hasMany(Operation::class);
+    }
 }

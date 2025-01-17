@@ -62,6 +62,42 @@ class AccountController extends Controller
         ]);
     }
 
+    public function show_statistic(Account $account, Request $request): Response
+    {
+        $title = $account->title;
+
+
+        $operations = collect($account->operations()->orderBy('performed_at')->get()->reduce(function ($carry, $item) {
+            $date = date('d-m-Y', $item->performed_at);
+            $title = ($item->operation_type->name === 'income' ? '+' : '-') . $item->amount . ' ' . $item->description . ' ' . date('H:m:s', $item->performed_at);
+
+            if (!isset($carry[$date])) {
+                $carry[$date] = [
+                    'customInfo' => [$title],
+                    'y' => $item->balance_after,
+                ];
+            } else {
+                $carry[$date]['customInfo'][] = $title;
+                $carry[$date]['y'] = $item->balance_after;
+            }
+
+            return $carry;
+        }, []))
+            ->map(function ($value, $key) {
+                return ['date' => $key, 'data' => $value];
+            })
+            ->values(); // Convert to indexed array
+
+        $slug = $account->slug;
+
+        return Inertia::render('Accounts/Stats', [
+            'items' => $operations,
+            'title' => $title,
+            'slug' => $slug,
+        ]);
+
+    }
+
     public function show(Account $account, Request $request): Response
     {
         $this->authorize('view', $account);

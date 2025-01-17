@@ -1,3 +1,4 @@
+<!--suppress JSLastCommaInObjectLiteral -->
 <script setup>
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';

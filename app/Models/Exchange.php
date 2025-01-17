@@ -35,7 +35,7 @@ class Exchange extends Model
         });
         static::created(static function ($exchange) {
             $expense = new Expense();
-            $expense->title = 'currency exchange';
+            $expense->title = 'перевод';
             $expense->amount = $exchange->amount_from;
             $expense->currency = $exchange->currency_from;
             $expense->user()->associate($exchange->user_id);
@@ -45,12 +45,12 @@ class Exchange extends Model
             $expense->save();
 
             $income = new Income();
-            $income->title = 'currency exchange';
+            $income->title = 'перевод';
             $income->amount = $exchange->amount_to;
             $income->currency = $exchange->currency_to;
             $income->user()->associate($exchange->user_id);
             $income->account()->associate($exchange->account_to);
-            $income->source = 'currency exchange';
+            $income->source = 'перевод';
             $income->save();
 
             $exchange->update(['income_id' => $income->id, 'expense_id' => $expense->id]);
