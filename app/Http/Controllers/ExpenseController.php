@@ -64,20 +64,20 @@ class ExpenseController extends Controller
 // Determine the end date (7 days after the start of the week)
             $endDate = $startDate->copy()->addDays(6);
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('date', [$startDate, $endDate]);
         } elseif ($period === 'month') {
-            $query->whereMonth('created_at', Carbon::now()->month);
+            $query->whereMonth('date', Carbon::now()->month);
         } elseif ($period === 'year') {
-            $query->whereYear('created_at', Carbon::now()->year);
+            $query->whereYear('date', Carbon::now()->year);
         } elseif ($period === 'custom') {
             if ($range) {
 //                $range = explode(' - ', $range);
                 $startDate = Carbon::parse($range[0]);
                 $endDate = Carbon::parse($range[1]);
-                $query->whereBetween('created_at', [$startDate, $endDate]);
+                $query->whereBetween('date', [$startDate, $endDate]);
             }
         }
-        $query->orderBy('created_at', 'desc');
+        $query->orderBy('date', 'desc');
 
 
         $expenses = $query->paginate(20)->appends($request->all());
@@ -90,6 +90,7 @@ class ExpenseController extends Controller
                 'currency' => $expense->currency,
                 'has_items' => (bool)$expense->has_items,
                 'created_at' => $expense->created_at->format('H:i d-m-Y'),
+                'date' => $expense->date->format('H:i d-m-Y'),
                 'source' => $expense->categories()->pluck('title')->implode(', '),
                 'user' => $expense->user->name ?? null, // Extract user's name
                 'account' => $expense->account->title ?? null, // Extract account's title
@@ -121,7 +122,6 @@ class ExpenseController extends Controller
         $expense->user_id = $user_id;
         $expense->currency = $currency;
         $expense->account_id = $account_id;
-        $expense->created_at = $request->created_at;
         $expense->has_items = (bool)$request->has_items;
         $expense->save();
 
@@ -162,6 +162,7 @@ class ExpenseController extends Controller
             'amount' => $expense->amount,
             'currency' => $expense->currency,
             'created_at' => $expense->created_at->format('H:i d-m-Y'),
+            'date' => $expense->date->format('H:i d-m-Y'),
             'source' => $expense->categories()->first(),
             'has_items' => (bool)$expense->has_items,
             'user' => $expense->user ?? null, // Extract user's name

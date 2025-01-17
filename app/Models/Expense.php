@@ -19,7 +19,7 @@ class Expense extends Model
         'amount',
         'has_items',
         'currency',
-        'created_at',
+        'date'
     ];
 
     public static function boot(): void
@@ -27,11 +27,14 @@ class Expense extends Model
         parent::boot();
 
         static::creating(static function ($expense) {
-            
+
             $expense->title = ucfirst($expense->title);
             $expense->normalized_title = mb_strtolower($expense->title);
             $lastIncomeId = Expense::withTrashed()->latest('id')->value('id') ?? 0;
             $expense->slug = $lastIncomeId + 1;
+            if (empty($expense->date)) {
+                $expense->date = $expense->created_at;
+            }
         });
         static::created(static function ($expense) {
             $account_id = $expense->account_id;
@@ -46,7 +49,7 @@ class Expense extends Model
                 'operation_id' => $expense->id,
                 'description' => $expense->title,
                 'balance_after' => $account->amount,
-                'performed_at' => $expense->updated_at,
+                'performed_at' => $expense->date,
             ]);
         });
         static::updating(static function ($expense) {
@@ -70,7 +73,7 @@ class Expense extends Model
                 'amount' => $amount,
                 'balance_after' => $account->amount,
                 'description' => $expense->title,
-                'performed_at' => $expense->updated_at,
+                'performed_at' => $expense->date,
             ]);
         });
         static::deleting(static function ($expense) {
@@ -144,7 +147,7 @@ class Expense extends Model
                 'multiple' => false,
                 'showField' => 'title',
             ],
-            'created_at' => [
+            'date' => [
                 'type' => 'date',
                 'hideOnMobile' => false,
                 'show' => true,
