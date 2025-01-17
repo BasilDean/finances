@@ -45,7 +45,7 @@ class IncomeController extends Controller
                 'currency' => $income->currency,
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
                 'updated_at' => $income->updated_at->format('H:i d-m-Y'),
-                'date' => $income->date->format('H:i d-m-Y'),
+                'date' => $income->date,
                 'source' => $income->source,
                 'user' => $income->user->name ?? null, // Extract user's name
                 'account' => $income->account->title ?? null, // Extract account's title

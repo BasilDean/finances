@@ -90,7 +90,7 @@ class ExpenseController extends Controller
                 'currency' => $expense->currency,
                 'has_items' => (bool)$expense->has_items,
                 'created_at' => $expense->created_at->format('H:i d-m-Y'),
-                'date' => $expense->date->format('H:i d-m-Y'),
+                'date' => $expense->date,
                 'source' => $expense->categories()->pluck('title')->implode(', '),
                 'user' => $expense->user->name ?? null, // Extract user's name
                 'account' => $expense->account->title ?? null, // Extract account's title
