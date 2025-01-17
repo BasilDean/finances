@@ -78,7 +78,7 @@ class AccountController extends Controller
                 ];
             } else {
                 $carry[$date]['customInfo'][] = $title;
-                $carry[$date]['y'] = $item->balance_after;
+                $carry[$date]['y'] = (int)$item->balance_after;
             }
 
             return $carry;
