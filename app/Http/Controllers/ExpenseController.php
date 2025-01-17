@@ -219,6 +219,7 @@ class ExpenseController extends Controller
         $expense->update($request->validated());
 
 
+        $expense->currency = $request->account['currency'];
         $expense->user_id = $request->user['id'];
         $expense->account_id = $request->account['id'];
 
