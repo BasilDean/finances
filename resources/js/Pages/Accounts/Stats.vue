@@ -66,9 +66,6 @@ const chartOptions = {
                     </FlatLink>
                 </div>
             </div>
-            <pre class="text-white">
-                {{ chartOptions }}
-            </pre>
             <Chart :options="chartOptions" />
         </div>
     </DashboardLayout>
