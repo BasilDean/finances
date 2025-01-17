@@ -162,7 +162,7 @@ class ExpenseController extends Controller
             'amount' => $expense->amount,
             'currency' => $expense->currency,
             'created_at' => $expense->created_at->format('H:i d-m-Y'),
-            'date' => $expense->date->format('H:i d-m-Y'),
+            'date' => $expense->date,
             'source' => $expense->categories()->first(),
             'has_items' => (bool)$expense->has_items,
             'user' => $expense->user ?? null, // Extract user's name
