@@ -19,6 +19,7 @@ class Income extends Model
         'amount',
         'currency',
         'created_at',
+        'date',
     ];
 
     public static function boot(): void
@@ -29,6 +30,9 @@ class Income extends Model
             $income->normalized_title = mb_strtolower($income->title);
             $lastIncomeId = Income::withTrashed()->latest('id')->value('id') ?? 0;
             $income->slug = $lastIncomeId + 1;
+            if (empty($income->date)) {
+                $income->date = $income->created_at;
+            }
         });
         static::created(static function ($income) {
             $account_id = $income->account_id;
@@ -42,7 +46,7 @@ class Income extends Model
                 'operation_id' => $income->id,
                 'description' => $income->title,
                 'balance_after' => $account->amount,
-                'performed_at' => $income->updated_at,
+                'performed_at' => $income->date,
             ]);
         });
         static::updating(static function ($income) {
@@ -64,7 +68,7 @@ class Income extends Model
                 'amount' => $amount,
                 'balance_after' => $account->amount,
                 'description' => $income->title,
-                'performed_at' => $income->updated_at,
+                'performed_at' => $income->date,
             ]);
         });
         static::deleting(static function ($income) {
@@ -130,7 +134,7 @@ class Income extends Model
                 'multiple' => false,
                 'showField' => 'title',
             ],
-            'created_at' => [
+            'date' => [
                 'type' => 'date',
                 'hideOnMobile' => false,
                 'show' => true,
