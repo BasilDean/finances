@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('incomes', function (Blueprint $table) {
-            $table->date('date')->nullable()->after('currency');
+            $table->dateTime('date')->nullable()->after('currency');
         });
     }
 
