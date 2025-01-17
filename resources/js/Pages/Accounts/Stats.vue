@@ -53,7 +53,7 @@ const chartOptions = {
 </script>
 
 <template>
-    <Head :title="'test'" />
+    <Head :title="'Статистика - ' + title" />
     <DashboardLayout>
         <div class="max-w-8xl mx-auto space-y-6 px-2">
             <div class="bg-gray-800 py-3">
@@ -66,6 +66,9 @@ const chartOptions = {
                     </FlatLink>
                 </div>
             </div>
+            <pre class="text-white">
+                {{ chartOptions }}
+            </pre>
             <Chart :options="chartOptions" />
         </div>
     </DashboardLayout>
