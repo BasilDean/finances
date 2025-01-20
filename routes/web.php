@@ -40,6 +40,7 @@ Route::middleware('auth')->prefix('budgets')->group(function () {
     Route::get('/create', [BudgetController::class, 'create'])->name('budgets.create');
     Route::post('/', [BudgetController::class, 'store'])->name('budgets.store');
     Route::get('/{budget:slug}', [BudgetController::class, 'show'])->name('budgets.show');
+    Route::get('/{budget:slug}/statistic', [BudgetController::class, 'show_statistic'])->name('budgets.stats');
     Route::get('/{budget:slug}/edit', [BudgetController::class, 'edit'])->name('budgets.edit');
     Route::patch('/{budget:slug}', [BudgetController::class, 'update'])->name('budgets.update');
     Route::delete('/{budget:slug}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
