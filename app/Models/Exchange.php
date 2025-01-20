@@ -38,6 +38,7 @@ class Exchange extends Model
             $expense->title = 'перевод';
             $expense->amount = $exchange->amount_from;
             $expense->currency = $exchange->currency_from;
+            $expense->date = $exchange->created_at;
             $expense->user()->associate($exchange->user_id);
             $expense->account()->associate($exchange->account_from);
             $expense->save();
@@ -48,6 +49,7 @@ class Exchange extends Model
             $income->title = 'перевод';
             $income->amount = $exchange->amount_to;
             $income->currency = $exchange->currency_to;
+            $income->date = $exchange->created_at;
             $income->user()->associate($exchange->user_id);
             $income->account()->associate($exchange->account_to);
             $income->source = 'перевод';
@@ -65,12 +67,12 @@ class Exchange extends Model
             if ($exchange->getOriginal('amount_to') && $exchange->getOriginal('amount_to') != $exchange->amount_to) {
                 $exchange->income->amount = $exchange->amount_to;
             }
-            $exchange->income->created_at = $exchange->created_at;
+            $exchange->income->date = $exchange->created_at;
             $exchange->income->currency = $exchange->currency_to;
             $exchange->income->account()->associate($exchange->account_to);
             $exchange->income->user()->associate($exchange->user_id);
             $exchange->income->save();
-            $exchange->expense->created_at = $exchange->created_at;
+            $exchange->expense->date = $exchange->created_at;
             $exchange->expense->currency = $exchange->currency_from;
             $exchange->expense->account()->associate($exchange->account_from);
             $exchange->expense->user()->associate($exchange->user_id);
