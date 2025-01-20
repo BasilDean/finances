@@ -21,6 +21,15 @@ class Income extends Model
         'created_at',
         'date',
     ];
+    // Specify the fields that should be cast to dates
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'date', // Add your field here
+    ];
+    protected $casts = [
+        'date' => 'datetime:Y-m-d H:i:s',
+    ];
 
     public static function boot(): void
     {

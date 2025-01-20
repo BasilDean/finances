@@ -45,7 +45,7 @@ class IncomeController extends Controller
                 'currency' => $income->currency,
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
                 'updated_at' => $income->updated_at->format('H:i d-m-Y'),
-                'date' => $income->date,
+                'date' => $income->date->format('Y-m-d H:i:s'),
                 'source' => $income->source,
                 'user' => $income->user->name ?? null, // Extract user's name
                 'account' => $income->account->title ?? null, // Extract account's title
@@ -84,7 +84,6 @@ class IncomeController extends Controller
         $income->user_id = $user_id;
         $income->currency = $currency;
         $income->account_id = $account_id;
-        $income->created_at = $request->created_at;
         $income->save();
 
         $account->amount += $request->amount;

@@ -32,7 +32,7 @@ class AccountController extends Controller
             $query->where('normalized_title', 'like', '%' . $search . '%')->orWhere('amount', 'like', '%' . $search . '%'); // Adjust fields as necessary
         }
 
-        $accounts = $query->paginate(10);
+        $accounts = $query->paginate(20);
 
         return Inertia::render('Accounts/Index', [
             'status' => session('status'),
