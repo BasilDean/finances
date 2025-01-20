@@ -11,6 +11,18 @@ class Exchange extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Specify the fields that should be cast to dates
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'date', // Add your field here
+    ];
+    protected $casts = [
+        'date' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected $fillable = [
         'amount_to',
         'account_from',
@@ -23,6 +35,7 @@ class Exchange extends Model
         'income_id',
         'expense_id',
         'created_at',
+        'date',
     ];
 
     public static function boot(): void
@@ -38,7 +51,7 @@ class Exchange extends Model
             $expense->title = 'перевод';
             $expense->amount = $exchange->amount_from;
             $expense->currency = $exchange->currency_from;
-            $expense->date = $exchange->created_at;
+            $expense->date = $exchange->date;
             $expense->user()->associate($exchange->user_id);
             $expense->account()->associate($exchange->account_from);
             $expense->save();
@@ -49,7 +62,7 @@ class Exchange extends Model
             $income->title = 'перевод';
             $income->amount = $exchange->amount_to;
             $income->currency = $exchange->currency_to;
-            $income->date = $exchange->created_at;
+            $income->date = $exchange->date;
             $income->user()->associate($exchange->user_id);
             $income->account()->associate($exchange->account_to);
             $income->source = 'перевод';
@@ -67,12 +80,12 @@ class Exchange extends Model
             if ($exchange->getOriginal('amount_to') && $exchange->getOriginal('amount_to') != $exchange->amount_to) {
                 $exchange->income->amount = $exchange->amount_to;
             }
-            $exchange->income->date = $exchange->created_at;
+            $exchange->income->date = $exchange->date;
             $exchange->income->currency = $exchange->currency_to;
             $exchange->income->account()->associate($exchange->account_to);
             $exchange->income->user()->associate($exchange->user_id);
             $exchange->income->save();
-            $exchange->expense->date = $exchange->created_at;
+            $exchange->expense->date = $exchange->date;
             $exchange->expense->currency = $exchange->currency_from;
             $exchange->expense->account()->associate($exchange->account_from);
             $exchange->expense->user()->associate($exchange->user_id);
@@ -163,7 +176,7 @@ class Exchange extends Model
                 'multiple' => false,
                 'showField' => 'name',
             ],
-            'created_at' => [
+            'date' => [
                 'type' => 'date',
                 'hideOnMobile' => false,
                 'show' => true,

@@ -10,9 +10,8 @@ class ExchangeRequest extends FormRequest
     {
         return [
             'amount_from' => ['required', 'numeric', 'gt:0'],
-//            'account_from' => ['required', 'exists:accounts'],
             'amount_to' => ['required', 'numeric', 'gt:0'],
-//            'account_to' => ['required', 'exists:accounts'],
+            'date' => ['required', 'date'],
         ];
     }
 

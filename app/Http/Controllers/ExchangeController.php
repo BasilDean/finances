@@ -28,7 +28,7 @@ class ExchangeController extends Controller
         $this->authorize('viewAny', Exchange::class);
 
 
-        $exchanges = Exchange::with(['accountFrom', 'accountTo'])->orderBy('created_at', 'desc')->paginate(10);
+        $exchanges = Exchange::with(['accountFrom', 'accountTo'])->orderBy('date', 'desc')->paginate(10);
 //        dd($exchanges);
         $exchanges->getCollection()->transform(function ($exchange) {
 
@@ -46,7 +46,7 @@ class ExchangeController extends Controller
                 'exchange_rate' => $exchange->exchange_rate,
                 'oficial_rate' => $exchange->oficial_rate,
                 'user' => $user->name,
-                'created_at' => $exchange->created_at->format('H:i d-m-Y')
+                'date' => $exchange->date->format('H:i d-m-Y')
             ];
         });
         $fields = Exchange::getFields();
@@ -74,7 +74,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
-            'created_at' => $request->created_at,
+            'date' => $request->date,
         ];
 
         $exchange = Exchange::create($data);
@@ -134,7 +134,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $exchange->exchange_rate,
             'oficial_rate' => $exchange->oficial_rate,
             'user' => $user,
-            'created_at' => $exchange->created_at->format('H:i d-m-Y')
+            'date' => $exchange->date->format('H:i d-m-Y')
         ];
 
         return Inertia::render('Exchange/Edit', [
@@ -145,7 +145,6 @@ class ExchangeController extends Controller
 
     public function update(ExchangeRequest $request, Exchange $exchange): RedirectResponse
     {
-//        dd($request->created_at);
         $this->authorize('update', $exchange);
 
         $currencyFrom = $request->account_from['currency'];
@@ -163,12 +162,9 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
-            'created_at' => $request->created_at,
+            'date' => $request->date,
         ];
-//        dd($data);
         $exchange->update($data);
-//        $exchange->created_at = $request->created_at;
-//        $exchange->save();
 
         $exchange->accountFrom()->associate($request->account_from['id']);
         $exchange->accountTo()->associate($request->account_to['id']);

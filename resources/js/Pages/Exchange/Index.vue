@@ -24,7 +24,7 @@ const type = 'exchanges';
 </script>
 
 <template>
-    <Head title="Личные счета" />
+    <Head title="Личные переводы" />
 
     <DashboardLayout>
         <div class="max-w-8xl mx-auto min-h-screen space-y-6 sm:px-2 lg:px-3">
