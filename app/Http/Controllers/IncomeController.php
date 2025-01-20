@@ -6,6 +6,7 @@ use App\Http\Requests\IncomeRequest;
 use App\Models\Account;
 use App\Models\Budget;
 use App\Models\Income;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -84,6 +85,9 @@ class IncomeController extends Controller
         $income->user_id = $user_id;
         $income->currency = $currency;
         $income->account_id = $account_id;
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $income->date = $formattedDate;
         $income->save();
 
         $account->amount += $request->amount;
@@ -132,7 +136,10 @@ class IncomeController extends Controller
         $income->account_id = $request->account['id'];
 
         $income->user_id = $request->user['id'];
-        $income->created_at = $request->created_at;
+
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $income->date = $formattedDate;
 
         $income->save();
 
