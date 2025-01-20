@@ -123,6 +123,10 @@ class ExpenseController extends Controller
         $expense->currency = $currency;
         $expense->account_id = $account_id;
         $expense->has_items = (bool)$request->has_items;
+
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $expense->date = $formattedDate;
         $expense->save();
 
         $expense->categories()->sync($request->source['id']);
@@ -208,6 +212,9 @@ class ExpenseController extends Controller
             return $item->price * $item->quantity;
         });
         $expense->amount_calculated = $total;
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $expense->date = $formattedDate;
         $expense->save();
         return redirect()->back()->with('success', 'success');
     }
