@@ -65,6 +65,15 @@ class Budget extends Model
             $total = $budget->getBudgetTotal();
             if ($budget->balance !== $total) {
                 $budget->updateBudgetTotal($total);
+                $diff = $budget->balance - $total;
+                BudgetHistory::create([
+                    'budget_id' => $budget->id,
+                    'amount' => $diff,
+                    'operation_type' => $diff > 0 ? 'expense' : 'income',
+                    'description' => 'Budget balance changed',
+                    'balance_after' => $total,
+                    'performed_at' => now(),
+                ]);
             }
         });
     }
@@ -110,5 +119,10 @@ class Budget extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(related: Payment::class);
+    }
+
+    public function history(): HasMany
+    {
+        return $this->hasMany(BudgetHistory::class);
     }
 }

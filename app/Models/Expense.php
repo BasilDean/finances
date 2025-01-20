@@ -22,6 +22,8 @@ class Expense extends Model
     ];
     protected $casts = [
         'date' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     // Add a dynamic property to every instance of Expense
@@ -51,7 +53,7 @@ class Expense extends Model
             $account_id = $expense->account_id;
             $account = Account::find($account_id);
             $amount = $expense->amount;
-            $account->update(['amount' => $account->amount - $amount]);
+            $account->update(['amount' => round($account->amount - $amount, 2)]);
 
             Operation::create([
                 'account_id' => $account_id,
@@ -67,14 +69,14 @@ class Expense extends Model
             $expense->normalized_title = mb_strtolower($expense->title);
             $account = Account::find($expense->account_id);
             $amount = $expense->getOriginal('amount');
-            $account->update(['amount' => $account->amount + $amount]);
+            $account->update(['amount' => round($account->amount + $amount, 2)]);
         });
         static::updated(static function ($expense) {
             $account_id = $expense->account_id;
 
             $account = Account::find($account_id);
             $amount = $expense->amount;
-            $account->update(['amount' => $account->amount - $amount]);
+            $account->update(['amount' => round($account->amount - $amount, 2)]);
 
             $operation = Operation::where('operation_id', $expense->id)
                 ->where('operation_type', 'expense')
@@ -90,7 +92,7 @@ class Expense extends Model
         static::deleting(static function ($expense) {
             $account = Account::find($expense->account_id);
             $amount = $expense->amount;
-            $account->update(['amount' => $account->amount + $amount]);
+            $account->update(['amount' => round($account->amount + $amount, 2)]);
 
             $operation = Operation::where('operation_id', $expense->id)
                 ->where('operation_type', 'expense')

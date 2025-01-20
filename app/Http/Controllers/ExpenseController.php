@@ -209,7 +209,7 @@ class ExpenseController extends Controller
             }
         }
         $total = $expense->items->sum(function ($item) {
-            return $item->price * $item->quantity;
+            return round($item->price * $item->quantity, 2);
         });
         $expense->amount_calculated = $total;
         $date = $request->date;

@@ -47,7 +47,7 @@ class Income extends Model
             $account_id = $income->account_id;
             $account = Account::find($account_id);
             $amount = $income->amount;
-            $account->update(['amount' => $account->amount + $amount]);
+            $account->update(['amount' => round($account->amount + $amount, 2)]);
             Operation::create([
                 'account_id' => $account_id,
                 'amount' => $amount,
@@ -62,13 +62,13 @@ class Income extends Model
             $income->normalized_title = mb_strtolower($income->title);
             $account = Account::find($income->account_id);
             $amount = $income->getOriginal('amount');
-            $account->update(['amount' => $account->amount - $amount]);
+            $account->update(['amount' => round($account->amount - $amount, 2)]);
         });
         static::updated(static function ($income) {
             $account_id = $income->account_id;
             $account = Account::find($account_id);
             $amount = $income->amount;
-            $account->update(['amount' => $account->amount + $amount]);
+            $account->update(['amount' => round($account->amount + $amount, 2)]);
             $operation = Operation::where('operation_id', $income->id)
                 ->where('operation_type', 'income')
                 ->first();
@@ -83,7 +83,7 @@ class Income extends Model
         static::deleting(static function ($income) {
             $account = Account::find($income->account_id);
             $amount = $income->amount;
-            $account->update(['amount' => $account->amount - $amount]);
+            $account->update(['amount' => round($account->amount - $amount, 2)]);
 
 
             $operation = Operation::where('operation_id', $income->id)
