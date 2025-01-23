@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class Expense extends Model
 {
@@ -50,12 +51,14 @@ class Expense extends Model
             }
         });
         static::created(static function ($expense) {
+            Log::channel('custom')->info('Expense Created', $expense->toArray());
             $account_id = $expense->account_id;
             $account = Account::find($account_id);
+            Log::channel('custom')->info('$account', $account->toArray());
             $amount = $expense->amount;
             $account->update(['amount' => round($account->amount - $amount, 2)]);
-
-            Operation::create([
+            Log::channel('custom')->info('$account', $account->toArray());
+            $operation = Operation::create([
                 'account_id' => $account_id,
                 'amount' => $amount,
                 'operation_type' => 'expense',
@@ -64,6 +67,7 @@ class Expense extends Model
                 'balance_after' => $account->amount,
                 'performed_at' => $expense->date,
             ]);
+            Log::channel('custom')->info('Operation Created', $operation->toArray());
         });
         static::updating(static function ($expense) {
             $expense->normalized_title = mb_strtolower($expense->title);
