@@ -224,7 +224,7 @@ class ExpenseController extends Controller
 
         $this->authorize('update', $expense);
 
-        $expense->update($request->validated()->except('has_items')->except('date'));
+        $expense->update($request->validated()->except(['has_items', 'date']));
 
 
         $expense->currency = $request->account['currency'];
