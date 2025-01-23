@@ -232,6 +232,10 @@ class ExpenseController extends Controller
         $expense->account_id = $request->account['id'];
 
         $expense->has_items = (bool)$request->has_items;
+
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $expense->date = $formattedDate;
         $expense->save();
 
         return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
