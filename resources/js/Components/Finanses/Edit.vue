@@ -95,11 +95,13 @@ const createBudget = () => {
                                                         'relation'
                                                     "
                                                     v-model="form[key]"
-                                                    :allow-empty="false"
+                                                    :allow-empty="
+                                                        !!params.canBeEmpty
+                                                    "
                                                     :name="key"
                                                     :options="params.values"
                                                     :placeholder="$t(key)"
-                                                    :track-by="params.showField"
+                                                    :track-by="params.id"
                                                 />
                                                 <date-picker
                                                     v-else-if="

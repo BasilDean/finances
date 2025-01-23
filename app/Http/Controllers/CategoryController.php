@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -15,14 +17,112 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
-        return Category::all();
+        $categories = Category::all()->sortBy('sort')->sortBy('parent_id');
+
+
+        // Build a tree structure
+        $categoryTree = $this->buildTree($categories);
+
+        $fields = Category::getFields();
+
+
+        return Inertia::render('Categories/Index', [
+            'categories' => $categoryTree,
+            'fields' => $fields,
+            'status' => ''
+        ]);
     }
 
-    public function store(CategoryRequest $request): Category
+    /**
+     * Recursive function to build a tree structure from categories.
+     */
+    private function buildTree($categories, $parentId = 0)
+    {
+        return $categories
+            ->where('parent_id', $parentId) // Filter categories by parent_id
+            ->map(function ($category) use ($categories) {
+                $children = $this->buildTree($categories, $category->id); // Get children recursively
+                return [
+                    'id' => $category->id,
+                    'title' => $category->title,
+                    'slug' => $category->slug,
+                    'sort' => $category->sort,
+                    'parent_id' => $category->parent_id,
+                    'children_count' => count($children),
+                    'usage_count' => $category->usage_count,
+                    'children' => $children, // Recursive call
+                ];
+            })
+            ->values()
+            ->toArray(); // Convert to array at the end if needed
+    }
+
+    public function edit(Category $category)
+    {
+        $this->authorize('update', $category);
+        $fields = Category::getFields();
+        $category->parent_id = Category::find($category->parent_id);
+        return Inertia::render('Categories/Edit', [
+            'category' => $category,
+            'fields' => $fields,
+        ]);
+
+    }
+
+    public function updateOrder(Request $request): RedirectResponse
+    {
+        $this->authorize('view-any', Category::class);
+        $categories = $request->categories;
+        foreach ($categories as $key => $parentCategory) {
+            $category = Category::findOrFail($parentCategory['id']);
+            $category->sort = $key;
+            $category->parent_id = 0;
+            $category->save();
+            if ($parentCategory['children']) {
+                foreach ($parentCategory['children'] as $key2 => $child) {
+                    $subCategory = Category::findOrFail($child['id']);
+                    $subCategory->sort = $key2;
+                    $subCategory->parent_id = $category->id;
+                    $subCategory->save();
+                }
+            }
+        }
+
+        return redirect()->back()->with('status', 'Categories order updated.');
+    }
+
+    public function update(CategoryRequest $request, Category $category): RedirectResponse
+    {
+        $this->authorize('update', $category);
+
+
+        $category->update($request->validated());
+
+        $category->parent_id = $request->parent_id['id'] ?? 0;
+        $category->save();
+
+        return redirect()->route('categories.index')->with('status', 'Category updated.');
+    }
+
+    public function store(CategoryRequest $request): RedirectResponse
     {
         $this->authorize('create', Category::class);
+        $category = Category::create($request->validated());
+        if ($request->parent_id) {
+            $category->parent_id = $request->parent_id;
+        } else {
+            $category->parent_id = 0;
+        }
+        return redirect()->route('categories.index')->with('status', 'Category created.');
+    }
 
-        return Category::create($request->validated());
+    public function create()
+    {
+        $this->authorize('create', Category::class);
+        $fields = Category::getFields();
+        return Inertia::render('Categories/Create', [
+            'fields' => $fields,
+        ]);
     }
 
     public function show(Category $category): Category
@@ -32,21 +132,12 @@ class CategoryController extends Controller
         return $category;
     }
 
-    public function update(CategoryRequest $request, Category $category): Category
-    {
-        $this->authorize('update', $category);
-
-        $category->update($request->validated());
-
-        return $category;
-    }
-
-    public function destroy(Category $category): JsonResponse
+    public function destroy(Category $category): RedirectResponse
     {
         $this->authorize('delete', $category);
 
         $category->delete();
 
-        return response()->json();
+        return redirect()->route('categories.index')->with('status', 'Category deleted.');
     }
 }

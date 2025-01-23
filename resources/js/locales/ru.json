@@ -6,6 +6,7 @@
     "currency_to": "Валюта",
     "search": "Поиск",
     "add": "Добавить",
+    "create": "Создать",
     "budgets": "Бюджеты",
     "budget": "Бюджет по умолчанию",
     "create new budget": "Добавить новый бюджет",
@@ -15,6 +16,7 @@
     "create new income": "Добавить новый доход",
     "create new purchase": "Добавить новую покупку",
     "create new payment": "Добавить новый платёж",
+    "create new category": "Добавить новую категорию",
     "edit": "Редактировать",
     "field is required": "Поле обязательно для заполнения",
     "select label": "Выбрать",
@@ -82,5 +84,7 @@
     "friday": "Пятница",
     "saturday": "Суббота",
     "sunday": "Воскресенье",
-    "operations": "Операции"
+    "operations": "Операции",
+    "sort": "Сортировка",
+    "parent_id": "Родитель"
 }

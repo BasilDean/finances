@@ -12,7 +12,7 @@ import {
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline/index.js';
 import { mapValues } from 'lodash';
-import { reactive, watch } from 'vue';
+import { reactive } from 'vue';
 import DatePicker from '@/Components/DatePicker.vue';
 
 const props = defineProps({
@@ -28,10 +28,6 @@ const props = defineProps({
         required: false,
         type: String,
     },
-    resetFields: {
-        required: false,
-        type: Array,
-    },
 });
 const formData = reactive(
     mapValues(props.fields, (field) => {
@@ -41,6 +37,9 @@ const formData = reactive(
             case 'list':
                 return field.values[0]; // Default value for list
             case 'relation':
+                if (field.canBeEmpty) {
+                    return null;
+                }
                 return field.values[0]; // Default value for relation
             case 'date':
                 return new Date();
@@ -54,40 +53,6 @@ const formData = reactive(
 );
 
 const form = useForm(formData);
-
-// Watch for changes to the resetFields prop
-watch(
-    () => props.resetFields,
-    (newFields) => {
-        if (newFields) {
-            newFields.forEach((field) => {
-                if (Object.hasOwn(form, field)) {
-                    switch (props.fields[field].type) {
-                        case 'number':
-                            form[field] = 0;
-                            break;
-                        case 'list':
-                        case 'relation':
-                            form[field] = props.fields[field].values[0];
-                            break;
-                        case 'date':
-                            form[field] = new Date();
-                            break;
-                        case 'string':
-                        default:
-                            form[field] = '';
-                    }
-                }
-            });
-        }
-    },
-);
-
-// Format a date object to a custom string (if needed for display or API)
-// const formatDateToString = (date) => {
-//     const pad = (num) => num.toString().padStart(2, '0');
-//     return `${pad(date.getHours())}:${pad(date.getMinutes())} ${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
-// };
 
 const createItem = () => {
     form.post(route(props.type + '.store'));
@@ -147,7 +112,11 @@ const createItem = () => {
                                                     params.type === 'relation'
                                                 "
                                                 v-model="form[key]"
-                                                :allow-empty="false"
+                                                :allow-empty="
+                                                    params.canBeEmpty
+                                                        ? true
+                                                        : false
+                                                "
                                                 :name="key"
                                                 :options="params.values"
                                                 :placeholder="$t(key)"

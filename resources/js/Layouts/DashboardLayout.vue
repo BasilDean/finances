@@ -9,6 +9,7 @@ import {
     CalendarDaysIcon,
     MinusCircleIcon,
     PlusCircleIcon,
+    TableCellsIcon,
     UserCircleIcon,
 } from '@heroicons/vue/24/outline';
 import Notifications from '@/Components/Dashboard/Notifications.vue';
@@ -121,6 +122,24 @@ const menus = [
                 id: 2,
                 name: 'Создать новый',
                 link: route('accounts.create'),
+            },
+        ],
+    },
+    {
+        id: 4,
+        name: 'Категории',
+        link: route('categories.index'),
+        icon: TableCellsIcon,
+        children: [
+            {
+                id: 1,
+                name: 'Просмотреть все',
+                link: route('categories.index'),
+            },
+            {
+                id: 2,
+                name: 'Создать новую',
+                link: route('categories.create'),
             },
         ],
     },

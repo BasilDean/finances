@@ -24,9 +24,6 @@ const getDeleteRoute = (type, slug) => {
 const deleteForm = useForm({});
 
 const deleteItem = (type, slug, title) => {
-    console.log(
-        `title = ${title} slug = ${slug} type = ${type} getDeleteRoute(type, slug) = ${getDeleteRoute(type, slug)}`,
-    );
     const confirmation = prompt('Чтобы удалить запись введите её название');
     // noinspection EqualityComparisonWithCoercionJS
     if (confirmation == title) {

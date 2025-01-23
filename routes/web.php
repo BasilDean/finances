@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
@@ -65,6 +66,17 @@ Route::middleware('auth')->prefix('income')->group(function () {
     Route::get('/{income:slug}/edit', [IncomeController::class, 'edit'])->name('income.edit');
     Route::patch('/{income:slug}', [IncomeController::class, 'update'])->name('income.update');
     Route::delete('/{income:slug}', [IncomeController::class, 'destroy'])->name('income.destroy');
+});
+
+Route::middleware('auth')->prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+    Route::post('/update-order', [CategoryController::class, 'updateOrder'])->name('categories.update-order');
+    Route::get('/{category:id}', [CategoryController::class, 'show'])->name('categories.show');
+    Route::get('/{category:slug}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::patch('/{category:slug}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/{category:slug}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 Route::middleware('auth')->prefix('expense')->group(function () {

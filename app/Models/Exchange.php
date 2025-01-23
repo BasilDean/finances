@@ -55,7 +55,8 @@ class Exchange extends Model
             $expense->user()->associate($exchange->user_id);
             $expense->account()->associate($exchange->account_from);
             $expense->save();
-            $expense->categories()->sync(Category::firstOrCreate(['title' => 'Переводы', 'parent_id' => 0])->id);
+            $category = Category::firstOrCreate(['title' => 'Переводы', 'parent_id' => 0]);
+            $expense->categories()->sync($category);
             $expense->save();
 
             $income = new Income();

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Account;
 use App\Models\Budget;
+use App\Models\Category;
 use App\Models\Expense;
 use App\Models\PurchaseItem;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -131,6 +133,7 @@ class ExpenseController extends Controller
         $expense->save();
 
         $expense->categories()->sync($request->source['id']);
+        Category::whereIn('id', $request->source['id'])->update(['usage_count' => DB::raw('expense_count + 1')]);
 
         $account->amount -= $request->amount;
         $account->save();
@@ -142,8 +145,31 @@ class ExpenseController extends Controller
         $fields = Expense::getFields();
         return Inertia::render('Expenses/Create', [
             'fields' => $fields,
-            'resetFields' => ['title', 'amount'],
+            'resetFields' => ['title', 'amount', 'date'],
         ]);
+    }
+
+    public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
+    {
+
+        $this->authorize('update', $expense);
+
+        $validatedData = $request->validated();
+        $filteredData = Arr::except($validatedData, ['has_items', 'date']);
+        $expense->update($filteredData);
+
+        $expense->currency = $request->account['currency'];
+        $expense->user_id = $request->user['id'];
+        $expense->account_id = $request->account['id'];
+
+        $expense->has_items = (bool)$request->has_items;
+
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $expense->date = $formattedDate;
+        $expense->save();
+
+        return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
     }
 
     public function show(Expense $Expense): Expense
@@ -218,29 +244,6 @@ class ExpenseController extends Controller
         $expense->date = $formattedDate;
         $expense->save();
         return redirect()->back()->with('success', 'success');
-    }
-
-    public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
-    {
-
-        $this->authorize('update', $expense);
-
-        $validatedData = $request->validated();
-        $filteredData = Arr::except($validatedData, ['has_items', 'date']);
-        $expense->update($filteredData);
-
-        $expense->currency = $request->account['currency'];
-        $expense->user_id = $request->user['id'];
-        $expense->account_id = $request->account['id'];
-
-        $expense->has_items = (bool)$request->has_items;
-
-        $date = $request->date;
-        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
-        $expense->date = $formattedDate;
-        $expense->save();
-
-        return redirect()->route('expense.index', $expense->slug)->with('status', 'Expense updated.');
     }
 
     public function create(): Response

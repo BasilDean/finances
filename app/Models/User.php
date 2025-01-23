@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasMany(Exchange::class);
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(related: Role::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

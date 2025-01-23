@@ -10,7 +10,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'parent_id' => ['required', 'integer'],
+            'sort' => ['required', 'numeric'],
         ];
     }
 
