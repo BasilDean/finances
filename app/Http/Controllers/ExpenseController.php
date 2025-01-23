@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -224,8 +225,9 @@ class ExpenseController extends Controller
 
         $this->authorize('update', $expense);
 
-        $expense->update($request->validated()->except(['has_items', 'date']));
-
+        $validatedData = $request->validated();
+        $filteredData = Arr::except($validatedData, ['has_items', 'date']);
+        $expense->update($filteredData);
 
         $expense->currency = $request->account['currency'];
         $expense->user_id = $request->user['id'];
