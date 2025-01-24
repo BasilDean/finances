@@ -11,6 +11,12 @@ class Operation extends Model
 {
     use SoftDeletes;
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'date', // Add your field here
+    ];
+
     protected $fillable = [
         'account_id',
         'amount',
@@ -29,7 +35,7 @@ class Operation extends Model
     protected function casts(): array
     {
         return [
-            'performed_at' => 'timestamp',
+            'performed_at' => 'datetime:Y-m-d H:i:s',
             'operation_type' => OperationType::class,
         ];
     }

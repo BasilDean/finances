@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AccountRequest;
 use App\Http\Resources\AccountResource;
-use App\Http\Resources\IncomeResource;
+use App\Http\Resources\OperationResource;
 use App\Models\Account;
+use App\Services\OperationService;
 use App\Services\SearchService;
 use App\Services\UserSettingsService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,11 +21,14 @@ class AccountController extends Controller
 
     private SearchService $searchService;
     private UserSettingsService $userSettingsService;
+    private OperationService $operationService;
 
-    public function __construct(SearchService $searchService, UserSettingsService $userSettingsService)
+    public function __construct(SearchService $searchService, UserSettingsService $userSettingsService, OperationService $operationService)
     {
         $this->searchService = $searchService;
         $this->userSettingsService = $userSettingsService;
+        $this->operationService = $operationService;
+
     }
 
     public function index(Request $request): Response
@@ -76,108 +79,42 @@ class AccountController extends Controller
 
     public function show_statistic(Account $account, Request $request): Response
     {
-        // FIXME make filtering
+        $this->authorize('viewAny', $account);
+
         $title = $account->title;
-
-
-        // FIXME move operations logic to dedicated service
-        $operations = collect($account->operations()->orderBy('performed_at')->get()->reduce(function ($carry, $item) {
-            $date = date('d-m-Y', $item->performed_at);
-            $title = ($item->operation_type->name === 'income' ? '+' : '-') . $item->amount . ' ' . $item->description . ' ' . date('H:m:s', $item->performed_at);
-
-            if (!isset($carry[$date])) {
-                $carry[$date] = [
-                    'customInfo' => [$title],
-                    'y' => (int)$item->balance_after,
-                ];
-            } else {
-                $carry[$date]['customInfo'][] = $title;
-                $carry[$date]['y'] = (int)$item->balance_after;
-            }
-
-            return $carry;
-        }, []))
-            ->map(function ($value, $key) {
-                return ['date' => $key, 'data' => $value];
-            })
-            ->values(); // Convert to an indexed array
-
         $slug = $account->slug;
+
+        // Get filtering parameters
+        $filter = $request->only(['operation_type']);
+
+        // Fetch filtered statistics
+        $operations = $this->operationService->getOperationsStatistics($account, $filter);
 
         return Inertia::render('Accounts/Stats', [
             'items' => $operations,
             'title' => $title,
             'slug' => $slug,
         ]);
-
     }
 
     public function show(Account $account, Request $request): Response
     {
         $this->authorize('view', $account);
-        $fields = IncomeResource::getFields();
-
-        $fetchCount = 50;
+        $fields = OperationResource::getFields('show');
 
         $search = $request->input('search');
 
-        $query1 = $this->searchService->applySearch(
-            $account->expenses()->orderBy('date', 'desc'),
-            $search,
-            ['normalized_title', 'amount'] // Fields to search on
-        );
-        $query2 = $this->searchService->applySearch(
-            $account->expenses()->orderBy('date', 'desc'),
-            $search,
-            ['normalized_title', 'amount', 'currency'] // Fields to search on
-        );
 
-        $expenses = $query1->take($fetchCount)->get()->map(function ($expense) {
-            return [
-                'title' => $expense->title,
-                'amount' => -1 * $expense->amount,
-                'currency' => $expense->currency,
-                'created_at' => $expense->created_at->format('H:i d-m-Y'),
-                'date' => $expense->date->format('H:i d-m-Y'),
-                'user' => $expense->user->name,
-                'source' => $expense->categories()->pluck('title')->implode(', '),
-                'account' => $expense->account->title,
-                'slug' => $expense->slug,
-                'kind' => 'expense'
-            ];
-        });
-        $incomes = $query2->take($fetchCount)->get()->map(function ($income) {
-            return [
-                'title' => $income->title,
-                'amount' => $income->amount,
-                'currency' => $income->currency,
-                'created_at' => $income->created_at->format('H:i d-m-Y'),
-                'date' => $income->date->format('H:i d-m-Y'),
-                'user' => $income->user->name,
-                'source' => $income->source ?? 'Перевод',
-                'account' => $income->account->title,
-                'slug' => $income->slug,
-                'kind' => 'income'
-            ];
-        });
-        $items = collect([...$expenses, ...$incomes])->sortBy('created_at');
-        $totalItems = $items->count();
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 20;
-        $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values(); // Reset keys
+        // Get paginated operations from the service
+        $operations = $this->operationService->getPaginatedOperations($account, $search);
 
-        $paginator = new LengthAwarePaginator(
-            $currentItems,
-            $totalItems,
-            $perPage,
-            $currentPage,
-            ['path' => LengthAwarePaginator::resolveCurrentPath()]
-        );
+        // Transform operations using the resource
+        $transformedOperations = OperationResource::collection($operations);
 
         return Inertia::render('Accounts/Show', [
             'status' => session('status'),
             'account' => $account,
-            'items' => $paginator,
+            'items' => $transformedOperations,
             'fields' => $fields,
             'filters' => request()->all('search'),
         ]);

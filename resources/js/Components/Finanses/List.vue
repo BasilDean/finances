@@ -67,6 +67,7 @@ const formatValue = (value, currency = null, type = '', key = '') => {
         }
     }
     return t(value); // Translate text keys
+    // return value; // Translate text keys
 };
 
 const getRoute = (type, action, slug = '') => {
@@ -235,7 +236,9 @@ if (props.type) {
                     >
                         <Link
                             v-if="showDetailPage"
-                            :href="getRoute(type, 'show', item.slug)"
+                            :href="
+                                getRoute(item.kind ?? type, 'show', item.slug)
+                            "
                             class="block px-2 py-1 sm:px-2 sm:py-2"
                         >
                             {{
@@ -265,22 +268,20 @@ if (props.type) {
                                 )
                             }}
                         </span>
-
-                        <!--// formatValue( // item[key], // key === 'amount_from'
-// ? item.currency_from // : key === 'amount_to' // ?
-item.currency_to // : item.currency, // params.type, //
-key, // ) -->
                     </td>
 
                     <td class="hidden sm:block">
                         <div
                             class="flex justify-end gap-2 px-1 py-1 sm:px-2 sm:py-2"
                         >
-                            <EditButton :slug="item.slug" :type="type" />
+                            <EditButton
+                                :slug="item.slug"
+                                :type="item.kind ?? type"
+                            />
                             <DeleteButton
                                 :slug="item.slug"
                                 :title="item.title"
-                                :type="type"
+                                :type="item.kind ?? type"
                             />
                         </div>
                     </td>
