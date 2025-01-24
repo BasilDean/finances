@@ -62,7 +62,7 @@ class AccountController extends Controller
         $this->authorize('create', Account::class);
         $validatedData = $request->validated();
         Account::create($validatedData);
-        return redirect()->route('accounts.index')->with('status', 'Account created.');
+        return redirect()->back()->with('status', 'Account created.');
     }
 
     public function create(): Response
@@ -137,7 +137,7 @@ class AccountController extends Controller
 
         $account->update($request->validated());
 
-        return redirect()->route('accounts.show', $account->slug)->with('status', 'Budget updated.');
+        return redirect()->back()->with('status', 'budget updated.');
     }
 
     public function destroy(Account $account): RedirectResponse
@@ -146,6 +146,6 @@ class AccountController extends Controller
 
         $account->delete();
 
-        return redirect()->route('accounts.index')->with('status', 'Account deleted.');
+        return redirect()->back()->with('status', 'account deleted.');
     }
 }
