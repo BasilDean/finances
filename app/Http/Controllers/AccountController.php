@@ -100,21 +100,22 @@ class AccountController extends Controller
     public function show(Account $account, Request $request): Response
     {
         $this->authorize('view', $account);
+
         $fields = OperationResource::getFields('show');
-
         $search = $request->input('search');
-
 
         // Get paginated operations from the service
         $operations = $this->operationService->getPaginatedOperations($account, $search);
 
-        // Transform operations using the resource
-        $transformedOperations = OperationResource::collection($operations);
+        // Transform the operations while keeping pagination structure intact
+        $operations->getCollection()->transform(function ($operation) {
+            return (new OperationResource($operation))->resolve(); // Apply resource transformation
+        });
 
         return Inertia::render('Accounts/Show', [
             'status' => session('status'),
             'account' => $account,
-            'items' => $transformedOperations,
+            'items' => $operations,
             'fields' => $fields,
             'filters' => request()->all('search'),
         ]);
