@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeRequest;
+use App\Http\Resources\IncomeResource;
 use App\Models\Account;
 use App\Models\Budget;
 use App\Models\Income;
@@ -52,7 +53,7 @@ class IncomeController extends Controller
                 'account' => $income->account->title ?? null, // Extract account's title
             ];
         });
-        $fields = Income::getFields();
+        $fields = IncomeResource::getFields('show');
         return Inertia::render('Incomes/Index', [
             'incomes' => $incomes,
             'fields' => $fields,
@@ -64,7 +65,7 @@ class IncomeController extends Controller
     {
         $this->authorize('create', Income::class);
 
-        $fields = Income::getFields();
+        $fields = IncomeResource::getFields('edit');
         return Inertia::render('Incomes/Create', [
             'fields' => $fields,
         ]);
@@ -107,7 +108,7 @@ class IncomeController extends Controller
     {
         $this->authorize('update', $income);
 
-        $fields = Income::getFields();
+        $fields = IncomeResource::getFields('edit');
 
         $incomeData = [
             'id' => $income->id,

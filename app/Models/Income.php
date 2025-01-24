@@ -94,64 +94,6 @@ class Income extends Model
         });
     }
 
-    public static function getFields(): array
-    {
-        $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
-        $accounts = $budget->accounts;
-        $users = $budget->users;
-        return [
-            'title' => [
-                'type' => 'string',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-            'amount' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-            'currency' => [
-                'type' => 'list',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => false,
-                'values' => config('currencies')
-            ],
-            'user' => [
-                'type' => 'relation',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-                'values' => $users,
-                'multiple' => false,
-                'showField' => 'name',
-            ],
-            'source' => [
-                'type' => 'text',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-            'account' => [
-                'type' => 'relation',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-                'values' => $accounts,
-                'multiple' => false,
-                'showField' => 'title',
-            ],
-            'date' => [
-                'type' => 'date',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true
-            ]
-        ];
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

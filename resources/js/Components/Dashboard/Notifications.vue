@@ -5,7 +5,6 @@ const notifications = [
         time: 'a few moments ago',
     },
 ];
-
 const showNotifications = () => {
     // document.getElementById('notification-dropdown').classList.toggle('hidden');
 };

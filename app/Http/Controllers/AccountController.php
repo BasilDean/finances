@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AccountRequest;
 use App\Http\Resources\AccountResource;
+use App\Http\Resources\IncomeResource;
 use App\Models\Account;
 use App\Models\Budget;
-use App\Models\Income;
+use App\Services\SearchService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,20 +19,28 @@ class AccountController extends Controller
 {
     use AuthorizesRequests;
 
+    private SearchService $searchService;
+
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Account::class);
 
         $fields = AccountResource::getFields('show');
-
+        // FIXME move user settings to dedicated service
         $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+
         $search = $request->input('search');
 
-        $query = $budget->accounts()->orderBy('updated_at', 'desc');
-
-        if ($search) {
-            $query->where('normalized_title', 'like', '%' . $search . '%')->orWhere('amount', 'like', '%' . $search . '%'); // Adjust fields as necessary
-        }
+        $query = $this->searchService->applySearch(
+            $budget->accounts()->orderBy('updated_at', 'desc'),
+            $search,
+            ['normalized_title', 'amount'] // Fields to search on
+        );
 
         $accounts = $query->paginate(20);
 
@@ -47,7 +56,7 @@ class AccountController extends Controller
     {
         $this->authorize('create', Account::class);
         $validatedData = $request->validated();
-        $account = Account::create($validatedData);
+        Account::create($validatedData);
         return redirect()->route('accounts.index')->with('status', 'Account created.');
     }
 
@@ -65,9 +74,11 @@ class AccountController extends Controller
 
     public function show_statistic(Account $account, Request $request): Response
     {
+        // FIXME make filtering
         $title = $account->title;
 
 
+        // FIXME move operations logic to dedicated service
         $operations = collect($account->operations()->orderBy('performed_at')->get()->reduce(function ($carry, $item) {
             $date = date('d-m-Y', $item->performed_at);
             $title = ($item->operation_type->name === 'income' ? '+' : '-') . $item->amount . ' ' . $item->description . ' ' . date('H:m:s', $item->performed_at);
@@ -87,7 +98,7 @@ class AccountController extends Controller
             ->map(function ($value, $key) {
                 return ['date' => $key, 'data' => $value];
             })
-            ->values(); // Convert to indexed array
+            ->values(); // Convert to an indexed array
 
         $slug = $account->slug;
 
@@ -102,28 +113,22 @@ class AccountController extends Controller
     public function show(Account $account, Request $request): Response
     {
         $this->authorize('view', $account);
-        $fields = Income::getFields();
+        $fields = IncomeResource::getFields();
 
         $fetchCount = 50;
 
         $search = $request->input('search');
 
-        $query1 = $account->expenses();
-        $query2 = $account->incomes();
-
-        if ($search) {
-            $query1->where(function ($q) use ($search) {
-                $q->where('normalized_title', 'like', '%' . $search . '%')
-                    ->orWhere('amount', 'like', '%' . $search . '%')
-                    ->orWhere('currency', 'like', '%' . $search . '%');
-            });
-            $query2->where(function ($q) use ($search) {
-                $q->where('normalized_title', 'like', '%' . $search . '%')
-                    ->orWhere('amount', 'like', '%' . $search . '%')
-                    ->orWhere('currency', 'like', '%' . $search . '%');
-            });
-        }
-
+        $query1 = $this->searchService->applySearch(
+            $account->expenses()->orderBy('date', 'desc'),
+            $search,
+            ['normalized_title', 'amount'] // Fields to search on
+        );
+        $query2 = $this->searchService->applySearch(
+            $account->expenses()->orderBy('date', 'desc'),
+            $search,
+            ['normalized_title', 'amount', 'currency'] // Fields to search on
+        );
 
         $expenses = $query1->take($fetchCount)->get()->map(function ($expense) {
             return [
@@ -147,14 +152,13 @@ class AccountController extends Controller
                 'created_at' => $income->created_at->format('H:i d-m-Y'),
                 'date' => $income->date->format('H:i d-m-Y'),
                 'user' => $income->user->name,
-                'source' => $income->source,
+                'source' => $income->source ?? 'Перевод',
                 'account' => $income->account->title,
                 'slug' => $income->slug,
                 'kind' => 'income'
             ];
         });
         $items = collect([...$expenses, ...$incomes])->sortBy('created_at');
-
         $totalItems = $items->count();
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 20;

@@ -265,6 +265,11 @@ if (props.type) {
                                 )
                             }}
                         </span>
+
+                        <!--// formatValue( // item[key], // key === 'amount_from'
+// ? item.currency_from // : key === 'amount_to' // ?
+item.currency_to // : item.currency, // params.type, //
+key, // ) -->
                     </td>
 
                     <td class="hidden sm:block">

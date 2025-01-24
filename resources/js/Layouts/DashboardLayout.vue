@@ -300,7 +300,7 @@ const showSubmenu = (id) => {
                 </div>
                 <div class="flex items-center lg:order-2">
                     <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                        <Notifications class="hide" />
+                        <Notifications />
                         <!-- Settings Dropdown -->
                         <div class="relative ms-3">
                             <Dropdown align="right" width="48">
