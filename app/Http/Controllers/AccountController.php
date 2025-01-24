@@ -6,8 +6,8 @@ use App\Http\Requests\AccountRequest;
 use App\Http\Resources\AccountResource;
 use App\Http\Resources\IncomeResource;
 use App\Models\Account;
-use App\Models\Budget;
 use App\Services\SearchService;
+use App\Services\UserSettingsService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,10 +20,12 @@ class AccountController extends Controller
     use AuthorizesRequests;
 
     private SearchService $searchService;
+    private UserSettingsService $userSettingsService;
 
-    public function __construct(SearchService $searchService)
+    public function __construct(SearchService $searchService, UserSettingsService $userSettingsService)
     {
         $this->searchService = $searchService;
+        $this->userSettingsService = $userSettingsService;
     }
 
     public function index(Request $request): Response
@@ -31,8 +33,8 @@ class AccountController extends Controller
         $this->authorize('viewAny', Account::class);
 
         $fields = AccountResource::getFields('show');
-        // FIXME move user settings to dedicated service
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+
+        $budget = $this->userSettingsService->getActiveBudget();
 
         $search = $request->input('search');
 

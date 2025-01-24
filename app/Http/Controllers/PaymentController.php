@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentRequest;
-use App\Models\Budget;
 use App\Models\Payment;
+use App\Services\SearchService;
+use App\Services\UserSettingsService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,12 +16,20 @@ class PaymentController extends Controller
 {
     use AuthorizesRequests;
 
+    private SearchService $searchService;
+    private UserSettingsService $userSettingsService;
+
+    public function __construct(UserSettingsService $userSettingsService)
+    {
+        $this->userSettingsService = $userSettingsService;
+    }
+
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Payment::class);
         $search = $request->input('search');
 
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+        $budget = $this->userSettingsService->getActiveBudget();
 
         $query = $budget->payments()->orderBy('updated_at', 'desc');
 

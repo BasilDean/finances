@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Account;
-use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\PurchaseItem;
+use App\Services\SearchService;
+use App\Services\UserSettingsService;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -22,13 +23,22 @@ class ExpenseController extends Controller
 {
     use AuthorizesRequests;
 
+    private SearchService $searchService;
+    private UserSettingsService $userSettingsService;
+
+    public function __construct(SearchService $searchService, UserSettingsService $userSettingsService)
+    {
+        $this->searchService = $searchService;
+        $this->userSettingsService = $userSettingsService;
+    }
+
     public function index(Request $request): Response
     {
 
         $this->authorize('viewAny', Expense::class);
 
 
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+        $budget = $this->userSettingsService->getActiveBudget();
         $accounts = $budget->accounts->pluck('id')->toArray();
 
 

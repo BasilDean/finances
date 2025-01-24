@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IncomeRequest;
 use App\Http\Resources\IncomeResource;
 use App\Models\Account;
-use App\Models\Budget;
 use App\Models\Income;
+use App\Services\UserSettingsService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
@@ -19,11 +19,18 @@ class IncomeController extends Controller
 {
     use AuthorizesRequests;
 
+    private UserSettingsService $userSettingsService;
+
+    public function __construct(UserSettingsService $userSettingsService)
+    {
+        $this->userSettingsService = $userSettingsService;
+    }
+
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Income::class);
 
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
+        $budget = $this->userSettingsService->getActiveBudget();
         $accounts = $budget->accounts->pluck('id')->toArray();
 
         $search = $request->input('search');
