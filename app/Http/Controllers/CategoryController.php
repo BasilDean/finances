@@ -81,7 +81,7 @@ class CategoryController extends Controller
             if ($parentCategory['children']) {
                 foreach ($parentCategory['children'] as $key2 => $child) {
                     $subCategory = Category::findOrFail($child['id']);
-                    $subCategory->sort = $key2;
+                    $subCategory->sort = (int)('1' . $key . $key2);
                     $subCategory->parent_id = $category->id;
                     $subCategory->save();
                 }

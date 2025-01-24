@@ -151,7 +151,7 @@ class Expense extends Model
                 'hideOnMobile' => false,
                 'show' => true,
                 'editable' => true,
-                'values' => Category::all(),
+                'values' => Category::orderBy('sort')->get(),
                 'multiple' => true,
                 'showField' => 'title',
             ],
