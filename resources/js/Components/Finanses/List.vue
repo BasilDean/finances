@@ -207,7 +207,6 @@ if (props.type) {
                 <tr>
                     <th
                         v-for="(params, key) in fields"
-                        v-show="params.show"
                         :key="key"
                         :class="
                             params.hideOnMobile
@@ -229,7 +228,6 @@ if (props.type) {
                 >
                     <td
                         v-for="(params, key) in fields"
-                        v-show="params.show"
                         :key="key"
                         :class="
                             params.hideOnMobile ? 'hidden sm:table-cell' : ''

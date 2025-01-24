@@ -75,7 +75,6 @@ const createItem = () => {
                                 <div class="mt-4 flex flex-col gap-x-6 gap-y-3">
                                     <div
                                         v-for="(params, key) in fields"
-                                        v-show="params.editable"
                                         :key="key"
                                     >
                                         <InputLabel
@@ -113,9 +112,7 @@ const createItem = () => {
                                                 "
                                                 v-model="form[key]"
                                                 :allow-empty="
-                                                    params.canBeEmpty
-                                                        ? true
-                                                        : false
+                                                    !!params.canBeEmpty
                                                 "
                                                 :name="key"
                                                 :options="params.values"

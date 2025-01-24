@@ -22,7 +22,7 @@ class AccountController extends Controller
     {
         $this->authorize('viewAny', Account::class);
 
-        $fields = AccountResource::getFields();
+        $fields = AccountResource::getFields('show');
 
         $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
         $search = $request->input('search');
@@ -55,7 +55,7 @@ class AccountController extends Controller
     {
         $this->authorize('create', Account::class);
 
-        $fields = AccountResource::getFields();
+        $fields = AccountResource::getFields('edit');
 
         return Inertia::render('Accounts/Create', [
             'status' => session('status'),
@@ -181,7 +181,7 @@ class AccountController extends Controller
     {
         $this->authorize('update', $account);
 
-        $fields = AccountResource::getFields();
+        $fields = AccountResource::getFields('edit');
         return Inertia::render('Accounts/Edit', [
             'account' => $account,
             'fields' => $fields

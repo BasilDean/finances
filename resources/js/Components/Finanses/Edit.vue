@@ -53,10 +53,9 @@ const createBudget = () => {
                                 <div class="mt-4 flex flex-col gap-x-6 gap-y-3">
                                     <div
                                         v-for="(params, key) in fields"
-                                        v-show="params.editable"
                                         :key="key"
                                     >
-                                        <div v-if="params.editable">
+                                        <div>
                                             <InputLabel
                                                 :target="key"
                                                 :value="$t(key)"
