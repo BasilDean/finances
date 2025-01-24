@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AccountRequest;
+use App\Http\Resources\AccountResource;
 use App\Models\Account;
 use App\Models\Budget;
 use App\Models\Income;
@@ -21,7 +22,7 @@ class AccountController extends Controller
     {
         $this->authorize('viewAny', Account::class);
 
-        $fields = Account::getFields();
+        $fields = AccountResource::getFields();
 
         $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->firstOrFail();
         $search = $request->input('search');
@@ -54,7 +55,7 @@ class AccountController extends Controller
     {
         $this->authorize('create', Account::class);
 
-        $fields = Account::getFields();
+        $fields = AccountResource::getFields();
 
         return Inertia::render('Accounts/Create', [
             'status' => session('status'),
@@ -180,7 +181,7 @@ class AccountController extends Controller
     {
         $this->authorize('update', $account);
 
-        $fields = Account::getFields();
+        $fields = AccountResource::getFields();
         return Inertia::render('Accounts/Edit', [
             'account' => $account,
             'fields' => $fields
