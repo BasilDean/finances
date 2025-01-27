@@ -16,7 +16,7 @@ class BudgetResource extends JsonResource
      * @param string|null $context The context for the fields (e.g., 'edit', 'show').
      * @return array The field definitions for the given context.
      */
-    protected static function getFields(?string $context = null): array
+    public static function getFields(?string $context = null): array
     {
         // Default fields (shared across contexts)
         $defaultFields = [
@@ -63,8 +63,7 @@ class BudgetResource extends JsonResource
         return [
             'title' => 0,
             'currency' => 1,
-            'type' => 2,
-            'amount' => 3,
+            'amount' => 2,
         ];
     }
 

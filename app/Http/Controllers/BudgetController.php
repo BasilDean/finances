@@ -22,7 +22,7 @@ class BudgetController extends Controller
     {
         $this->authorize('viewAny', Budget::class);
 
-        $fields = BudgetResource::getFields();
+        $fields = BudgetResource::getFields('show');
         $search = $request->input('search');
         $query = Budget::query()->whereRaw('0 = 1');
         if (Auth::check()) {
@@ -47,7 +47,7 @@ class BudgetController extends Controller
     public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
-        $fields = BudgetResource::getFields();
+        $fields = BudgetResource::getFields('edit');
         return Inertia::render('Budgets/Edit', [
             'budget' => $budget,
             'fields' => $fields
@@ -103,7 +103,7 @@ class BudgetController extends Controller
     public function create(): Response
     {
         $this->authorize('create', Budget::class);
-        $fields = BudgetResource::getFields();
+        $fields = BudgetResource::getFields('edit');
         $username = strtolower(Auth::user()->name);
 
         return Inertia::render('Budgets/Create', [
