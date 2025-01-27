@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class Budget extends Model
 {
@@ -19,39 +18,6 @@ class Budget extends Model
         'currency',
     ];
 
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(static function ($budget) {
-            $slug = Str::slug($budget->title);
-            $originalSlug = $slug;
-            $counter = 1;
-
-            // Ensure the slug is unique by including soft deleted items
-            while (self::withTrashed()->where('slug', $slug)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
-                $counter++;
-            }
-
-            $budget->slug = $slug;
-        });
-        static::updating(static function ($budget) {
-            $total = $budget->getBudgetTotal();
-            if ($budget->balance !== $total) {
-                $budget->updateBudgetTotal($total);
-                $diff = $budget->balance - $total;
-                BudgetHistory::create([
-                    'budget_id' => $budget->id,
-                    'amount' => $diff,
-                    'operation_type' => $diff > 0 ? 'expense' : 'income',
-                    'description' => 'Budget balance changed',
-                    'balance_after' => $total,
-                    'performed_at' => now(),
-                ]);
-            }
-        });
-    }
 
     public function getBudgetTotal(): string
     {

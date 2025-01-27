@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\Budget;
 use App\Observers\AccountObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Vite;
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Vite::prefetch(concurrency: 3);
         Account::observe(AccountObserver::class);
+        Budget::observe(AccountObserver::class);
     }
 }
