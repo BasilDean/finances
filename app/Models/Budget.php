@@ -18,35 +18,6 @@ class Budget extends Model
         'currency',
     ];
 
-
-    public function getBudgetTotal(): string
-    {
-        $accountsArray = $this->accounts->toArray();
-        $total = array_reduce($accountsArray, callback: function ($sum, $item) {
-            $currencyRate = new CurrencyRate();
-//            dd($item['currency'], $this->currency);
-            if ($item['currency'] === $this->currency) {
-                $sum += $item['amount'];
-            } else {
-                $amountIRubbles = $currencyRate->convertToRubbles($item['currency'], $item['amount']);
-//                dd($amountIRubbles, $item);
-                if ($this->currency === 'RUB') {
-                    $sum += $amountIRubbles;
-                } else {
-                    $sum += $currencyRate->convertToCurrency($this->currency, $amountIRubbles);
-                }
-            }
-            return $sum;
-        }, initial: 0);
-        return $total;
-    }
-
-    public function updateBudgetTotal($total): void
-    {
-        $this->balance = $total;
-        $this->save();
-    }
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(related: User::class);

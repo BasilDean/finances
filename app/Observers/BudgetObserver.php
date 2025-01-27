@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Budget;
 use App\Models\BudgetHistory;
+use App\Services\BudgetService;
 use Illuminate\Support\Str;
 
 class BudgetObserver
@@ -30,9 +31,10 @@ class BudgetObserver
 
     public function updating(Budget $budget): void
     {
-        $total = $budget->getBudgetTotal();
+        $budgetService = new BudgetService();
+        $total = $budgetService->CalculateBudgetTotal($budget);
         if ($budget->balance !== $total) {
-            $budget->updateBudgetTotal($total);
+            $budgetService->updateBudgetTotal($budget, $total);
             $diff = $budget->balance - $total;
             BudgetHistory::create([
                 'budget_id' => $budget->id,

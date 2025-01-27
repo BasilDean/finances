@@ -3,98 +3,80 @@
 namespace App\Observers;
 
 use App\Models\Account;
-use App\Models\Budget;
+use App\Services\BudgetService;
+use App\Services\UserSettingsService;
 use Illuminate\Support\Str;
 
 class AccountObserver
 {
+    private BudgetService $budgetService;
+    private UserSettingsService $userSettingsService;
+
+    public function __construct(BudgetService $budgetService, UserSettingsService $userSettingsService)
+    {
+        $this->budgetService = $budgetService;
+        $this->userSettingsService = $userSettingsService;
+    }
+
     public function creating(Account $account): void
     {
-        // Generate a unique slug for the account
-        $originalSlug = Str::slug($account->title);
-        $slug = $originalSlug;
+        $account->slug = $this->generateUniqueSlug($account->title);
+        $account->normalized_title = mb_strtolower($account->title);
+    }
 
+    private function generateUniqueSlug(string $title): string
+    {
+        $originalSlug = Str::slug($title);
+        $uniqueSlug = $originalSlug;
         $counter = 1;
+
         while (Account::withTrashed()->where('slug', 'LIKE', "{$originalSlug}%")->exists()) {
-            $slug = "{$originalSlug}-{$counter}";
+            $uniqueSlug = "{$originalSlug}-{$counter}";
             $counter++;
         }
 
-        $account->slug = $slug;
-        $account->normalized_title = mb_strtolower($account->title);
+        return $uniqueSlug;
     }
 
     public function created(Account $account): void
     {
-        // TODO: Move user settings and active budget logic to a dedicated service
-        if (auth()->user() && auth()->user()->settings['active_budget']) {
-            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-            if ($budget) {
-                // TODO: Move budget association logic to a Budget service
-                $account->budgets()->attach($budget);
+        $budget = $this->userSettingsService->getActiveBudget();
+        if ($budget) {
+            $this->associateBudgetWithAccountAndSynchronize($budget, $account);
+        }
+    }
 
-                // TODO: Move budget total calculation and update logic to a Budget service
-                $total = $budget->getBudgetTotal();
-                /** @noinspection TypeUnsafeComparisonInspection */
-                if ($budget->balance != $total) {
-                    $budget->updateBudgetTotal($total);
-                }
+    private function associateBudgetWithAccountAndSynchronize($budget, Account $account): void
+    {
+        $account->budgets()->attach($budget);
+        $this->synchronizeBudgetTotal();
+    }
+
+    private function synchronizeBudgetTotal(): void
+    {
+        $budget = $this->userSettingsService->getActiveBudget();
+        if ($budget) {
+            $total = $this->budgetService->calculateBudgetTotal($budget);
+            if ((int)$budget->balance !== (int)$total) {
+                $this->budgetService->updateBudgetTotal($budget, $total);
             }
         }
     }
 
+    // Helper methods
+
     public function updating(Account $account): void
     {
-        // Normalize the title before saving
         $account->normalized_title = mb_strtolower($account->title);
     }
 
     public function updated(Account $account): void
     {
-        // TODO: Move budget total recalculation logic to a Budget service
-        if (auth()->user() && auth()->user()->settings) {
-            $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-            $total = $budget->getBudgetTotal();
-            /** @noinspection TypeUnsafeComparisonInspection */
-            if ($budget->balance != $total) {
-                $budget->updateBudgetTotal($total);
-            }
-        }
-    }
-
-    public function deleting(Account $account): void
-    {
-        // Add logic if required to handle soft deletion
+        $this->synchronizeBudgetTotal();
     }
 
     public function deleted(Account $account): void
     {
-        // TODO: Move budget total recalculation logic to a Budget service
-        $budget = Budget::where('slug', auth()->user()->settings['active_budget'])->first();
-        $total = $budget->getBudgetTotal();
-        /** @noinspection TypeUnsafeComparisonInspection */
-        if ($budget->balance != $total) {
-            $budget->updateBudgetTotal($total);
-        }
-    }
-
-    public function restoring(Account $account): void
-    {
-        // Add logic if something needs to happen when restoring a soft-deleted account
-    }
-
-    public function restored(Account $account): void
-    {
-        // Add logic if something needs to happen after an account is restored
-    }
-
-    public function forceDeleting(Account $account): void
-    {
-        // Add logic if something needs to happen during permanent account deletion
-    }
-
-    public function forceDeleted(Account $account): void
-    {
-        // Add logic if something needs to happen after an account is permanently deleted
+        $this->synchronizeBudgetTotal();
     }
 }
