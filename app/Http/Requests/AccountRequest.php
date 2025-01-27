@@ -11,7 +11,6 @@ class AccountRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'amount' => ['required', 'numeric'],
             'currency' => ['required', new ValidCurrencyRule()],
             'type' => ['required'],
         ];

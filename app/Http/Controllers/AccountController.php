@@ -62,7 +62,7 @@ class AccountController extends Controller
         $this->authorize('create', Account::class);
         $validatedData = $request->validated();
         Account::create($validatedData);
-        return redirect()->back()->with('status', 'Account created.');
+        return redirect()->route('accounts.index')->with('status', 'Account created.');
     }
 
     public function create(): Response

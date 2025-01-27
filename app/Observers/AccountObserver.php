@@ -21,36 +21,37 @@ class AccountObserver
     public function creating(Account $account): void
     {
         $account->slug = $this->generateUniqueSlug($account->title);
+        $account->amount = 0;
         $account->normalized_title = mb_strtolower($account->title);
     }
 
     private function generateUniqueSlug(string $title): string
     {
         $originalSlug = Str::slug($title);
-        $uniqueSlug = $originalSlug;
-        $counter = 1;
+        $latestSlug = Account::withTrashed()
+            ->where('slug', 'LIKE', "{$originalSlug}%")
+            ->latest('id') // Get the most recent entry
+            ->value('slug'); // Fetch the slug
 
-        while (Account::withTrashed()->where('slug', 'LIKE', "{$originalSlug}%")->exists()) {
-            $uniqueSlug = "{$originalSlug}-{$counter}";
-            $counter++;
+        if ($latestSlug) {
+            $number = intval(str_replace("{$originalSlug}-", '', $latestSlug)) + 1;
+            return "{$originalSlug}-{$number}";
         }
 
-        return $uniqueSlug;
+        return $originalSlug;
+    }
+    
+    public function updating(Account $account): void
+    {
+        $account->normalized_title = mb_strtolower($account->title);
     }
 
-    public function created(Account $account): void
+    public function updated(Account $account): void
     {
-        $budget = $this->userSettingsService->getActiveBudget();
-        if ($budget) {
-            $this->associateBudgetWithAccountAndSynchronize($budget, $account);
-        }
-    }
-
-    private function associateBudgetWithAccountAndSynchronize($budget, Account $account): void
-    {
-        $account->budgets()->attach($budget);
         $this->synchronizeBudgetTotal();
     }
+
+    // Helper methods
 
     private function synchronizeBudgetTotal(): void
     {
@@ -63,20 +64,14 @@ class AccountObserver
         }
     }
 
-    // Helper methods
-
-    public function updating(Account $account): void
-    {
-        $account->normalized_title = mb_strtolower($account->title);
-    }
-
-    public function updated(Account $account): void
+    public function deleted(Account $account): void
     {
         $this->synchronizeBudgetTotal();
     }
 
-    public function deleted(Account $account): void
+    private function associateBudgetWithAccountAndSynchronize($budget, Account $account): void
     {
+        $account->budgets()->attach($budget);
         $this->synchronizeBudgetTotal();
     }
 }
