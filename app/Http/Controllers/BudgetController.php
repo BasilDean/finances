@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BudgetRequest;
+use App\Http\Resources\BudgetResource;
 use App\Models\Budget;
 use App\Models\Expense;
 use App\Models\Income;
@@ -21,7 +22,7 @@ class BudgetController extends Controller
     {
         $this->authorize('viewAny', Budget::class);
 
-        $fields = Budget::getFields();
+        $fields = BudgetResource::getFields();
         $search = $request->input('search');
         $query = Budget::query()->whereRaw('0 = 1');
         if (Auth::check()) {
@@ -46,7 +47,7 @@ class BudgetController extends Controller
     public function edit(Budget $budget): Response
     {
         $this->authorize('update', $budget);
-        $fields = Budget::getFields();
+        $fields = BudgetResource::getFields();
         return Inertia::render('Budgets/Edit', [
             'budget' => $budget,
             'fields' => $fields
@@ -102,7 +103,7 @@ class BudgetController extends Controller
     public function create(): Response
     {
         $this->authorize('create', Budget::class);
-        $fields = Budget::getFields();
+        $fields = BudgetResource::getFields();
         $username = strtolower(Auth::user()->name);
 
         return Inertia::render('Budgets/Create', [
