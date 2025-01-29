@@ -3,10 +3,26 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\Expense;
+use App\Models\Income;
+use App\Models\Operation;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class OperationService
 {
+    public static function createOperation(Expense|Income $transaction, Account $account, string $transactionType): Operation
+    {
+        return Operation::create([
+            'account_id' => $account->account_id,
+            'amount' => $transaction->amount,
+            'operation_type' => $transactionType,
+            'operation_id' => $transaction->id,
+            'description' => $transaction->title,
+            'balance_after' => $account->amount,
+            'performed_at' => $transaction->date,
+        ]);
+    }
+
     /**
      * Retrieve paginated operations for an account with search and transformations.
      *
