@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -27,32 +26,6 @@ class Category extends Model
         'parent_id',
         'sort'
     ];
-
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(static function ($category) {
-            $category->normalized_title = mb_strtolower($category->title);
-
-            $slug = Str::slug($category->title);
-            $originalSlug = $slug;
-            $counter = 1;
-
-            // Ensure the slug is unique by including soft deleted items
-            while (self::withTrashed()->where('slug', $slug)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
-                $counter++;
-            }
-
-            $category->slug = $slug;
-        });
-
-        static::updating(static function ($category) {
-            $category->normalized_title = mb_strtolower($category->title);
-        });
-    }
 
     public static function getFields(): array
     {

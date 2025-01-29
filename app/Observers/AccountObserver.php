@@ -34,13 +34,13 @@ class AccountObserver
             ->value('slug'); // Fetch the slug
 
         if ($latestSlug) {
-            $number = intval(str_replace("{$originalSlug}-", '', $latestSlug)) + 1;
+            $number = (int)str_replace("{$originalSlug}-", '', $latestSlug) + 1;
             return "{$originalSlug}-{$number}";
         }
 
         return $originalSlug;
     }
-    
+
     public function updating(Account $account): void
     {
         $account->normalized_title = mb_strtolower($account->title);
