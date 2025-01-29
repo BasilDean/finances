@@ -32,7 +32,9 @@ class Expense extends Model
         'amount',
         'has_items',
         'currency',
-        'date'
+        'date',
+        'account_id',
+        'user_id',
     ];
 
     public static function getFields(): array

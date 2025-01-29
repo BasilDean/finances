@@ -66,8 +66,8 @@ const formatValue = (value, currency = null, type = '', key = '') => {
             return t('no');
         }
     }
-    return t(value); // Translate text keys
-    // return value; // Translate text keys
+    // return t(value); // Translate text keys
+    return value; // Translate text keys
 };
 
 const getRoute = (type, action, slug = '') => {

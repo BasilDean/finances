@@ -25,8 +25,7 @@ const deleteForm = useForm({});
 
 const deleteItem = (type, slug, title) => {
     const confirmation = prompt('Чтобы удалить запись введите её название');
-    // noinspection EqualityComparisonWithCoercionJS
-    if (confirmation == title) {
+    if (String(confirmation) === String(title)) {
         deleteForm.delete(getDeleteRoute(type, slug));
     } else {
         alert('Название введено не верно!');

@@ -9,6 +9,13 @@ use Illuminate\Support\Str;
 
 class BudgetObserver
 {
+    private BudgetService $budgetService;
+
+    public function __construct(BudgetService $budgetService)
+    {
+        $this->budgetService = $budgetService;
+    }
+
     public function creating(Budget $budget): void
     {
 
@@ -45,10 +52,9 @@ class BudgetObserver
 
     public function updated(Budget $budget): void
     {
-        $budgetService = new BudgetService();
-        $total = $budgetService->CalculateBudgetTotal($budget);
+        $total = $this->budgetService->CalculateBudgetTotal($budget);
         if ($budget->balance !== $total) {
-            $budgetService->updateBudgetTotal($budget, $total);
+            $this->budgetService->updateBudgetTotal($budget, $total);
             $diff = $budget->balance - $total;
             BudgetHistory::create([
                 'budget_id' => $budget->id,
