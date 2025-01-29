@@ -32,7 +32,9 @@ class BudgetService
 
     public function updateBudgetTotal(Budget $budget, float $total): void
     {
-        $budget->balance = $total;
-        $budget->save();
+        if ($budget->balance !== $total) {
+            $budget->balance = $total;
+            $budget->save();
+        }
     }
 }

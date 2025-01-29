@@ -29,7 +29,21 @@ class BudgetObserver
     {
     }
 
+    public function saving(Budget $budget): void
+    {
+
+    }
+
+    public function saved(Budget $budget)
+    {
+
+    }
+
     public function updating(Budget $budget): void
+    {
+    }
+
+    public function updated(Budget $budget): void
     {
         $budgetService = new BudgetService();
         $total = $budgetService->CalculateBudgetTotal($budget);
@@ -45,10 +59,6 @@ class BudgetObserver
                 'performed_at' => now(),
             ]);
         }
-    }
-
-    public function updated(Budget $budget): void
-    {
     }
 
     public function deleting(Budget $budget): void
