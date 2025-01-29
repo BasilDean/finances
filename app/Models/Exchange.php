@@ -42,67 +42,8 @@ class Exchange extends Model
     {
         parent::boot();
 
-        static::creating(static function ($exchange) {
-            $lastId = Exchange::withTrashed()->latest('id')->value('id') ?? 0;
-            $exchange->slug = $lastId + 1;
-        });
-        static::created(static function ($exchange) {
-            $expense = new Expense();
-            $expense->title = 'перевод';
-            $expense->amount = $exchange->amount_from;
-            $expense->currency = $exchange->currency_from;
-            $expense->date = $exchange->date;
-            $expense->user()->associate($exchange->user_id);
-            $expense->account()->associate($exchange->account_from);
-            $expense->save();
-            $category = Category::firstOrCreate(['title' => 'Переводы', 'parent_id' => 0]);
-            $expense->categories()->sync($category);
-            $expense->save();
-
-            $income = new Income();
-            $income->title = 'перевод';
-            $income->amount = $exchange->amount_to;
-            $income->currency = $exchange->currency_to;
-            $income->date = $exchange->date;
-            $income->user()->associate($exchange->user_id);
-            $income->account()->associate($exchange->account_to);
-            $income->source = 'перевод';
-            $income->save();
-
-            $exchange->update(['income_id' => $income->id, 'expense_id' => $expense->id]);
-            $exchange->save();
-        });
-        static::updating(static function ($exchange) {
-            /** @noinspection TypeUnsafeComparisonInspection */
-            if ($exchange->getOriginal('amount_from') && $exchange->getOriginal('amount_from') != $exchange->amount_from) {
-                $exchange->expense->amount = $exchange->amount_from;
-            }
-            /** @noinspection TypeUnsafeComparisonInspection */
-            if ($exchange->getOriginal('amount_to') && $exchange->getOriginal('amount_to') != $exchange->amount_to) {
-                $exchange->income->amount = $exchange->amount_to;
-            }
-            $exchange->income->date = $exchange->date;
-            $exchange->income->currency = $exchange->currency_to;
-            $exchange->income->account()->associate($exchange->account_to);
-            $exchange->income->user()->associate($exchange->user_id);
-            $exchange->income->save();
-            $exchange->expense->date = $exchange->date;
-            $exchange->expense->currency = $exchange->currency_from;
-            $exchange->expense->account()->associate($exchange->account_from);
-            $exchange->expense->user()->associate($exchange->user_id);
-            $exchange->expense->save();
-        });
         static::deleted(static function ($exchange) {
-            $income = Income::find($exchange->income_id);
-            $expense = Expense::find($exchange->expense_id);
-            $income->delete();
-            $expense->delete();
         });
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public static function getFields(): array
@@ -184,6 +125,11 @@ class Exchange extends Model
                 'editable' => true
             ]
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function accountFrom(): BelongsTo
