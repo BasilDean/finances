@@ -7,6 +7,12 @@ use App\Models\CurrencyRate;
 
 class BudgetService
 {
+    private CurrencyRateService $currencyRateService;
+
+    public function __construct(CurrencyRateService $currencyRateService)
+    {
+        $this->currencyRateService = $currencyRateService;
+    }
 
 
     public function calculateBudgetTotal(Budget $budget): string
@@ -17,12 +23,12 @@ class BudgetService
             if ($item['currency'] === $budget->currency) {
                 $sum += $item['amount'];
             } else {
-                $amountIRubbles = $currencyRate->convertToRubbles($item['currency'], $item['amount']);
+                $amountIRubbles = $this->currencyRateService->convertToRubbles($item['currency'], $item['amount']);
 //                dd($amountIRubbles, $item);
                 if ($budget->currency === 'RUB') {
                     $sum += $amountIRubbles;
                 } else {
-                    $sum += $currencyRate->convertToCurrency($budget->currency, $amountIRubbles);
+                    $sum += $this->currencyRateService->convertToCurrency($budget->currency, $amountIRubbles);
                 }
             }
             return $sum;

@@ -14,17 +14,4 @@ class CurrencyRate extends Model
         'code_to',
         'rate',
     ];
-
-    public function convertToRubbles($source, $amount): float
-    {
-        if ($source === 'RUB') {
-            return $amount;
-        }
-        return round($amount / self::where('code_from', 'RUB')->where('code_to', $source)->first()->rate, 2);
-    }
-
-    public function convertToCurrency($destination, $amount): float
-    {
-        return round($amount * self::where('code_from', 'RUB')->where('code_to', $destination)->first()->rate, 2);
-    }
 }
