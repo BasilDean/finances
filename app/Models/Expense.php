@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Log;
 
 class Expense extends Model
 {
@@ -35,83 +34,6 @@ class Expense extends Model
         'currency',
         'date'
     ];
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(static function ($expense) {
-
-            $expense->title = ucfirst($expense->title);
-            $expense->normalized_title = mb_strtolower($expense->title);
-            $lastIncomeId = Expense::withTrashed()->latest('id')->value('id') ?? 0;
-            $expense->slug = $lastIncomeId + 1;
-            if (empty($expense->date)) {
-                $expense->date = $expense->created_at;
-            }
-        });
-        static::created(static function ($expense) {
-            $expenseLog = $expense->toArray()->pluck('title', 'account_id', 'amount');
-            $account_id = $expense->account_id;
-            $account = Account::find($account_id);
-            $old_account = $account->toArray()->pluck('id', 'title', 'amount');
-            $amount = $expense->amount;
-            $account->update(['amount' => round($account->amount - $amount, 2)]);
-            $new_account = $account->toArray()->pluck('id', 'title', 'amount');
-            $operation = Operation::create([
-                'account_id' => $account_id,
-                'amount' => $amount,
-                'operation_type' => 'expense',
-                'operation_id' => $expense->id,
-                'description' => $expense->title,
-                'balance_after' => $account->amount,
-                'performed_at' => $expense->date,
-            ]);
-            $operationLog = $operation->toArray()->pluck('id', 'account_id', 'amount', 'operation_type', 'description', 'balance_after');
-            Log::channel('custom')->info('Operation Created',
-                [
-                    'expence' => $expenseLog,
-                    'account_old' => $new_account,
-                    'old_account' => $old_account,
-                    'operation' => $operationLog,
-                ]);
-        });
-        static::updating(static function ($expense) {
-            $expense->normalized_title = mb_strtolower($expense->title);
-            $account = Account::find($expense->account_id);
-            $amount = $expense->getOriginal('amount');
-            $account->update(['amount' => round($account->amount + $amount, 2)]);
-        });
-        static::updated(static function ($expense) {
-            $account_id = $expense->account_id;
-
-            $account = Account::find($account_id);
-            $amount = $expense->amount;
-            $account->update(['amount' => round($account->amount - $amount, 2)]);
-
-            $operation = Operation::where('operation_id', $expense->id)
-                ->where('operation_type', 'expense')
-                ->first();
-            $operation->update([
-                'account_id' => $account_id,
-                'amount' => $amount,
-                'balance_after' => $account->amount,
-                'description' => $expense->title,
-                'performed_at' => $expense->date,
-            ]);
-        });
-        static::deleting(static function ($expense) {
-            $account = Account::find($expense->account_id);
-            $amount = $expense->amount;
-            $account->update(['amount' => round($account->amount + $amount, 2)]);
-
-            $operation = Operation::where('operation_id', $expense->id)
-                ->where('operation_type', 'expense')
-                ->first();
-
-            $operation->delete();
-        });
-    }
 
     public static function getFields(): array
     {
