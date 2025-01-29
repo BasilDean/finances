@@ -75,7 +75,7 @@ class ExpenseController extends Controller
             $startDate = Carbon::now()->startOfWeek($daysOfWeek[$startOfWeek]);
 
 // Determine the end date (7 days after the start of the week)
-            $endDate = $startDate->copy()->addDays(6);
+            $endDate = $startDate->copy()->addDays(7);
 
             $query->whereBetween('date', [$startDate, $endDate]);
         } elseif ($period === 'month') {
@@ -122,6 +122,7 @@ class ExpenseController extends Controller
 
     public function store(ExpenseRequest $request)
     {
+//        dd($request->source['id']);
         $this->authorize('create', Expense::class);
 
         $account_id = $request->account['id'];
@@ -143,7 +144,7 @@ class ExpenseController extends Controller
         $expense->save();
 
         $expense->categories()->sync($request->source['id']);
-        Category::whereIn('id', $request->source['id'])->update(['usage_count' => DB::raw('expense_count + 1')]);
+        Category::whereIn('id', [$request->source['id']])->update(['usage_count' => DB::raw('usage_count + 1')]);
 
         $account->amount -= $request->amount;
         $account->save();
