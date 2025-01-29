@@ -35,9 +35,6 @@ class AccountResource extends JsonResource
             ],
             default => [],
         };
-
-        // Return merged fields
-//        return array_merge($defaultFields, $contextFields);
         // Return merged fields sorted by the 'order' field
         return collect(array_merge($defaultFields, $contextFields))
             ->sortBy('order')

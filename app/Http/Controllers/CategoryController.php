@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CategoryController extends Controller
 {
@@ -23,7 +25,7 @@ class CategoryController extends Controller
         // Build a tree structure
         $categoryTree = $this->buildTree($categories);
 
-        $fields = Category::getFields();
+        $fields = CategoryResource::getFields('show');
 
 
         return Inertia::render('Categories/Index', [
@@ -60,7 +62,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $this->authorize('update', $category);
-        $fields = Category::getFields();
+        $fields = CategoryResource::getFields('edit');
         $category->parent_id = Category::find($category->parent_id);
         return Inertia::render('Categories/Edit', [
             'category' => $category,
@@ -116,10 +118,10 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('status', 'Category created.');
     }
 
-    public function create()
+    public function create(): Response
     {
         $this->authorize('create', Category::class);
-        $fields = Category::getFields();
+        $fields = CategoryResource::getFields('edit');
         return Inertia::render('Categories/Create', [
             'fields' => $fields,
         ]);

@@ -27,52 +27,6 @@ class Category extends Model
         'sort'
     ];
 
-    public static function getFields(): array
-    {
-        return [
-            'title' => [
-                'type' => 'string',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-//            'slug' => [
-//                'type' => 'string',
-//                'hideOnMobile' => false,
-//                'show' => true,
-//                'editable' => true,
-//            ],
-            'sort' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-            'parent_id' => [
-                'type' => 'relation',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-                'values' => self::all(),
-                'multiple' => true,
-                'showField' => 'title',
-                'canBeEmpty' => true,
-            ],
-            'usage_count' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => false,
-                'editable' => false,
-            ],
-            'children_count' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => false,
-                'editable' => false,
-            ]
-        ];
-    }
-
     public function expenses(): BelongsToMany
     {
         return $this->belongsToMany(Expense::class);
