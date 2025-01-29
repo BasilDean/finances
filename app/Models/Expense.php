@@ -51,13 +51,13 @@ class Expense extends Model
             }
         });
         static::created(static function ($expense) {
-            Log::channel('custom')->info('Expense Created', $expense->toArray());
+            $expenseLog = $expense->toArray()->pluck('title', 'account_id', 'amount');
             $account_id = $expense->account_id;
             $account = Account::find($account_id);
-            Log::channel('custom')->info('$account', $account->toArray());
+            $old_account = $account->toArray()->pluck('id', 'title', 'amount');
             $amount = $expense->amount;
             $account->update(['amount' => round($account->amount - $amount, 2)]);
-            Log::channel('custom')->info('$account', $account->toArray());
+            $new_account = $account->toArray()->pluck('id', 'title', 'amount');
             $operation = Operation::create([
                 'account_id' => $account_id,
                 'amount' => $amount,
@@ -67,7 +67,14 @@ class Expense extends Model
                 'balance_after' => $account->amount,
                 'performed_at' => $expense->date,
             ]);
-            Log::channel('custom')->info('Operation Created', $operation->toArray());
+            $operationLog = $operation->toArray()->pluck('id', 'account_id', 'amount', 'operation_type', 'description', 'balance_after');
+            Log::channel('custom')->info('Operation Created',
+                [
+                    'expence' => $expenseLog,
+                    'account_old' => $new_account,
+                    'old_account' => $old_account,
+                    'operation' => $operationLog,
+                ]);
         });
         static::updating(static function ($expense) {
             $expense->normalized_title = mb_strtolower($expense->title);
