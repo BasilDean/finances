@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Budget;
 use App\Models\Income;
+use App\Services\UserSettingsService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
@@ -20,9 +21,8 @@ class IncomeResource extends JsonResource
      */
     public static function getFields(?string $context = null): array
     {
-        $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
-        $accounts = $budget->accounts;
-        $users = $budget->users;
+        $users = self::getUsers();
+        $accounts = self::getAccounts();
         // Default fields (shared across contexts)
         $defaultFields = [
             'title' => self::makeField('string', 'title', false, ['filter' => true, 'filter-type' => 'text']),
@@ -52,6 +52,16 @@ class IncomeResource extends JsonResource
         return collect(array_merge($defaultFields, $contextFields))
             ->sortBy('order')
             ->toArray();
+    }
+
+    private static function getUsers(): Collection
+    {
+        return (new UserSettingsService())->getActiveBudget()->users;
+    }
+
+    private static function getAccounts(): Collection
+    {
+        return (new UserSettingsService())->getActiveBudget()->accounts;
     }
 
     private static function makeField(
