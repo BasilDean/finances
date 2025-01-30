@@ -18,24 +18,6 @@ class PurchaseItem extends Model
         'quantity',
     ];
 
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(static function ($item) {
-            $item->normalized_title = mb_strtolower($item->title);
-        });
-        static::created(function ($item) {
-        });
-        static::updating(static function ($item) {
-            $item->normalized_title = mb_strtolower($item->title);
-        });
-        static::updated(function ($item) {
-        });
-        static::deleting(function ($item) {
-        });
-    }
-
     // Add a dynamic property to every instance of Purchase
 
     public static function getFields(): array
