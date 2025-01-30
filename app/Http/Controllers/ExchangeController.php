@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExchangeRequest;
+use App\Http\Resources\ExchangeResource;
 use App\Models\Exchange;
 use App\Models\User;
 use App\Services\CurrencyLayerService;
@@ -49,7 +50,7 @@ class ExchangeController extends Controller
                 'date' => $exchange->date->format('H:i d-m-Y')
             ];
         });
-        $fields = Exchange::getFields();
+        $fields = ExchangeResource::getFields('show');
         return Inertia::render('Exchange/Index', [
             'exchanges' => $exchanges,
             'fields' => $fields,
@@ -100,7 +101,7 @@ class ExchangeController extends Controller
     {
         $this->authorize('create', Exchange::class);
 
-        $fields = Exchange::getFields();
+        $fields = ExchangeResource::getFields('edit');
         return Inertia::render('Exchange/Create', [
             'fields' => $fields,
         ]);
@@ -117,7 +118,7 @@ class ExchangeController extends Controller
     {
         $this->authorize('update', $exchange);
 
-        $fields = Exchange::getFields();
+        $fields = ExchangeResource::getFields('edit');
 
         $user = User::find($exchange->user_id);
 

@@ -18,9 +18,9 @@ class Exchange extends Model
         'date', // Add your field here
     ];
     protected $casts = [
-        'date' => 'datetime:Y-m-d H:i:s',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'date' => 'datetime:Y-m-d H:i',
+        'created_at' => 'datetime:Y-m-d H:i',
+        'updated_at' => 'datetime:Y-m-d H:i',
     ];
 
     protected $fillable = [
@@ -37,95 +37,6 @@ class Exchange extends Model
         'created_at',
         'date',
     ];
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::deleted(static function ($exchange) {
-        });
-    }
-
-    public static function getFields(): array
-    {
-        $budget = Budget::where('slug', 'LIKE', auth()->user()->settings->active_budget)->first();
-        $accounts = $budget->accounts;
-        $users = $budget->users;
-        return [
-            'amount_from' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-            ],
-            'currency_from' => [
-                'type' => 'string',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => false,
-            ],
-            'account_from' => [
-                'type' => 'relation',
-                'hideOnMobile' => true,
-                'show' => false,
-                'editable' => true,
-                'required' => true,
-                'values' => $accounts,
-                'multiple' => false,
-                'showField' => 'title',
-            ],
-            'amount_to' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true,
-                'required' => true,
-            ],
-            'account_to' => [
-                'type' => 'relation',
-                'hideOnMobile' => true,
-                'show' => false,
-                'editable' => true,
-                'required' => true,
-                'values' => $accounts,
-                'multiple' => false,
-                'showField' => 'title',
-            ],
-            'currency_to' => [
-                'type' => 'string',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => false,
-            ],
-            'exchange_rate' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => false,
-            ],
-            'oficial_rate' => [
-                'type' => 'number',
-                'hideOnMobile' => false,
-                'show' => false,
-                'editable' => false,
-            ],
-            'user' => [
-                'type' => 'relation',
-                'hideOnMobile' => false,
-                'show' => false,
-                'editable' => true,
-                'values' => $users,
-                'multiple' => false,
-                'showField' => 'name',
-            ],
-            'date' => [
-                'type' => 'date',
-                'hideOnMobile' => false,
-                'show' => true,
-                'editable' => true
-            ]
-        ];
-    }
 
     public function user(): BelongsTo
     {
