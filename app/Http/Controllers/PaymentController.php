@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentRequest;
+use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Services\SearchService;
 use App\Services\UserSettingsService;
@@ -41,7 +42,7 @@ class PaymentController extends Controller
             });
         }
         $items = $query->paginate(10);
-        $fields = Payment::getFields();
+        $fields = PaymentResource::getFields('show');
         $filters = [...request()->all('search')];
 
         return Inertia::render('Payments/Index', [
@@ -61,7 +62,7 @@ class PaymentController extends Controller
     public function create(): Response
     {
         $this->authorize('create', Payment::class);
-        $fields = Payment::getFields();
+        $fields = PaymentResource::getFields('edit');
         return Inertia::render('Payments/Create', [
             'item' => null,
             'fields' => $fields
