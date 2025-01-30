@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseRequest;
 use App\Http\Resources\ExpenseResource;
+use App\Http\Resources\PurchaseItemResource;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\Expense;
@@ -196,7 +197,7 @@ class ExpenseController extends Controller
         $this->authorize('update', $expense);
 
         $fields = ExpenseResource::getFields("edit");
-        $itemFields = PurchaseItem::getFields();
+        $itemFields = PurchaseItemResource::getFields();
 
         $expenseData = [
             'id' => $expense->id,

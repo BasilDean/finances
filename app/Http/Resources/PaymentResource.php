@@ -22,8 +22,6 @@ class PaymentResource extends JsonResource
     public static function getFields(?string $context = null): array
     {
         $users = self::getUsers();
-        $accounts = self::getAccounts();
-        // Default fields (shared across contexts)
         // Default fields (shared across contexts)
         $defaultFields = [
             'title' => self::makeField('string', 'title', false, ['filter' => true, 'filter-type' => 'text']),
@@ -62,11 +60,6 @@ class PaymentResource extends JsonResource
     private static function getUsers(): Collection
     {
         return (new UserSettingsService())->getActiveBudget()->users;
-    }
-
-    private static function getAccounts(): Collection
-    {
-        return (new UserSettingsService())->getActiveBudget()->accounts;
     }
 
     private static function makeField(
