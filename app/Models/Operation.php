@@ -14,7 +14,7 @@ class Operation extends Model
     protected $dates = [
         'created_at',
         'updated_at',
-        'date', // Add your field here
+        'performed_at', // Add your field here
     ];
 
     protected $fillable = [
@@ -35,7 +35,9 @@ class Operation extends Model
     protected function casts(): array
     {
         return [
-            'performed_at' => 'datetime:Y-m-d H:i:s',
+            'created_at' => 'datetime:Y-m-d H:i',
+            'updated_at' => 'datetime:Y-m-d H:i',
+            'performed_at' => 'datetime:Y-m-d H:i',
             'operation_type' => OperationType::class,
         ];
     }
