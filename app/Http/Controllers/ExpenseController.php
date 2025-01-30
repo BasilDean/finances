@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseRequest;
+use App\Http\Resources\ExpenseResource;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\Expense;
@@ -109,7 +110,7 @@ class ExpenseController extends Controller
                 'account' => $expense->account->title ?? null, // Extract account's title
             ];
         });
-        $fields = Expense::getFields();
+        $fields = ExpenseResource::getFields('show');
 
 
         return Inertia::render('Expenses/Index', [
@@ -153,7 +154,7 @@ class ExpenseController extends Controller
             return redirect()->route('expense.edit', $expense->slug)->with('status', 'Expense created.');
         }
 
-        $fields = Expense::getFields();
+        $fields = ExpenseResource::getFields('edit');
         return Inertia::render('Expenses/Create', [
             'fields' => $fields,
             'resetFields' => ['title', 'amount', 'date'],
@@ -194,7 +195,7 @@ class ExpenseController extends Controller
     {
         $this->authorize('update', $expense);
 
-        $fields = Expense::getFields();
+        $fields = ExpenseResource::getFields("edit");
         $itemFields = PurchaseItem::getFields();
 
         $expenseData = [
@@ -261,7 +262,7 @@ class ExpenseController extends Controller
     {
         $this->authorize('create', Expense::class);
 
-        $fields = Expense::getFields();
+        $fields = ExpenseResource::getFields('edit');
         return Inertia::render('Expenses/Create', [
             'fields' => $fields,
         ]);

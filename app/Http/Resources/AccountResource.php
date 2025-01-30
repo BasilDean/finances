@@ -28,10 +28,10 @@ class AccountResource extends JsonResource
             'edit' =>
             [
                 'type' => self::makeField('list', 'type', false, ['values' => ['cash', 'account']]),
-                'currency' => self::makeField('list', false, 3, ['values' => self::getCurrencies(), 'filter' => true, 'filter-type' => 'select']),
+                'currency' => self::makeField('list', 'currency', false, ['values' => self::getCurrencies(), 'filter' => true, 'filter-type' => 'select']),
             ],
             'show' => [
-                'amount' => self::makeField('number', 'amount', false),
+                'amount' => self::makeField('number', 'amount'),
             ],
             default => [],
         };

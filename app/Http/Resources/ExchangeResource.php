@@ -27,8 +27,6 @@ class ExchangeResource extends JsonResource
         $contextFields = match ($context) {
             'edit' =>
             [
-//                'type' => self::makeField('list', 'type', false, ['values' => ['cash', 'account']]),
-//                'currency' => self::makeField('list', false, 3, ['values' => self::getCurrencies(), 'filter' => true, 'filter-type' => 'select']),
                 'user' => self::makeField('relation', 'user', false, ['values' => $users, 'multiple' => false, 'showField' => 'name']),
                 'account_from' => self::makeField('relation', 'account_from', false, ['values' => $accounts, 'multiple' => false, 'showField' => 'title']),
                 'account_to' => self::makeField('relation', 'account_to', false, ['values' => $accounts, 'multiple' => false, 'showField' => 'title']),
