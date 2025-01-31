@@ -7,6 +7,9 @@ use App\Http\Resources\BudgetResource;
 use App\Models\Budget;
 use App\Models\Expense;
 use App\Models\Income;
+use App\Services\OperationService;
+use App\Services\SearchService;
+use App\Services\UserSettingsService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,23 +21,30 @@ class BudgetController extends Controller
 {
     use AuthorizesRequests;
 
+    private SearchService $searchService;
+    private UserSettingsService $userSettingsService;
+
+    public function __construct(SearchService $searchService, UserSettingsService $userSettingsService, OperationService $operationService)
+    {
+        $this->searchService = $searchService;
+        $this->userSettingsService = $userSettingsService;
+
+    }
+
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Budget::class);
 
         $fields = BudgetResource::getFields('show');
         $search = $request->input('search');
-        $query = Budget::query()->whereRaw('0 = 1');
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($user) {
-                $query = $user->budgets()->orderBy('updated_at', 'desc');
-            }
-        }
 
-        if ($search) {
-            $query->where('title', 'like', '%' . $search . '%'); // Adjust fields as necessary
-        }
+
+        $user = Auth::user();
+        $query = $this->searchService->applySearch(
+            $user->budgets()->orderBy('updated_at', 'desc'),
+            $search,
+            ['normalized_title', 'balance'] // Fields to search on
+        );
         $budgets = $query->paginate(10); // Adjust pagination as needed
         return Inertia::render('Budgets/Index', [
             'status' => session('status'),
@@ -70,15 +80,7 @@ class BudgetController extends Controller
     {
         $this->authorize('view', $budget);
         $user = Auth::user();
-        if ($user && $user->settings) {
-            // Update the active_budget field in settings
-            $user->settings->active_budget = $budget->slug;
-            $user->settings->save();
-        } else {
-            $user->settings()->create([
-                'active_budget' => $budget->slug,
-            ]);
-        }
+        $this->userSettingsService->setActiveBudget($user, $budget->slug);
 
         $accounts = $budget->accounts()
             ->select('accounts.title', 'accounts.slug', 'accounts.amount', 'accounts.currency')->orderBy('accounts.updated_at', 'desc')->take(3)->get();

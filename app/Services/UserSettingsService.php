@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Budget;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,12 @@ class UserSettingsService
 
         // Retrieve the active budget based on the user's settings
         return Budget::where('slug', $user->settings['active_budget'])->firstOrFail();
+    }
+
+    public function setActiveBudget(User $user, string $slug)
+    {
+        $user->settings['active_budget'] = $slug;
+        $user->settings->save();
     }
 
     /**
