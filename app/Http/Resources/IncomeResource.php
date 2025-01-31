@@ -39,9 +39,7 @@ class IncomeResource extends JsonResource
         // Context-specific fields
         $contextFields = match ($context) {
             'edit' =>
-            [
-                'type' => self::makeField('list', 'type', false, ['values' => ['cash', 'account']]),
-            ],
+            [],
             'show' => [
                 'currency' => self::makeField('list', false, 3, ['values' => self::getCurrencies(), 'filter' => true, 'filter-type' => 'select']),
             ],
@@ -87,8 +85,11 @@ class IncomeResource extends JsonResource
         return [
             'title' => 0,
             'currency' => 1,
-            'type' => 2,
-            'amount' => 3,
+            'amount' => 2,
+            'source' => 3,
+            'date' => 4,
+            'user' => 5,
+            'account' => 6,
         ];
     }
 

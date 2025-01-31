@@ -13,8 +13,8 @@ class OperationService
     public static function createOperation(Expense|Income $transaction, Account $account, string $transactionType): Operation
     {
         return Operation::create([
-            'account_id' => $account->account_id,
-            'amount' => $transaction->amount,
+            'account_id' => $account->id,
+            'amount' => ($transactionType === 'expense' ? -1 : 1) * $transaction->amount,
             'operation_type' => $transactionType,
             'operation_id' => $transaction->id,
             'description' => $transaction->title,
