@@ -13,6 +13,7 @@ class ExchangeObserver
     {
         $lastId = Exchange::withTrashed()->latest('id')->value('id') ?? 0;
         $exchange->slug = $lastId + 1;
+        $exchange->date = $exchange->date ?? $exchange->created_at;
     }
 
     public function created(Exchange $exchange): void

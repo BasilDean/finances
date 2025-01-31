@@ -7,6 +7,7 @@ use App\Http\Resources\ExchangeResource;
 use App\Models\Exchange;
 use App\Models\User;
 use App\Services\CurrencyLayerService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -65,6 +66,8 @@ class ExchangeController extends Controller
         $idFrom = $request->account_from['id'];
         $idTo = $request->account_to['id'];
         $userId = $request->user['id'];
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
         $data = [
             'amount_from' => $request->amount_from,
             'account_from' => $idFrom,
@@ -75,7 +78,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
-            'date' => $request->date,
+            'date' => $formattedDate,
         ];
 
         $exchange = Exchange::create($data);
@@ -153,6 +156,9 @@ class ExchangeController extends Controller
         $idFrom = $request->account_from['id'];
         $idTo = $request->account_to['id'];
         $userId = $request->user['id'];
+
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
         $data = [
             'amount_from' => $request->amount_from,
             'account_from' => $idFrom,
@@ -163,7 +169,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
-            'date' => $request->date,
+            'date' => $formattedDate,
         ];
         $exchange->update($data);
 
