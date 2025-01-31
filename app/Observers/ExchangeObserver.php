@@ -31,16 +31,17 @@ class ExchangeObserver
         $category = Category::firstOrCreate(['title' => 'Переводы']);
         $expense->categories()->sync($category);
         $expense->save();
-
-        $income = Income::create([
-            'title' => 'перевод',
-            'amount' => $exchange->amount_to,
-            'currency' => $exchange->currency_to,
-            'date' => $exchange->date,
-        ]);
+        $income = new Income();
+        $income->title = 'перевод';
+        $income->amount = $exchange->amount_to;
+        $income->currency = $exchange->currency_to;
+        $income->date = $exchange->date;
+        $income->account_id = $exchange->account_to;
+        $income->user_id = $exchange->user_id;
+        $income->source = 'перевод';
+        $income->save();
         $income->user()->associate($exchange->user_id);
         $income->account()->associate($exchange->account_to);
-        $income->source = 'перевод';
         $income->save();
 
         $exchange->update(['income_id' => $income->id, 'expense_id' => $expense->id]);
