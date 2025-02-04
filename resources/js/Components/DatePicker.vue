@@ -12,12 +12,11 @@ const props = defineProps({
 
 const date = defineModel(
     {
-        type: [Date, Array],
+        type: [Date, Array, String],
         required: true,
     },
     'date',
 );
-console.log(date.value);
 
 onMounted(() => {
     if (props.range) {
@@ -44,7 +43,6 @@ const formatDate = (date) => {
 </script>
 
 <template>
-    {{ test }}
     <div>
         <VueDatePicker v-model="date" :range locale="ru" @change="formatDate" />
     </div>

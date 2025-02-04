@@ -54,7 +54,7 @@ defineProps({
 });
 
 const model = defineModel({
-    type: Object,
+    type: [Object, null],
     required: true,
 });
 

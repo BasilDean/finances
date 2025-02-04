@@ -4,11 +4,11 @@ import Paginator from '@/Components/Finanses/Paginator.vue';
 import { onMounted, ref, watch } from 'vue';
 
 import { useI18n } from 'vue-i18n';
-import debounce from 'lodash/debounce';
 import EditButton from '@/Components/Finanses/EditButton.vue';
 import DeleteButton from '@/Components/Finanses/DeleteButton.vue';
 import { round } from 'lodash';
 import DatePicker from '@/Components/DatePicker.vue';
+import debounce from 'lodash/debounce.js';
 
 const { t } = useI18n(); // Enable translations in the script
 
@@ -44,7 +44,7 @@ const props = defineProps({
     },
     filters: {
         required: false,
-        type: Object,
+        type: [Object, Boolean],
     },
 });
 
@@ -144,6 +144,7 @@ if (props.type) {
 <template>
     <div
         class="relative min-h-screen min-w-full overflow-x-auto shadow-md sm:rounded-lg"
+        v-bind="$attrs"
     >
         <div
             v-if="filters"
