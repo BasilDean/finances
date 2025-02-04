@@ -32,8 +32,6 @@ class ExchangeResource extends JsonResource
                 'account_to' => self::makeField('relation', 'account_to', false, ['values' => $accounts, 'multiple' => false, 'showField' => 'title']),
             ],
             'show' => [
-                'currency_from' => self::makeField('string', 'currency_from'),
-                'currency_to' => self::makeField('string', 'currency_to'),
                 'exchange_rate' => self::makeField('number', 'exchange_rate'),
             ],
             'admin' => [

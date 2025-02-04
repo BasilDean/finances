@@ -31,7 +31,7 @@ class ExchangeController extends Controller
 
 
         $exchanges = Exchange::with(['accountFrom', 'accountTo'])->orderBy('date', 'desc')->paginate(10);
-//        dd($exchanges);
+        Carbon::setLocale('ru');
         $exchanges->getCollection()->transform(function ($exchange) {
 
             $user = User::find($exchange->user_id);
@@ -48,7 +48,7 @@ class ExchangeController extends Controller
                 'exchange_rate' => $exchange->exchange_rate,
                 'oficial_rate' => $exchange->oficial_rate,
                 'user' => $user->name,
-                'date' => $exchange->date->format('H:i d-m-Y')
+                'date' => $exchange->date->translatedFormat('H:i, l, (d M Y)')
             ];
         });
         $fields = ExchangeResource::getFields('show');
