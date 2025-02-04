@@ -11,8 +11,8 @@ import {
     ArrowLeftCircleIcon,
     CheckCircleIcon,
 } from '@heroicons/vue/24/outline/index.js';
-import DatePicker from '@/Components/DatePicker.vue';
 import Multiselect from '@/Components/Miltiselect.vue';
+import DatePicker from '@/Components/DatePicker.vue';
 
 const props = defineProps({
     item: {
@@ -29,11 +29,12 @@ const props = defineProps({
     },
 });
 const formData = pick(props.item, Object.keys(props.fields));
-
 const form = useForm(formData);
 
 const createBudget = () => {
-    form.patch(route(props.type + '.update', props.item.slug));
+    if (form.isDirty) {
+        form.patch(route(props.type + '.update', props.item.slug));
+    }
 };
 </script>
 
@@ -110,6 +111,7 @@ const createBudget = () => {
                                                     v-model="form[key]"
                                                     :model-value="form[key]"
                                                     :name="key"
+                                                    :value="form[key]"
                                                 />
                                                 <TextInput
                                                     v-else
@@ -142,6 +144,7 @@ const createBudget = () => {
                                 {{ $t('cancel') }}
                             </Link>
                             <button
+                                :disabled="!form.isDirty"
                                 class="flex select-none items-center gap-2 rounded-lg border bg-gray-900 px-2 py-2 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="submit"
                             >

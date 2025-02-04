@@ -17,14 +17,15 @@ const date = defineModel(
     },
     'date',
 );
+console.log(date.value);
 
 onMounted(() => {
     if (props.range) {
-        const startDate = new Date();
+        const startDate = new Date(date.value);
         const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
         date.value = [startDate, endDate];
     } else {
-        date.value = new Date();
+        date.value = new Date(date.value);
     }
 });
 
@@ -43,8 +44,9 @@ const formatDate = (date) => {
 </script>
 
 <template>
+    {{ test }}
     <div>
-        <VueDatePicker v-model="date" :range @change="formatDate" />
+        <VueDatePicker v-model="date" :range locale="ru" @change="formatDate" />
     </div>
 </template>
 

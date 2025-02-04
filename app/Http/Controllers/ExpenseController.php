@@ -40,6 +40,7 @@ class ExpenseController extends Controller
         $this->authorize('viewAny', Expense::class);
 
 
+        Carbon::setLocale('ru');
         $budget = $this->userSettingsService->getActiveBudget();
         $accounts = $budget->accounts->pluck('id')->toArray();
 
@@ -105,7 +106,7 @@ class ExpenseController extends Controller
                 'currency' => $expense->currency,
                 'has_items' => (bool)$expense->has_items,
                 'created_at' => $expense->created_at->format('H:i d-m-Y'),
-                'date' => $expense->date->format('Y-m-d H:i:s'),
+                'date' => $expense->date->translatedFormat('H:i, l, (Y-m-d)'),
                 'source' => $expense->categories()->pluck('title')->implode(', '),
                 'user' => $expense->user->name ?? null, // Extract user's name
                 'account' => $expense->account->title ?? null, // Extract account's title
@@ -206,7 +207,7 @@ class ExpenseController extends Controller
             'amount' => $expense->amount,
             'currency' => $expense->currency,
             'created_at' => $expense->created_at->format('H:i d-m-Y'),
-            'date' => $expense->date,
+            'date' => $expense->date->format('Y-m-d H:i'),
             'source' => $expense->categories()->first(),
             'has_items' => (bool)$expense->has_items,
             'user' => $expense->user ?? null, // Extract user's name
