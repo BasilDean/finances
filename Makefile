@@ -32,3 +32,10 @@ clear-all:
 	php artisan optimize
 
 	@echo "Caches cleared and application optimized successfully."
+
+dev:
+	npm run dev
+
+build:
+	npm run build
+	make clear-all
