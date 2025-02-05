@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Expense;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpenseRequest extends FormRequest
@@ -18,6 +19,6 @@ class ExpenseRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Expense::class)->or($this->user()->can('update', $this->route('expense')));
     }
 }

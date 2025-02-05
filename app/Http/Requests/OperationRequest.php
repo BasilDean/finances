@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Operation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OperationRequest extends FormRequest
@@ -20,6 +21,6 @@ class OperationRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Operation::class)->or($this->user()->can('update', $this->route('operation')));
     }
 }

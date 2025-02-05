@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PurchaseItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PurchaseItemRequest extends FormRequest
@@ -18,6 +19,6 @@ class PurchaseItemRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', PurchaseItem::class)->or($this->user()->can('update', $this->route('purchaseItem')));
     }
 }

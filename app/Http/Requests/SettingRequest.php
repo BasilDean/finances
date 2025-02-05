@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Setting;
 use App\Rules\ValidCurrencyRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,6 +17,6 @@ class SettingRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('update', $this->route('setting'))->or($this->user()->can('create', Setting::class));
     }
 }

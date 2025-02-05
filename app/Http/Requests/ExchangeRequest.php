@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Exchange;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExchangeRequest extends FormRequest
@@ -17,6 +18,6 @@ class ExchangeRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Exchange::class)->or($this->user()->can('update', $this->route('exchange')));
     }
 }
