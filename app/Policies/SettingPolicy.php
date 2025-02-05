@@ -12,43 +12,36 @@ class SettingPolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function view(User $user, Setting $setting): bool
     {
-        return true;
-        // TODO create actual policies
+        return $setting->user_id === $user->id;
     }
 
     public function create(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user !== null;
     }
 
     public function update(User $user, Setting $setting): bool
     {
-        return true;
-        // TODO create actual policies
+        return $setting->user_id === $user->id;
     }
 
     public function delete(User $user, Setting $setting): bool
     {
-        return true;
-        // TODO create actual policies
+        return $setting->user_id === $user->id;
     }
 
     public function restore(User $user, Setting $setting): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function forceDelete(User $user, Setting $setting): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 }
