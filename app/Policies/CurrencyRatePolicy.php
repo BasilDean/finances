@@ -12,43 +12,36 @@ class CurrencyRatePolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function view(User $user, CurrencyRate $currencyRate): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function create(User $user): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function update(User $user, CurrencyRate $currencyRate): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function delete(User $user, CurrencyRate $currencyRate): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function restore(User $user, CurrencyRate $currencyRate): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 
     public function forceDelete(User $user, CurrencyRate $currencyRate): bool
     {
-        return true;
-        // TODO create actual policies
+        return $user->roles->contains('admin');
     }
 }
