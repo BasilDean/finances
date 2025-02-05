@@ -22,17 +22,17 @@ class CategoryPolicy
 
     public function create(User $user): bool
     {
-        return $user !== null;
+        return $user->roles->contains('admin');
     }
 
     public function update(User $user, Category $category): bool
     {
-        return $user !== null;
+        return $user->roles->contains('admin');
     }
 
     public function delete(User $user, Category $category): bool
     {
-        return $user !== null;
+        return $user->roles->contains('admin');
     }
 
     public function restore(User $user, Category $category): bool
