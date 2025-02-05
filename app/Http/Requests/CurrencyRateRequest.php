@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CurrencyRate;
 use App\Rules\ValidCurrencyRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -18,6 +19,6 @@ class CurrencyRateRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', CurrencyRate::class)->or($this->user()->can('update', $this->route('currency_rate')));
     }
 }
