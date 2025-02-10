@@ -22,6 +22,7 @@ class PaymentFactory extends Factory
             'currency' => $this->faker->word(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+            'date' => Carbon::now(),
         ];
     }
 }
