@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Budget;
 use App\Models\User;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,15 +12,15 @@ class UserSettingsService
     /**
      * Retrieve the user's active budget.
      *
-     * @return Budget
+     * @return Budget|null
      * @throws ModelNotFoundException
      */
-    public function getActiveBudget(): Budget
+    public function getActiveBudget(): ?Budget
     {
         $user = Auth::user();
 
         if (!isset($user->settings['active_budget'])) {
-            throw new Exception('No active budget set for the user.');
+            return null;
         }
 
         // Retrieve the active budget based on the user's settings

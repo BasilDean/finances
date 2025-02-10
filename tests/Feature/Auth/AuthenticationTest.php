@@ -10,14 +10,17 @@ test('login screen can be rendered', function () {
 
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
-
-    $response = $this->post('/login', [
+    $csrfToken = csrf_token();
+    $response = $this->withSession([
+        '_token' => $csrfToken,
+    ])->post('/login', [
+        '_token' => $csrfToken, // Include CSRF
         'email' => $user->email,
         'password' => 'password',
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {
