@@ -30,6 +30,7 @@ class PaymentResource extends JsonResource
             'date' => self::makeField('date', 'date'),
             'user' => self::makeField('relation', 'user', false,
                 ['values' => $users, 'multiple' => false, 'showField' => 'name']),
+            'total_due' => self::makeField('number', 'total_due'),
         ];
 
         // Context-specific fields
@@ -41,12 +42,12 @@ class PaymentResource extends JsonResource
                 'total' => self::makeField('number', 'total'),
                 'credit_percent' => self::makeField('number', 'credit_percent'),
                 'deadline' => self::makeField('date', 'deadline'),
+                'notify_user' => self::makeField('boolean', 'notify_user'),
             ],
             'show' => [
+                'total_paid' => self::makeField('number', 'total_paid'),
             ],
             'admin' => [
-                'total_paid' => self::makeField('number', 'total_paid'),
-                'total_due' => self::makeField('number', 'total_due'),
             ],
             default => [],
         };
@@ -93,6 +94,7 @@ class PaymentResource extends JsonResource
             'total' => 7,
             'credit_percent' => 8,
             'deadline' => 9,
+            'notify_user' => 10,
         ];
     }
 

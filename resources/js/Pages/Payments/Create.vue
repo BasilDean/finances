@@ -15,6 +15,10 @@ defineProps({
         required: false,
         type: Array,
     },
+    type: {
+        type: String,
+        default: 'payments',
+    },
 });
 </script>
 
@@ -26,7 +30,7 @@ defineProps({
             :fields="fields"
             :resetFields="resetFields"
             :title="$t('create new payment')"
-            type="expense"
+            :type="type"
         />
     </DashboardLayout>
 </template>

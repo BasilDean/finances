@@ -7,6 +7,7 @@ use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Services\SearchService;
 use App\Services\UserSettingsService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class PaymentController extends Controller
 
         $budget = $this->userSettingsService->getActiveBudget();
 
-        $query = $budget->payments()->orderBy('updated_at', 'desc');
+        $query = $budget->payments()->with('user')->orderBy('updated_at', 'desc');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -42,6 +43,21 @@ class PaymentController extends Controller
             });
         }
         $items = $query->paginate(10);
+        $items->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->title,
+                'slug' => $item->slug,
+                'amount' => $item->amount,
+                'currency' => $item->currency,
+                'regular' => (bool)$item->regular,
+                'created_at' => $item->created_at->format('H:i d-m-Y'),
+                'date' => $item->date,
+                'user' => $item->user->name ?? null, // Extract user's name
+                'total_paid' => $item->total_paid,
+                'total_due' => $item->total_due,
+            ];
+        });
         $fields = PaymentResource::getFields('show');
         $filters = [...request()->all('search')];
 
@@ -52,11 +68,17 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function store(PaymentRequest $request): Payment
+    public function store(PaymentRequest $request): RedirectResponse
     {
         $this->authorize('create', Payment::class);
+        $payment = new Payment($request->validated());
 
-        return Payment::create($request->validated());
+        $date = $request->date;
+        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $payment->date = $formattedDate;
+        $payment->user_id = $request->user['id'];
+        $payment->save();
+        return redirect()->route('payments.index')->with('status', 'Payment created.');
     }
 
     public function create(): Response
@@ -65,7 +87,8 @@ class PaymentController extends Controller
         $fields = PaymentResource::getFields('edit');
         return Inertia::render('Payments/Create', [
             'item' => null,
-            'fields' => $fields
+            'fields' => $fields,
+            'type' => 'payments'
         ]);
     }
 

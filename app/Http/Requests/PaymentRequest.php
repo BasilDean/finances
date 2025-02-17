@@ -11,17 +11,16 @@ class PaymentRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'normalized_title' => ['required'],
-            'slug' => ['required'],
             'regular' => ['boolean'],
             'frequency' => ['nullable'],
             'amount' => ['required'],
             'currency' => ['required'],
+            'date' => ['required', 'date'],
         ];
     }
 
     public function authorize(): bool
     {
-        return $this->user()->can('create', Payment::class)->or($this->user()->can('update', $this->route('payment')));
+        return $this->user()->can('create', Payment::class) || $this->user()->can('update', $this->route('payment'));
     }
 }
