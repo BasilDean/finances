@@ -19,6 +19,6 @@ class ExpenseRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can('create', Expense::class)->or($this->user()->can('update', $this->route('expense')));
+        return $this->user()->can('create', Expense::class) || $this->user()->can('update', $this->route('expense'));
     }
 }

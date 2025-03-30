@@ -119,7 +119,7 @@ class BudgetController extends Controller
         $title = $budget->title;
 
 
-        $operations = collect($budget->history()->orderBy('performed_at')->get()->reduce(function ($carry, $item) {
+        $operations = collect($budget->history()->orderBy('performed_at')->take(20)->reduce(function ($carry, $item) {
             $date = date('d-m-Y', (int)$item->performed_at);
             $title = ($item->operation_type === 'income' ? '+' : '-') . $item->amount . ' ' . $item->description . ' ' . date('H:m:s', (int)$item->performed_at);
 
