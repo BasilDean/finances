@@ -22,6 +22,6 @@ class IncomeRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can('create', Income::class)->or($this->user()->can('update', $this->route('income')));
+        return $this->user()->can('create', Income::class) || $this->user()->can('update', $this->route('expense'));
     }
 }
