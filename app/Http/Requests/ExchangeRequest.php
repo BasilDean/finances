@@ -18,6 +18,6 @@ class ExchangeRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can('create', Exchange::class)->or($this->user()->can('update', $this->route('exchange')));
+        return $this->user()->can('create', Exchange::class) || $this->user()->can('update', $this->route('exchange'));
     }
 }
