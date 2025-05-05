@@ -11,7 +11,9 @@ class CategoryObserver
     {
         $category->normalized_title = mb_strtolower($category->title);
 
-        $category->slug = $this->generateUniqueSlug($category->title);
+        if (empty($category->slug)) {
+            $category->slug = $this->generateUniqueSlug($category->title);
+        }
 
     }
 

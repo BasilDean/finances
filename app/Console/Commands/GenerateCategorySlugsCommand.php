@@ -25,7 +25,8 @@ class GenerateCategorySlugsCommand extends Command
 
         foreach ($categories as $category) {
             // Generate slug from the 'title' field
-            $category->slug = Str::slug($category->title);
+            $baseSlug = Str::slug($category->title);
+            $category->slug = $this->generateUniqueSlug($baseSlug);
 
             // Save the updated category
             $category->save();
@@ -34,5 +35,21 @@ class GenerateCategorySlugsCommand extends Command
         }
 
         $this->info('Slug generation completed for all categories.');
+    }
+
+    private function generateUniqueSlug(string $title): string
+    {
+        $originalSlug = Str::slug($title);
+        $latestSlug = Category::withTrashed()
+            ->where('slug', 'LIKE', "{$originalSlug}%")
+            ->latest('id') // Get the most recent entry
+            ->value('slug'); // Fetch the slug
+
+        if ($latestSlug) {
+            $number = (int)str_replace("{$originalSlug}-", '', $latestSlug) + 1;
+            return "{$originalSlug}-{$number}";
+        }
+
+        return $originalSlug;
     }
 }

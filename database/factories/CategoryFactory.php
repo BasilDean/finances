@@ -15,6 +15,7 @@ class CategoryFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'parent_id' => 0,
+            'slug' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

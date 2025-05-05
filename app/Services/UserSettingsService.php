@@ -27,10 +27,9 @@ class UserSettingsService
         return Budget::where('slug', $user->settings['active_budget'])->firstOrFail();
     }
 
-    public function setActiveBudget(User $user, string $slug)
+    public function setActiveBudget(User $user, string $slug): void
     {
-        $user->settings['active_budget'] = $slug;
-        $user->settings->save();
+        $user->settings()->update(['active_budget' => $slug]);
     }
 
     /**

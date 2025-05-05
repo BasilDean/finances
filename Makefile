@@ -39,3 +39,8 @@ dev:
 build:
 	npm run build
 	make clear-all
+
+seed:
+	php artisan db:wipe
+	php artisan migrate
+	php artisan db:seed
