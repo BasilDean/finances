@@ -40,6 +40,7 @@ class BudgetController extends Controller
 
 
         $user = Auth::user();
+        /** @noinspection NullPointerExceptionInspection */
         $query = $this->searchService->applySearch(
             $user->budgets()->orderBy('updated_at', 'desc'),
             $search,
@@ -80,6 +81,7 @@ class BudgetController extends Controller
     {
         $this->authorize('view', $budget);
         $user = Auth::user();
+        /** @noinspection NullPointerExceptionInspection */
         $this->userSettingsService->setActiveBudget($user, $budget->slug);
 
         $accounts = $budget->accounts()

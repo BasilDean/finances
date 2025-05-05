@@ -15,7 +15,7 @@ class CategoryController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(): Response
     {
         $this->authorize('viewAny', Category::class);
 
@@ -59,7 +59,7 @@ class CategoryController extends Controller
             ->toArray(); // Convert to array at the end if needed
     }
 
-    public function edit(Category $category)
+    public function edit(Category $category): Response
     {
         $this->authorize('update', $category);
         $fields = CategoryResource::getFields('edit');

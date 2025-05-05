@@ -14,6 +14,7 @@ class PaymentObserver
         $payment->date = $payment->date ?? $payment->created_at;
         $payment->slug = $this->generateUniqueSlug();
         $budget = (new UserSettingsService())->getActiveBudget();
+        /** @noinspection NullPointerExceptionInspection */
         $payment->budget_id = $budget->id;
         $payment->total = $payment->total ?? 0;
         $payment->total_paid = $payment->total_paid ?? 0;

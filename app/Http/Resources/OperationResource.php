@@ -28,8 +28,6 @@ class OperationResource extends JsonResource
 
         // Context-specific fields
         $contextFields = match ($context) {
-            'edit' =>
-            [],
             'show' => [
                 'amount' => self::makeField('number', 'amount', false),
                 'date' => self::makeField('date', 'date', false),

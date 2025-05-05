@@ -41,6 +41,7 @@ class AccountController extends Controller
 
         $search = $request->input('search');
 
+        /** @noinspection NullPointerExceptionInspection */
         $query = $this->searchService->applySearch(
             $budget->accounts()->orderBy('updated_at', 'desc'),
             $search,

@@ -41,7 +41,7 @@ class BudgetObserver
 
     }
 
-    public function saved(Budget $budget)
+    public function saved(Budget $budget): void
     {
 
     }

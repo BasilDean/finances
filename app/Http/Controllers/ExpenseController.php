@@ -30,7 +30,6 @@ class ExpenseController extends Controller
 
     public function __construct(SearchService $searchService, UserSettingsService $userSettingsService)
     {
-        $this->searchService = $searchService;
         $this->userSettingsService = $userSettingsService;
     }
 
@@ -42,6 +41,7 @@ class ExpenseController extends Controller
 
         Carbon::setLocale('ru');
         $budget = $this->userSettingsService->getActiveBudget();
+        /** @noinspection NullPointerExceptionInspection */
         $accounts = $budget->accounts->pluck('id')->toArray();
 
 

@@ -47,8 +47,6 @@ class PaymentResource extends JsonResource
             'show' => [
                 'total_paid' => self::makeField('number', 'total_paid'),
             ],
-            'admin' => [
-            ],
             default => [],
         };
 

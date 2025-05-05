@@ -29,9 +29,6 @@ class PurchaseItemResource extends JsonResource
 
         // Context-specific fields
         $contextFields = match ($context) {
-            'edit' => [],
-            'show' => [],
-            'admin' => [],
             default => [],
         };
 

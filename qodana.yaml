@@ -28,3 +28,12 @@ exclude:
     paths:
       - artisan
       - public/index.php
+include:
+  - name: PhpDynamicAsStaticMethodCallInspection
+  - name: PhpFullyQualifiedNameUsageInspection
+  - name: PhpMissingFieldTypeInspection
+  - name: PhpNullSafeOperatorCanBeUsedInspection
+  - name: PhpSameParameterValueInspection
+  - name: PhpRedundantOptionalArgumentInspection
+  - name: PhpUnnecessaryFullyQualifiedNameInspection
+  - name: PhpUnusedParameterInspection

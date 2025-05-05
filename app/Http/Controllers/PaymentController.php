@@ -33,6 +33,7 @@ class PaymentController extends Controller
 
         $budget = $this->userSettingsService->getActiveBudget();
 
+        /** @noinspection NullPointerExceptionInspection */
         $query = $budget->payments()->with('user')->orderBy('updated_at', 'desc');
 
         if ($search) {

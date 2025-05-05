@@ -51,27 +51,6 @@ const onMove = (evt) => {
         targetList.splice(relatedContext.index, 0, draggedItem);
     }
 };
-
-const onDragEnd = () => {
-    // Ensure tree consistency by removing duplicates
-    categories.value = cleanTree(categories.value);
-};
-
-const cleanTree = (list) => {
-    const ids = new Set();
-    return list
-        .filter((item) => {
-            if (ids.has(item.id)) return false;
-            ids.add(item.id);
-            return true;
-        })
-        .map((item) => {
-            if (item.children && item.children.length > 0) {
-                item.children = cleanTree(item.children);
-            }
-            return item;
-        });
-};
 </script>
 
 <template>

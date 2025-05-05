@@ -24,6 +24,7 @@ class UserSettingsService
         }
 
         // Retrieve the active budget based on the user's settings
+        /** @noinspection NullPointerExceptionInspection */
         return Budget::where('slug', $user->settings['active_budget'])->firstOrFail();
     }
 

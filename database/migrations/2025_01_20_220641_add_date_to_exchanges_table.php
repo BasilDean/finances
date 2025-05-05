@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('exchanges', function (Blueprint $table) {
+        Schema::table('exchanges', static function (Blueprint $table): void {
             $table->dateTime('date')->nullable()->after('income_id');
         });
     }
 
     public function down(): void
     {
-        Schema::table('exchanges', function (Blueprint $table) {
+        Schema::table('exchanges', static function (Blueprint $table) {
             $table->dropColumn('date');
         });
     }

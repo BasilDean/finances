@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('budget_history', function (Blueprint $table) {
+        Schema::create('budget_history', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('budget_id')->constrained('budgets')->cascadeOnDelete();
             $table->decimal('amount', 15, 2);

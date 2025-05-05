@@ -25,8 +25,6 @@ class CategoryResource extends JsonResource
 
         // Context-specific fields
         $contextFields = match ($context) {
-            'edit' =>
-            [],
             'show' => [
                 'usage_count' => self::makeField('number', 'usage_count'),
                 'children_count' => self::makeField('number', 'usage_count'),
