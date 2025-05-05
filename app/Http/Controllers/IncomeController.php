@@ -26,6 +26,7 @@ class IncomeController extends Controller
         $this->userSettingsService = $userSettingsService;
     }
 
+    /** @noinspection NullPointerExceptionInspection */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Income::class);
@@ -104,13 +105,6 @@ class IncomeController extends Controller
         $account->save();
 
         return redirect()->route('income.index')->with('success', 'Income created.');
-    }
-
-    public function show(Income $income): Income
-    {
-        $this->authorize('view', $income);
-
-        return $income;
     }
 
     public function edit(Income $income): Response

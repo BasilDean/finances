@@ -14,12 +14,21 @@ use Inertia\Testing\AssertableInertia;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->budget = Budget::factory()->create();
-    $this->account = Account::factory()->create();
+    //create a budget for test instances
+    $this->budget = Budget::factory()->create(['currency' => 'RUB']);
+    //create am account for test instances
+    $this->account = Account::factory()->create(['currency' => 'RUB']);
+    // attach the account to the budget
     $this->budget->accounts()->attach($this->account);
+    // create a user for tests
     $this->user = User::factory()->create();
+    // attach the users to the budget
+    $this->budget->users()->attach($this->user);
+    // create a single income for tests
     $this->income = Income::factory()->create(['account_id' => $this->account->id, 'user_id' => $this->user->id]);
     (new UserSettingsService())->setActiveBudget($this->user, $this->budget->slug);
+
+    // create the default settings for user for tests
     $setting = Setting::factory()->create(['user_id' => $this->user->id, 'active_budget' => $this->budget->slug]);
     $this->user->settings()->save($setting);
 });
@@ -188,5 +197,93 @@ describe('Income Controller create', function () {
 describe('Income Controller store', function () {
     beforeEach(function () {
         $this->actingAs($this->user);
+    });
+    it('can store a new Income', function () {
+        $response = $this->post(route('income.store'), [
+            'title' => 'Test Income',
+            'account' => $this->account,
+            'user' => $this->user,
+            'source' => 'Salary',
+            'amount' => 200,
+            'currency' => 'RUB',
+            'date' => now(),
+        ]);
+        $response->assertRedirect(route('income.index'));
+
+        $response = $this->get(route('income.index', ['search' => 'test']));
+        $response->assertInertia(fn(AssertableInertia $page) => $page
+            ->component('Incomes/Index')
+            ->has('incomes.data', 1)
+            ->where('filters', request()->all('search'))
+        );
+    });
+});
+
+describe('Income Controller edit', function () {
+    beforeEach(function () {
+        $this->actingAs($this->user);
+
+    });
+    it('can show form to edit Income', function () {
+        $response = $this->get(route('income.edit', ['income' => $this->income]));
+        $response->assertInertia(fn(AssertableInertia $page) => $page
+            ->component('Incomes/Edit')
+            ->has('fields')
+            ->has('income')
+            ->where('income.id', $this->income->id)
+            ->where('income.title', (string)$this->income->title)
+            ->where('income.amount', (string)$this->income->amount)
+            ->where('income.currency', (string)$this->income->currency)
+            ->where('income.date', $this->income->date->toISOString())
+            ->where('income.source', (string)$this->income->source)
+            ->where('income.user.name', (string)$this->income->user->name)
+            ->where('income.account.title', (string)$this->income->account->title)
+        );
+    });
+});
+
+describe('Income Controller update', function () {
+    beforeEach(function () {
+        $this->actingAs($this->user);
+    });
+    it('can update an existing Income', function () {
+        $response = $this->patch(route('income.update', ['income' => $this->income]), [
+            'title' => 'blablabla',
+            'account' => $this->account,
+            'user' => $this->user,
+            'source' => 'Salary',
+            'amount' => 200,
+            'date' => $this->income->date,
+        ]);
+        $response->assertRedirect(route('income.index'));
+
+        $response = $this->get(route('income.index', ['search' => 'blablabla']));
+        $response->assertInertia(fn(AssertableInertia $page) => $page
+            ->component('Incomes/Index')
+            ->has('incomes.data', 1)
+            ->where('filters', request()->all('search'))
+        );
+    });
+});
+
+describe('Income Controller destroy', function () {
+    beforeEach(function () {
+        $this->actingAs($this->user);
+    });
+    it('can delete an existing Income', function () {
+        $response = $this->get(route('income.index'));
+        $response->assertInertia(fn(AssertableInertia $page) => $page
+            ->component('Incomes/Index')
+            ->has('incomes.data', 1)
+        );
+
+        $response = $this->delete(route('income.destroy', ['income' => $this->income]));
+        $response->assertRedirect(route('income.index'));
+
+        $response = $this->get(route('income.index'));
+        $response->assertInertia(fn(AssertableInertia $page) => $page
+            ->component('Incomes/Index')
+            ->has('incomes.data', 0)
+        );
     });
 });

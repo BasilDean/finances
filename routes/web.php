@@ -62,7 +62,6 @@ Route::middleware('auth')->prefix('income')->group(function () {
     Route::get('/', [IncomeController::class, 'index'])->name('income.index');
     Route::get('/create', [IncomeController::class, 'create'])->name('income.create');
     Route::post('/', [IncomeController::class, 'store'])->name('income.store');
-    Route::get('/{income:id}', [IncomeController::class, 'show'])->name('income.show');
     Route::get('/{income:slug}/edit', [IncomeController::class, 'edit'])->name('income.edit');
     Route::patch('/{income:slug}', [IncomeController::class, 'update'])->name('income.update');
     Route::delete('/{income:slug}', [IncomeController::class, 'destroy'])->name('income.destroy');
