@@ -35,6 +35,8 @@ test('can have multiple accounts', function () {
     $this->assertCount(2, $budget->accounts);
 });
 
+
+
 //test('can have multiple payments', function () {
 //    $user = User::factory()->create();
 //    $budget = Budget::factory()->create();
