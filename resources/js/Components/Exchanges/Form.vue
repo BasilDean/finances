@@ -1,18 +1,17 @@
 <script setup>
 import { Link, router, useForm } from '@inertiajs/vue3';
 import { mapValues } from 'lodash';
-import { computed, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { Form } from '@primevue/forms';
 import Button from 'primevue/button';
 import FloatLabel from 'primevue/floatlabel';
-import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import DatePicker from '@/Components/NewDatePicker.vue';
-import SelectButton from 'primevue/selectbutton';
 import { useI18n } from 'vue-i18n';
 import Message from 'primevue/message';
 import ButtonGroup from 'primevue/buttongroup';
-import Popover from 'primevue/popover';
+import NumberField from '@/Components/Finanses/InputNumber.vue';
+import AccountSelector from '@/Components/Finanses/accountSelector.vue';
 
 const { t } = useI18n(); // Enable translations in the script
 
@@ -64,34 +63,6 @@ const formData = reactive(
     }),
 );
 
-const currency_from = ref(null);
-const currency_to = ref(null);
-
-// Filtered account lists (reactively computed based on the selected currency)
-const filteredAccountFrom = computed(() => {
-    // Show all options if no currency is selected
-    if (!currency_from.value) {
-        return props.fields.account_from.values;
-    }
-    // Otherwise, filter accounts by the chosen currency
-    return props.fields.account_from.values.filter(
-        (account) => account.currency === currency_from.value,
-    );
-});
-
-const filteredAccountTo = ref(
-    computed(() => {
-        // Show all options if no currency is selected
-        if (!currency_to.value) {
-            return props.fields.account_to.values;
-        }
-        // Otherwise, filter accounts by the chosen currency
-        return props.fields.account_to.values.filter(
-            (account) => account.currency === currency_to.value,
-        );
-    }),
-);
-
 const form = useForm(formData);
 
 const createItem = () => {
@@ -104,14 +75,10 @@ const createItem = () => {
             } else if (action.value === 'saveAndAddNew') {
                 form['amount_from'] = 0;
                 form['amount_to'] = 0;
-
-                // Reassign account_to by matching it with the current options
-                form['account_to'] = filteredAccountTo.value.find(
+                form['account_to'] = props.fields.account_to.values.find(
                     (item) => item.id === form['account_to']?.id,
                 );
-
-                // Reassign account_to by matching it with the current options
-                form['account_from'] = filteredAccountTo.value.find(
+                form['account_from'] = props.fields.account_to.values.find(
                     (item) => item.id === form['account_from']?.id,
                 );
             }
@@ -139,9 +106,9 @@ const resolver = ({ values }) => {
         ];
     }
 
-    if (!values.aссount_to) {
-        errors.aссount_to = [
-            { message: t('aссount_to') + ' обязательно для заполнения.' },
+    if (!values.account_to) {
+        errors.account_to = [
+            { message: t('account_to') + ' обязательно для заполнения.' },
         ];
     }
 
@@ -157,14 +124,6 @@ const resolver = ({ values }) => {
         values, // (Optional) Used to pass current form values to submit event.
         errors,
     };
-};
-const op1 = ref();
-const toggle1 = (event) => {
-    op1.value.toggle(event);
-};
-const op2 = ref();
-const toggle2 = (event) => {
-    op2.value.toggle(event);
 };
 const action = ref('save');
 </script>
@@ -191,173 +150,59 @@ const action = ref('save');
                                 <div class="mt-4 flex flex-col gap-x-6 gap-y-3">
                                     <div class="mt-4 columns-2">
                                         <div>
-                                            <FloatLabel variant="on">
-                                                <InputNumber
-                                                    v-model="
-                                                        form['amount_from']
-                                                    "
-                                                    :maxFractionDigits="5"
-                                                    :minFractionDigits="0"
-                                                    fluid
-                                                    name="amount_from"
-                                                />
-                                                <label for="amount_from">{{
-                                                    $t('amount_from')
-                                                }}</label>
-                                            </FloatLabel>
-
-                                            <Message
-                                                v-if="
+                                            <NumberField
+                                                v-model="form.amount_from"
+                                                :error-message="
+                                                    $form.amount_from?.error
+                                                        ?.message
+                                                "
+                                                :is-valid="
                                                     $form.amount_from?.invalid
                                                 "
-                                                severity="error"
-                                                size="small"
-                                                variant="simple"
-                                                >{{
-                                                    $form.amount_from.error
+                                                field-key="amount_from"
+                                            />
+
+                                            <account-selector
+                                                v-model="form.account_from"
+                                                :accounts="
+                                                    fields.account_from.values
+                                                "
+                                                :error-message="
+                                                    $form.account_from?.error
                                                         ?.message
-                                                }}
-                                            </Message>
-                                            <div class="mt-3">
-                                                <FloatLabel variant="on">
-                                                    <Select
-                                                        v-model="
-                                                            form['account_from']
-                                                        "
-                                                        :options="
-                                                            filteredAccountFrom
-                                                        "
-                                                        class="w-full"
-                                                        name="account_from"
-                                                        optionLabel="title"
-                                                        placeholder="Выберите счет"
-                                                    />
-                                                    <label for="account_from">{{
-                                                        $t('account_from')
-                                                    }}</label>
-                                                </FloatLabel>
-
-                                                <Message
-                                                    v-if="
-                                                        $form.account_from
-                                                            ?.invalid
-                                                    "
-                                                    severity="error"
-                                                    size="small"
-                                                    variant="simple"
-                                                    >{{
-                                                        $form.account_from.error
-                                                            ?.message
-                                                    }}
-                                                </Message>
-                                                <Button
-                                                    label="фильтр"
-                                                    type="button"
-                                                    @click="toggle1"
-                                                />
-
-                                                <Popover ref="op1">
-                                                    <SelectButton
-                                                        v-model="currency_from"
-                                                        :options="
-                                                            props.currencies
-                                                        "
-                                                        class="mt-2"
-                                                        size="small"
-                                                    >
-                                                        <template
-                                                            #option="slotProps"
-                                                        >
-                                                            {{
-                                                                slotProps.option
-                                                            }}
-                                                        </template>
-                                                    </SelectButton>
-                                                </Popover>
-                                            </div>
+                                                "
+                                                :is-valid="
+                                                    $form.account_from?.invalid
+                                                "
+                                                field-key="account_from"
+                                            />
                                         </div>
                                         <div>
-                                            <FloatLabel variant="on">
-                                                <InputNumber
-                                                    v-model="form['amount_to']"
-                                                    :maxFractionDigits="5"
-                                                    :minFractionDigits="0"
-                                                    :model-value="
-                                                        form['amount_to']
-                                                    "
-                                                    fluid
-                                                    name="amount_to"
-                                                />
-                                                <label for="amount_to">{{
-                                                    $t('amount_to')
-                                                }}</label>
-                                            </FloatLabel>
-
-                                            <Message
-                                                v-if="$form.amount_to?.invalid"
-                                                severity="error"
-                                                size="small"
-                                                variant="simple"
-                                                >{{
-                                                    $form.amount_to.error
+                                            <NumberField
+                                                v-model="form.amount_to"
+                                                :error-message="
+                                                    $form.amount_to?.error
                                                         ?.message
-                                                }}
-                                            </Message>
-                                            <div class="mt-3">
-                                                <FloatLabel variant="on">
-                                                    <Select
-                                                        v-model="
-                                                            form['account_to']
-                                                        "
-                                                        :options="
-                                                            filteredAccountTo
-                                                        "
-                                                        class="w-full"
-                                                        name="account_to"
-                                                        optionLabel="title"
-                                                        placeholder="Выберите счет"
-                                                    />
-                                                    <label for="account_to">{{
-                                                        $t('account_to')
-                                                    }}</label>
-                                                </FloatLabel>
-                                                <Message
-                                                    v-if="
-                                                        $form.account_to
-                                                            ?.invalid
-                                                    "
-                                                    severity="error"
-                                                    size="small"
-                                                    variant="simple"
-                                                    >{{
-                                                        $form.account_to.error
-                                                            ?.message
-                                                    }}
-                                                </Message>
-
-                                                <Button
-                                                    label="фильтр"
-                                                    type="button"
-                                                    @click="toggle2"
-                                                />
-
-                                                <Popover ref="op2">
-                                                    <SelectButton
-                                                        v-model="currency_to"
-                                                        :options="currencies"
-                                                        class="mt-2"
-                                                        size="small"
-                                                    >
-                                                        <template
-                                                            #option="slotProps"
-                                                        >
-                                                            {{
-                                                                slotProps.option
-                                                            }}
-                                                        </template>
-                                                    </SelectButton>
-                                                </Popover>
-                                            </div>
+                                                "
+                                                :is-valid="
+                                                    $form.amount_to?.invalid
+                                                "
+                                                field-key="amount_to"
+                                            />
+                                            <account-selector
+                                                v-model="form.account_to"
+                                                :accounts="
+                                                    fields.account_to.values
+                                                "
+                                                :error-message="
+                                                    $form.amount_to?.error
+                                                        ?.message
+                                                "
+                                                :is-valid="
+                                                    $form.account_to?.invalid
+                                                "
+                                                field-key="account_to"
+                                            />
                                         </div>
                                     </div>
                                     <div class="column-1 mt-4">
