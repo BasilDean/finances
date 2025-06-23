@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExchangeRequest;
+use App\Http\Resources\BudgetResource;
 use App\Http\Resources\ExchangeResource;
 use App\Models\Exchange;
 use App\Models\User;
@@ -67,7 +68,9 @@ class ExchangeController extends Controller
         $idTo = $request->account_to['id'];
         $userId = $request->user['id'];
         $date = $request->date;
-        $formattedDate = Carbon::parse($date)->format('Y-m-d H:i:s');
+        $date = Carbon::parse($date)->setTimezone(config('app.timezone'));
+//        $officialRate = CurrencyRate::where('currency_from', $currencyFrom)->where('currency_to', $currencyTo)->first();
+
         $data = [
             'amount_from' => $request->amount_from,
             'account_from' => $idFrom,
@@ -78,7 +81,7 @@ class ExchangeController extends Controller
             'exchange_rate' => $request->amount_from / $request->amount_to,
             'oficial_rate' => 0,
             'user_id' => $userId,
-            'date' => $formattedDate,
+            'date' => $date,
         ];
 
         $exchange = Exchange::create($data);
@@ -97,7 +100,7 @@ class ExchangeController extends Controller
         }
         $exchange->save();
 
-        return redirect()->route('exchanges.index')->with('success', 'Exchange created successfully');
+        return redirect()->back()->with('status', 'Exchange created.');
     }
 
     public function create(): Response
@@ -105,8 +108,10 @@ class ExchangeController extends Controller
         $this->authorize('create', Exchange::class);
 
         $fields = ExchangeResource::getFields('edit');
+        $currencies = BudgetResource::getCurrencies();
         return Inertia::render('Exchange/Create', [
             'fields' => $fields,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -140,6 +145,7 @@ class ExchangeController extends Controller
             'user' => $user,
             'date' => $exchange->date->format('H:i d-m-Y')
         ];
+        $currencies = BudgetResource::getCurrencies();
 
         return Inertia::render('Exchange/Edit', [
             'item' => $data,
@@ -150,7 +156,6 @@ class ExchangeController extends Controller
     public function update(ExchangeRequest $request, Exchange $exchange): RedirectResponse
     {
         $this->authorize('update', $exchange);
-
         $currencyFrom = $request->account_from['currency'];
         $currencyTo = $request->account_to['currency'];
         $idFrom = $request->account_from['id'];

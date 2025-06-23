@@ -112,4 +112,9 @@ class ExchangeResource extends JsonResource
             'income' => new IncomeResource($this->whenLoaded('income')),
         ];
     }
+
+    public static function getCurrencies(): array
+    {
+        return (new UserSettingsService())->getActiveBudget()->currencies;
+    }
 }

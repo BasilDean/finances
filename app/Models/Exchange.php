@@ -36,6 +36,7 @@ class Exchange extends Model
         'expense_id',
         'created_at',
         'date',
+        'oficial_rate'
     ];
 
     public function user(): BelongsTo

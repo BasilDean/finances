@@ -30,6 +30,7 @@ class Expense extends Model
     protected $fillable = [
         'title',
         'amount',
+        'amount_calculated',
         'has_items',
         'currency',
         'date',

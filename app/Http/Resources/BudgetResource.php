@@ -67,7 +67,7 @@ class BudgetResource extends JsonResource
         ];
     }
 
-    private static function getCurrencies(): array
+    public static function getCurrencies(): array
     {
         return cache()->remember('currencies', now()->addDay(), fn() => config('currencies'));
     }

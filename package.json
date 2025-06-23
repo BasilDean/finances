@@ -32,10 +32,13 @@
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
         "@inertiajs/inertia": "^0.11.1",
+        "@primeuix/themes": "^1.1.2",
+        "@primevue/forms": "^4.3.5",
         "@vuepic/vue-datepicker": "^11.0.0",
         "highcharts-vue": "^2.0.1",
         "lodash": "^4.17.21",
         "lodash.debounce": "^4.0.8",
+        "primevue": "^4.3.5",
         "vue-i18n": "^10.0.5",
         "vue-multiselect": "^3.1.0",
         "vuedraggable": "^4.1.0"

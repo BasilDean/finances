@@ -21,6 +21,7 @@ use App\Observers\PurchaseItemObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,5 +48,11 @@ class AppServiceProvider extends ServiceProvider
         Income::observe(IncomeObserver::class);
         PurchaseItem::observe(PurchaseItemObserver::class);
         Payment::observe(PaymentObserver::class);
+        Inertia::share('flash', function () {
+            return [
+                'status' => session('status', null),
+            ];
+        });
+
     }
 }

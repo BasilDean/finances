@@ -21,6 +21,7 @@ class ExchangeObserver
         $expense = Expense::create([
                 'title' => 'перевод',
                 'amount' => $exchange->amount_from,
+                'amount_calculated' => $exchange->amount_from,
                 'account_id' => $exchange->account_from,
                 'currency' => $exchange->currency_from,
                 'date' => $exchange->date,
